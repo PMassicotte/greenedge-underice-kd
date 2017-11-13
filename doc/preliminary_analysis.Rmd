@@ -1,0 +1,60 @@
+---
+title: "Preliminary analysis"
+output: pdf_document
+bibliography: /home/pmassicotte/Documents/library.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+I present here some of the preliminary results of the project aiming at estimating light attenuation under heterogeneous snow/ice cover.
+
+## Data
+
+The following results are based on 60 COPS profiles measured in 2015 at the ice camp under high snow cover. This choice was motivated by two criterion:
+
+1. Only 2015 COPS profiles contain both Ed and Eu measurements.
+2. High snow profiles were selected because they systematically show sub-surface light maximums.
+
+## Model
+
+The idea behind these results come from the article of @Frey2011. They proposed a simple geometric model to explain the sub-maximum light observed under base ice surrounded by melt pounds. The geometric model is:
+
+$$
+F(z) = \pi i [1 + P(N - 1)cos^2(\theta)]^{-kz}
+$$
+The description of the parameters can be found in their paper. 
+
+At the moment, I am only using the 24h integrated PAR but we could also do it on individual wavelength irradiance. The following graphs show the observed COPS profiles and the results of the modeling exercise. It shows that the model adequately capture the sub-maximum light.
+
+\begin{center} 
+\includegraphics[]{../graphs/fitted_profiles.pdf} 
+\end{center}
+
+## Simulations
+
+The first purpose of the following simulations is to find out at which depth light transmission is no longer affected by the heterogeneity of the snow/ice sheet. The following figures show the distribution of the parameters estimated from the 60 COPS profiles.
+
+\begin{center} 
+\includegraphics[]{../graphs/insitu_geometric_parameter_histogram.pdf} 
+\end{center}
+
+Based on distribution of the parameter values from the 60 COPS profiles, I used a log-normal distribution to generate a total of 1000 different snow/ice cover scenarios. The following graphs show the distribution of the generated parameters. Comparing both histograms, one can conclude that the log-normal distribution was a good choice.
+
+\begin{center} 
+\includegraphics[]{../graphs/simulated_geometric_parameter_histogram.pdf} 
+\end{center}
+
+From these 1000 sets of parameters, I generated light profiles between 0 and 100 meters. 
+
+\begin{center} 
+\includegraphics[]{../graphs/simulated_par_profils.pdf} 
+\end{center}
+
+## Ideas:
+
+1. Compare Kd and Ku measurements.
+2. In equation 1, is it assumed that irradance is isotropic ($\pi i$). We could use a parameter to replace $\pi$ (see @Katlein2016).
+
+## References
