@@ -40,6 +40,16 @@ The first purpose of the following simulations is to find out at which depth lig
 \includegraphics[]{../graphs/insitu_geometric_parameter_histogram.pdf} 
 \end{center}
 
+There is also little correlation between parameter estimates.
+
+\begin{center} 
+\includegraphics[]{../graphs/parameters_scatterplot_matrix.pdf} 
+\end{center}
+
+\begin{center} 
+\includegraphics[]{../graphs/parameters_pca.pdf} 
+\end{center}
+
 Based on distribution of the parameter values from the 60 COPS profiles, I used a log-normal distribution to generate a total of 1000 different snow/ice cover scenarios. The following graphs show the distribution of the generated parameters. Comparing both histograms, one can conclude that the log-normal distribution was a good choice.
 
 \begin{center} 
@@ -56,5 +66,10 @@ From these 1000 sets of parameters, I generated light profiles between 0 and 100
 
 1. Compare Kd and Ku measurements.
 2. In equation 1, is it assumed that irradance is isotropic ($\pi i$). We could use a parameter to replace $\pi$ (see @Katlein2016).
+3. Same exercise with equation 3 from @Laney2017 (use table 3 for parameter's bound).
+4. Compare Frey and Laney equations on the 60 COPS profils.
+5. Compare Kd from both models (scatter plot).
+6. Generate 1 profil with Frey, and refit it with Laney. Then compare Kd.
+7. Estimate Kd with IOP's.
 
 ## References
