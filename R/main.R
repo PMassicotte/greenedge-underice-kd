@@ -26,3 +26,4 @@ theme_set(theme_bw(base_size = 12, base_family = "Open Sans"))
 # source("R/model_profils.R")
 
 # source("R/simulate_light_profils.R")
+# source("R/test_isotropy.R")

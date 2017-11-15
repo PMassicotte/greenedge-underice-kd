@@ -29,6 +29,9 @@ plot_cops <- function(df, date) {
       
 }
 
+
+# All the data ------------------------------------------------------------
+
 res <- cops %>% 
   group_by(profile_filename, posixct_date_utc) %>% 
   nest() %>% 
@@ -40,3 +43,19 @@ res$p
 dev.off()
 
 embed_fonts("graphs/cops.pdf")
+
+
+# Plot only HS ------------------------------------------------------------
+
+res <- cops %>% 
+  filter(hole_type == "H") %>% 
+  group_by(profile_filename, posixct_date_utc) %>% 
+  nest() %>% 
+  mutate(p = map2(data, posixct_date_utc, plot_cops))
+
+## Plot all profils
+pdf("graphs/cops_high_snow.pdf", height = 4, width = 8)
+res$p
+dev.off()
+
+embed_fonts("graphs/cops_high_snow.pdf")
