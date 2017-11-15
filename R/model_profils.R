@@ -119,3 +119,17 @@ params %>%
 
 ## save model results for later use
 write_csv(params, "data/clean/high_snow_geometric_model_parameters.csv")
+
+
+# Parameter correlations --------------------------------------------------
+
+params <- params %>% 
+  spread(parameter, value)
+
+pdf("graphs/parameters_scatterplot_matrix.pdf")
+languageR::pairscor.fnc(select(params, i:r))
+dev.off()
+
+pdf("graphs/parameters_pca.pdf")
+biplot(prcomp(select(params, i:r), center = TRUE, scale. = TRUE))
+dev.off()

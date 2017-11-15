@@ -61,6 +61,11 @@ simulation <- res %>%
     
   }))
 
+## Save simulated data
+unnest(simulation, data) %>% 
+  unnest(profils) %>% 
+  write_csv("data/clean/simulations_frey.csv")
+
 mean_simulation <- simulation %>%
   unnest(profils) %>%
   group_by(depth) %>%
@@ -105,3 +110,17 @@ ssm %>%
   geom_histogram()
 
 mean(ssm$depth)
+
+res <- ssm %>% 
+  ungroup() %>% 
+  mutate(bin = cut(depth, seq(0, 100, by = 0.25), include.lowest = TRUE)) %>% 
+  count(bin) %>%
+  separate(bin, into = c("from", "to"), convert = TRUE, sep = ",") %>% 
+  mutate_at(vars(from:to), parse_number)
+
+res %>% 
+  mutate(percent = n / sum(n)) %>% 
+  ggplot(aes(x = from, y = percent)) +
+  geom_point() +
+  geom_line() +
+  scale_y_continuous(labels = scales::percent)
