@@ -15,13 +15,15 @@ read_cops <- function(file) {
   # file <- "/media/work/projects/greenedge-icecamp-physic/data/raw/cops/2016/RES.EXCEL/GE2016.ICMP_ICEP_160504_CAST_002/d.fit.v.01.txt"
   
   df <- data.table::fread(file, na.strings = "-999") %>%
-    janitor::clean_names() %>%
-    select(profile_filename,
-           flag_quality,
-           posixct_date_utc,
-           depth = contains("depth"),
-           hole_type,
-           contains("par"))
+    janitor::clean_names() %>% 
+    select(depth = contains("depth"), everything()) %>% 
+    mutate(posixct_date_utc = lubridate::parse_date_time(posixct_date_utc, orders = "Ymd HMS", tz = "UTC")) %>% 
+    select(-(year_utc:second_utc), -contains("ed0"), -contains("par")) %>%  
+    select(depth:hole_type, matches("edz.+\\d{3}|euz.+\\d{3}||luz.+\\d{3}")) %>%
+    gather(temp, irradiance, matches("edz.+\\d{3}|euz.+\\d{3}|luz.+\\d{3}")) %>%
+    extract(temp, into = c("sensor", "wavelength"), regex = "(edz|euz|luz).+(\\d{3})", convert = TRUE) %>%
+    spread(sensor, irradiance) %>%
+    arrange(wavelength)
 
   return(df)  
 }
@@ -45,7 +47,10 @@ df_eu <- parLapply(cl, files_eu, read_cops) %>%
 stopCluster(cl)
 
 df <- inner_join(df_ed, df_eu) %>% 
-  mutate(posixct_date_utc = lubridate::parse_date_time(posixct_date_utc, orders = "Ymd HMS")) %>% 
   as_tibble()
 
-write_csv(df, "data/clean/cops.csv")
+# write_csv(df, "data/clean/cops.csv")
+write_feather(df, "data/clean/cops.feather")
+
+message("Processed a total of ", nrow(distinct(df, profile_filename)), " COPS profiles.")
+  
