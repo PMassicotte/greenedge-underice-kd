@@ -20,8 +20,17 @@ graphics.off()
 loadfonts(quiet = TRUE)
 theme_set(theme_bw(base_size = 12, base_family = "Open Sans"))
 
+# Process COPS ------------------------------------------------------------
+
+source("R/process_cops.R")
+source("R/plot_cops.R")
 
 # Analysis ----------------------------------------------------------------
+
+source("R/calculate_k.R")
+source("R/compare_ked_klu.R")
+
+# Frey 2011 ---------------------------------------------------------------
 
 ## Fit COPS data
 # source("R/model_profils.R")
