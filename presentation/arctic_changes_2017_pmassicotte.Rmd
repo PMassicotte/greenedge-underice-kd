@@ -1,0 +1,316 @@
+---
+title: "Toward a new method to estimate underwater light regime under spatially heterogeneous surface environments in the Arctic"
+author: 
+- Philippe Massicotte
+- Guislain Bécu
+- Simon Lambert-Girard
+- Julien Laliberté
+- Marcel Babin
+output:
+  revealjs::revealjs_presentation:
+    theme: moon
+    highlight: pygments
+    center: true
+    css: styles.css
+    incremental: true
+    dev: svg
+    self_contained: true
+    # logo: /media/work/ulaval/logos/KIT_LOGOS_2016/LOGO_cmjn_FILAIRE.gif
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(extrafont)
+library(tidyverse)
+library(feather)
+
+## Set default ggplot2 font size and font familly
+loadfonts(quiet = TRUE)
+theme_set(theme_bw(base_size = 12, base_family = "Open Sans"))
+
+```
+
+## Toward a new method to estimate underwater light regime under spatially heterogeneous surface environments in the Arctic
+
+Philippe Massicotte, Guislain Bécu, Simon Lambert-Girard, Julien Laliberté, Marcel Babin
+
+<p float="left">
+  <img src="/media/work/ulaval/logos/greenedge-fichiers-logo/fichiers jpg/couleur/greenedge-rgb.jpg" height="100" /> 
+  <img src="/media/work/ulaval/logos/logo-takuvik/logo-takuvik/logo-jpg et png/takuvik-rgb.jpg" height="100" /> 
+  <img src="https://www.ulaval.ca/fileadmin/ulaval_ca/Images/logos-ul/logo-universite-laval-couleur-transparent.png" height="100" />
+  <img src="/media/work/ulaval/logos/KIT_LOGOS_2016/LOGO_cmjn_FILAIRE.png" height="100" />
+</p>
+
+
+## Under water light field
+
+The characteristics of under water light field are very important drivers of ecosystem functioning:
+
+  - Primary production
+  
+  - Photo-chemical reactions (photo-degradation)
+  
+  - Energy budget in the water column
+
+## Measuring light in open water
+
+Nowadays, measuring downwelling irradiance ($E_d$) in open water is pretty straightforward.
+
+![Caption for the picture.](images/Ice-breaker.png)
+
+## Typical under water light profiles
+
+In open water, downwelling irradiance ($E_d$) is known to decrease exponentially with increasing depth.
+
+```{r, echo=FALSE, warning=FALSE, fig.align='center', fig.width=7, fig.height=5, dev='svg'}
+
+source("https://gist.githubusercontent.com/friendly/67a7df339aa999e2bcfcfec88311abfc/raw/761a7688fba3668a84b2dfe42a655a1b246ca193/wavelength_to_rgb.R")
+
+df <- read_feather("../data/clean/cops.feather") %>% 
+  filter(profile_filename == "GE2016.ICMP_ICEP_160706_CAST_004") %>% 
+  # drop_na(edz) %>% 
+  filter(between(wavelength, 400, 700))
+
+color <- lapply(unique(df$wavelength), wavelength_to_rgb) %>% unlist()
+color <- setNames(color, unique(df$wavelength))
+
+df %>%
+  drop_na(edz) %>% 
+  ggplot(aes(x = edz, y = depth, color = factor(wavelength))) +
+  geom_path() +
+  scale_y_reverse(limits = c(50, 0)) +
+  guides(color = guide_legend(ncol = 2)) +
+  labs(color = "Wavelengths") +
+  scale_color_manual(values = color) +
+  xlab(bquote(mu*W%*%cm^{-2})) +
+  ylab("Depth (m)")
+
+```
+
+## Mathematical formulation
+
+$$
+\text{Ed}(z) = Ed(0) \times e^{-k \times d}
+$$
+
+- **$k$** is the vertical diffuse attenuation coefficients describing the rate at which light decreases with increasing depth.  
+
+- Important metric used by biologists and to parameterize models (**need for precise estimates**).
+
+## An example
+
+```{r, echo=FALSE, warning=FALSE, fig.align='center', fig.width=7, fig.height=5, dev='svg'}
+
+df <- read_feather("../data/clean/cops.feather") %>% 
+  filter(profile_filename == "GE2016.ICMP_ICEP_160706_CAST_005" & wavelength == 443)
+
+mod <- minpack.lm::nlsLM(edz ~ a0 * exp(-k * depth), data = df, start = list(a0 = 0, k = 0.1))
+
+df <- modelr::add_predictions(df, mod)
+
+df %>% 
+  ggplot(aes(x = edz, y = depth)) +
+  geom_point(aes(color = "observations")) +
+  geom_path(aes(x = pred, color = "model")) +
+  scale_y_reverse(limits = c(50, 0)) +
+  xlab(bquote(mu*W%*%cm^{-2})) +
+  ylab("Depth (m)") +
+  theme(legend.title = element_blank()) +
+  theme(legend.position = c(0.9, 0.1)) +
+  scale_color_manual(values = c("model" = "red", "observations" = "black")) +
+  annotate("text", x = 20, y = 27, label = "Ed(z) == 38 * e^{-0.17 * z}", parse = TRUE) +
+  labs(title = "Downwelling irradiance at 443 nm",
+       subtitle = "Ked = 0.17 m-1")
+
+```
+
+## Problematics
+
+Due to **spatial horizontal heterogeneity**, measuring vertical light profiles under ice cover present considerable challenges in comparison to open water.
+
+PHOTO MELT PONDS
+
+## What is seen by the radiometer
+
+<!-- <video height="auto" controls="controls" preload="none" onclick="this.play()"> -->
+<!--  <source type="" src="rov_short.mp4"> -->
+<!-- </video> -->
+
+## {data-background-video="rov_short.mp4"}
+
+## Light measured under ice
+
+As a consequence, light transmission can increase to reach a subsurface maximum between 5 and 10 meters.
+
+```{r, echo=FALSE, warning=FALSE, fig.align='center', fig.width=7, fig.height=5, dev='svg'}
+
+source("https://gist.githubusercontent.com/friendly/67a7df339aa999e2bcfcfec88311abfc/raw/761a7688fba3668a84b2dfe42a655a1b246ca193/wavelength_to_rgb.R")
+
+df <- read_feather("../data/clean/cops.feather") %>% 
+  filter(profile_filename == "GE2015.ICMP_ICEP_150430_CAST_004") %>% 
+  # drop_na(edz) %>% 
+  filter(between(wavelength, 400, 700))
+
+color <- lapply(unique(df$wavelength), wavelength_to_rgb) %>% unlist()
+color <- setNames(color, unique(df$wavelength))
+
+df %>% 
+  drop_na(edz) %>% 
+  ggplot(aes(x = edz, y = depth, color = factor(wavelength))) +
+  geom_path() +
+  scale_y_reverse(limits = c(50, 0)) +
+  guides(color = guide_legend(ncol = 2)) +
+  labs(color = "Wavelengths") +
+  scale_color_manual(values = color) +
+  xlab(bquote(mu*W%*%cm^{-2})) +
+  ylab("Depth (m)")
+```
+
+## Estimating *K* underice
+
+Obviously, estimating $K_{ed}$ under ice represent a considerable challenge.
+
+```{r, echo=FALSE, warning=FALSE, fig.align='center', fig.width=7, fig.height=5, dev='svg'}
+
+df <- read_feather("../data/clean/cops.feather") %>% 
+  filter(profile_filename == "GE2015.ICMP_ICEP_150430_CAST_004" & wavelength == 443)
+
+mod <- minpack.lm::nlsLM(edz ~ a0 * exp(-k * depth), data = df, start = list(a0 = 0, k = 0.1))
+
+df <- modelr::add_predictions(df, mod)
+
+df %>% 
+  ggplot(aes(x = edz, y = depth)) +
+  geom_point(aes(color = "observations")) +
+  geom_path(aes(x = pred, color = "model")) +
+  scale_y_reverse(limits = c(50, 0)) +
+  xlab(bquote(mu*W%*%cm^{-2})) +
+  ylab("Depth (m)") +
+  theme(legend.title = element_blank()) +
+  theme(legend.position = c(0.9, 0.1)) +
+  scale_color_manual(values = c("model" = "red", "observations" = "black")) +
+  annotate("text", x = 0.10, y = 37, label = "Ed(z) == 0.19 * e^{-0.03 * z}", parse = TRUE) +
+  labs(title = "Downwelling irradiance at 443 nm",
+       subtitle = "Ked = 0.03 m-1")
+
+```
+
+## Estimating *K* underice
+
+Influence of the horizontal heterogeneity on measured light.
+
+<center><img src="images/rov_transect.png" alt="what image shows" width="600"></center>
+
+```{r, echo=FALSE, warning=FALSE, fig.align='center', fig.width=7, fig.height=4.5, dev='svg'}
+
+df <-
+  readxl::read_excel(
+  "../data/raw/phil_165.xlsx",
+  col_names = c("position", "406", "438", "494", "510", "560", "628"),
+  col_types = c("numeric")
+  ) %>%
+  gather(wavelength, k,-position, convert = TRUE) 
+
+source("https://gist.githubusercontent.com/friendly/67a7df339aa999e2bcfcfec88311abfc/raw/761a7688fba3668a84b2dfe42a655a1b246ca193/wavelength_to_rgb.R")
+
+color <- lapply(unique(df$wavelength), wavelength_to_rgb) %>% unlist()
+color <- setNames(color, unique(df$wavelength))
+
+df %>% 
+  ggplot(aes(x = position, y = k, color = factor(wavelength))) +
+  geom_line() +
+  xlab("Horizontal distance (m)") +
+  scale_color_manual(values = color) +
+  scale_x_continuous(breaks = seq(10, 160, by = 20)) +
+  ylab(bquote(K[ed]~(m^{-1}))) +
+  geom_hline(yintercept = 0, lty = 2) +
+  labs(color = "Wavelengths") +
+  labs(title = "Vertical diffuse attenuation coefficients between 2 and 4 meters",
+       subtitle = "Rov Experiment, Green Edge 2016, Lisa Matthes et al.")
+
+```
+
+## Estimating *K* underice
+
+Due to the horizontal heterogeneity, measured light properties are only valid locally and **cannot be generalized to the surrounding environment**.
+
+```{r, echo=FALSE, warning=FALSE, fig.align='center', fig.width=9, fig.height=5, dev='svg'}
+
+df <- read_feather("../data/clean/cops.feather") %>% 
+  filter(profile_filename %in% c("GE2016.ICMP_ICEP_160617_CAST_004", "GE2015.ICMP_ICEP_150430_CAST_004") & wavelength == 443) %>% 
+  group_by(profile_filename) %>% 
+  nest() %>% 
+  mutate(mod = map(data, ~minpack.lm::nlsLM(edz ~ a0 * exp(-k * depth), data = ., start = list(a0 = 0, k = 0.1)))) %>% 
+  mutate(pred = map2(data, mod, modelr::add_predictions)) %>% 
+  unnest(pred)
+
+df %>% 
+  ggplot(aes(x = edz, y = depth)) +
+  geom_point(aes(color = "observations")) +
+  geom_path(aes(x = pred, color = "model")) +
+  scale_y_reverse(limits = c(50, 0)) +
+  xlab(bquote(mu*W%*%cm^{-2})) +
+  ylab("Depth (m)") +
+  theme(legend.title = element_blank()) +
+  theme(legend.position = c(0.9, 0.1)) +
+  scale_color_manual(values = c("model" = "red", "observations" = "black")) +
+  labs(title = "Downwelling irradiance at 443 nm") +
+  facet_wrap( ~ profile_filename,
+              scales = "free",
+              labeller = labeller(
+              profile_filename = c(
+              "GE2016.ICMP_ICEP_160617_CAST_004" = "Profile #2",
+              "GE2015.ICMP_ICEP_150430_CAST_004" = "Profile #1"
+              )
+              ))
+
+```
+
+
+## Objectives
+
+1. New method to have adequate light estimates under horizontally heterogeneous ice sheet
+
+## Lu
+
+![Caption for the picture.](images/Ice-camp.png)
+
+## tmp
+
+```{r, echo=FALSE, warning=FALSE, fig.align='center', fig.width=10, fig.height=7, dev='svg'}
+
+df <- read_feather("../data/clean/cops.feather") %>% 
+  filter(profile_filename == "GE2016.ICMP_ICEP_160620_CAST_006") %>% 
+  filter(between(wavelength, 400, 700)) %>% 
+  # filter(depth >= 10) %>% 
+  group_by(wavelength) %>% 
+  mutate_at(.vars = vars(edz, luz), function(x) x/max(x, na.rm = TRUE))
+
+color <- lapply(unique(df$wavelength), wavelength_to_rgb) %>% unlist()
+color <- setNames(color, unique(df$wavelength))
+
+df %>%
+  ggplot(aes(y = depth, color = factor(wavelength))) +
+  geom_path(aes(x = edz, linetype = "edz")) +
+  geom_path(aes(x = luz, linetype = "luz")) +
+  scale_y_reverse(limits = c(50, 0)) +
+  guides(color = guide_legend(ncol = 2)) +
+  labs(color = "Wavelengths") +
+  scale_color_manual(values = color) + 
+  facet_wrap(~wavelength, scales = "free") +
+  xlab("Normalized light")
+
+```
+
+## Acknowledgements {.acknowledgements}
+
+The GreenEdge project is funded by the following French and Canadian programs and agencies: ANR (Contract #111112), CNES (project #131425), IPEV (project #1164), CSA, Fondation Total, ArcticNet, LEFE and the French Arctic Initiative (GreenEdge project). This project would not have been possible without the support of the Hamlet of Qikiqtarjuaq and the members of the community as well as the Inuksuit School and its Principal Jacqueline Arsenault. The project is conducted under the scientific coordination of the Canada Excellence Research Chair on Remote sensing of Canada's new Arctic frontier and the CNRS & Université Laval Takuvik Joint International laboratory (UMI3376). The field campaign was successful thanks to the contribution of J. Ferland, G. Bécu, C. Marec, J. Lagunas, F. Bruyant, J. Larivière, E. Rehm, S. Lambert-Girard, C. Aubry, C. Lalande, A. LeBaron, C. Marty, J. Sansoulet, D. Christiansen-Stowe, A. Wells, M. Benoît-Gagné, E. Devred and M.-H. Forget from the Takuvik laboratory, C.J. Mundy and V. Galindo from University of Manitoba as well as F. Pinczon du Sel and E. Brossier from Vagabond. We also thank Michel Gosselin, Québec-Océan, the CCGS Amundsen and the Polar Continental Shelf Program for their in-kind contribution in polar logistic and scientific equipment.
+
+<p float="left">
+  <img src="/media/work/ulaval/logos/greenedge-fichiers-logo/fichiers jpg/couleur/greenedge-rgb.jpg" height="100" /> 
+  <img src="/media/work/ulaval/logos/logo-takuvik/logo-takuvik/logo-jpg et png/takuvik-rgb.jpg" height="100" /> 
+  <img src="https://www.ulaval.ca/fileadmin/ulaval_ca/Images/logos-ul/logo-universite-laval-couleur-transparent.png" height="100" />
+  <img src="/media/work/ulaval/logos/KIT_LOGOS_2016/LOGO_cmjn_FILAIRE.png" height="100" />
+</p>
+

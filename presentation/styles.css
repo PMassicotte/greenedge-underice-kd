@@ -1,0 +1,38 @@
+h2.author {
+  font-size: 1em;
+  text-align: center;
+	font-variant: normal;
+	font-weight: 100;
+	text-transform: none !important;
+	color: #ffffff;
+}
+
+.reveal p {
+  text-align: left;
+}
+
+.reveal strong { color: #E7AD52; }
+
+.acknowledgements p { 
+  font-size: 0.5em;
+  text-align: left;
+  font-family: 'Open Sans';
+  color: #EFEFEF;
+  text-align: justify;
+  text-justify: inter-word;
+}
+
+.reveal section img {
+    background: rgba(255, 255, 255, 1);
+    background-image: initial;
+    background-position-x: initial;
+    background-position-y: initial;
+    background-size: initial;
+    background-repeat-x: initial;
+    background-repeat-y: initial;
+    background-attachment: initial;
+    background-origin: initial;
+    background-clip: initial;
+    background-color: rgba(255, 255, 255, 1);
+    border: 10px solid white;
+}

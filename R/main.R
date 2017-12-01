@@ -11,6 +11,7 @@
 library(extrafont)
 library(tidyverse)
 library(feather)
+library(minpack.lm)
 
 rm(list = ls())
 graphics.off()
@@ -28,7 +29,7 @@ source("R/plot_cops.R")
 # Analysis ----------------------------------------------------------------
 
 source("R/calculate_k.R")
-source("R/compare_ked_klu.R")
+source("R/compare_ked_klu_2.R.R")
 
 # Frey 2011 ---------------------------------------------------------------
 
