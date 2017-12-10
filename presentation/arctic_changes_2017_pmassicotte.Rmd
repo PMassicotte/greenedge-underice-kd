@@ -300,9 +300,9 @@ One promising way is to use **upwelling radiance ($L_u$)**, which is far less in
 
 ## Why upwelling radiance?
 
-> - Not influenced by the surface spatial heterogeneity (**no subsurface maximum**).
+> 1. Not influenced by the surface spatial heterogeneity (**no subsurface maximum**).
 
-> - Both seem to follow the same exponential decreases after the subsurface maximum point.
+> 2. Both seem to follow the same exponential decreases after the subsurface maximum point.
 
 ```{r, echo=FALSE, warning=FALSE, fig.align='center', dev='svg', fig.width=15, fig.height=6}
 
