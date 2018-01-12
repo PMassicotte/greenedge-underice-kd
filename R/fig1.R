@@ -13,8 +13,8 @@ source("https://gist.githubusercontent.com/friendly/67a7df339aa999e2bcfcfec88311
 cops <- read_feather("data/clean/cops.feather")
 
 df <- cops %>% 
-  filter(profile_filename == "GE2016.ICMP_ICEP_160620_CAST_005") %>% 
-  select(depth, wavelength, edz, luz) %>% 
+  filter(profile_filename == "GE2016.ICMP_ICEP_160620_CAST_006") %>% 
+  dplyr::select(depth, wavelength, edz, luz) %>% 
   gather(type, light, -depth, -wavelength) %>% 
   filter(between(wavelength, 400, 700))
 
@@ -34,14 +34,14 @@ p <- df %>%
   facet_wrap(~type, scales = "free", labeller = labeller(type = mylabel)) +
   ylab("Depth (m)") +
   xlab(bquote(Light~(mu*W%*%cm^{-2}%*%nm^{-1}))) +
-  labs(color = "Wavelengths") +
+  labs(color = "Wavelengths (nm)") +
   theme(legend.position = c(0.99, 0.01),
         legend.justification = c(1, 0)) +
-  theme(legend.title = element_text(size = 8),
-        legend.text = element_text(size = 6)) +
+  theme(legend.title = element_text(size = 10),
+        legend.text = element_text(size = 8)) +
   guides(color = guide_legend(
-    keywidth = 0.1,
-    keyheight = 0.1,
+    keywidth = 0.15,
+    keyheight = 0.15,
     default.unit = "inch",
     ncol = 2
   )) +

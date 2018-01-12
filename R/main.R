@@ -12,6 +12,7 @@ library(extrafont)
 library(tidyverse)
 library(feather)
 library(minpack.lm)
+library(ggpmisc)
 
 rm(list = ls())
 graphics.off()
@@ -29,7 +30,15 @@ source("R/plot_cops.R")
 # Analysis ----------------------------------------------------------------
 
 source("R/calculate_k.R")
-source("R/compare_ked_klu_2.R.R")
+
+# Figures -----------------------------------------------------------------
+
+source("R/fig1.R")
+source("R/fig2.R")
+source("R/fig3.R")
+
+source("R/supp_fig_1.R")
+source("R/supp_fig_2.R")
 
 # Frey 2011 ---------------------------------------------------------------
 
