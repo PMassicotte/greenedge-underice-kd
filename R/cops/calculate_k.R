@@ -107,5 +107,5 @@ k <- k %>%
 
 k %>% 
   dplyr::select(-(data:pred)) %>% 
-  write_feather("data/clean/k.feather")
+  write_feather("data/clean/k_cops.feather")
 

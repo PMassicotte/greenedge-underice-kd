@@ -37,8 +37,8 @@ res <- cops %>%
   mutate(p = pmap(list(data, profile_filename, as.character(posixct_date_utc)), plot_cops))
 
 ## Plot all profils
-pdf("graphs/cops.pdf", height = 4, width = 8)
+pdf("graphs/cops/cops.pdf", height = 4, width = 8)
 res$p
 dev.off()
 
-embed_fonts("graphs/cops.pdf")
+embed_fonts("graphs/cops/cops.pdf")
