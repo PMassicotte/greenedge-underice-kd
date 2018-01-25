@@ -8,9 +8,16 @@
 
 rm(list = ls())
 
-cops <- read_feather("data/clean/cops.feather")
+cops <- read_feather("data/clean/cops_wavelength_interpolated.feather") %>% 
+  filter(lubridate::year(posixct_date_utc) == 2016)
 
 plot_cops <- function(df, profile_filename, date) {
+  
+  source("https://gist.githubusercontent.com/friendly/67a7df339aa999e2bcfcfec88311abfc/raw/761a7688fba3668a84b2dfe42a655a1b246ca193/wavelength_to_rgb.R")
+  
+  color <- lapply(unique(df$wavelength), wavelength_to_rgb) %>% unlist()
+  color <- setNames(color, unique(df$wavelength))
+  
   
   df <- df %>% 
     gather(type, value, edz:luz) %>% 
@@ -24,8 +31,9 @@ plot_cops <- function(df, profile_filename, date) {
     facet_wrap(~type, scales = "free") +
     labs(title = paste(profile_filename, date),
          subtitle = sprintf("Hole type: %s", unique(df$hole_type))) +
-    guides(color = guide_legend(ncol = 2)) +
-    labs(color = "Wavelengths") 
+    guides(color = guide_legend(ncol = 3)) +
+    labs(color = "Wavelengths") +
+    scale_color_manual(values = color)
 }
 
 
@@ -37,8 +45,8 @@ res <- cops %>%
   mutate(p = pmap(list(data, profile_filename, as.character(posixct_date_utc)), plot_cops))
 
 ## Plot all profils
-pdf("graphs/cops/cops.pdf", height = 4, width = 8)
+pdf("graphs/cops/cops_wavelengths_interpolated.pdf", height = 6, width = 12)
 res$p
 dev.off()
 
-embed_fonts("graphs/cops/cops.pdf")
+embed_fonts("graphs/cops/cops_wavelengths_interpolated.pdf")

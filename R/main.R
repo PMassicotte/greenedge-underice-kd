@@ -27,11 +27,13 @@ theme_set(theme_bw(base_size = 12, base_family = "Open Sans"))
 
 ## COPS
 source("R/aop/process_cops.R")
+source("R/aop/interpolate_cops_wavelengths.R")
 source("R/aop/plot_cops.R")
 source("R/aop/calculate_k_cops.R")
 
 ## Camlum
 source("R/aop/process_mu_camlum.R")
+source("R/aop/interpolate_camlum.R")
 
 # Process IOPs ------------------------------------------------------------
 

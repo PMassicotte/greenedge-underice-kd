@@ -49,6 +49,9 @@ stopCluster(cl)
 df <- inner_join(df_ed, df_eu) %>% 
   as_tibble()
 
+
+# Export ------------------------------------------------------------------
+
 # write_csv(df, "data/clean/cops.csv")
 write_feather(df, "data/clean/cops.feather")
 
