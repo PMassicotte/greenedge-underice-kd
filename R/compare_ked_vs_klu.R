@@ -13,7 +13,8 @@ source("https://gist.githubusercontent.com/friendly/67a7df339aa999e2bcfcfec88311
 k <- read_feather("data/clean/k_cops.feather")
 
 k <- k %>% 
-  filter(r2 >= 0.99) %>% 
+  filter(r2 >= 0.99) %>%
+  filter(k > 0) %>% 
   select(profile_filename, start_depth, end_depth, type, wavelength, k) %>% 
   spread(type, k) %>% 
   rename(ked = edz, klu = luz) %>% 
