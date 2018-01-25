@@ -30,10 +30,10 @@ cops <- cops %>%
 
 interpol_wavelength <- function(df) {
   
-  wavelength <- seq(400, 700, by = 5)
+  wavelength <- seq(400, 700, by = 10)
   
-  sf_edz <- splinefun(df$wavelength, df$edz)
-  sf_luz <- splinefun(df$wavelength, df$luz)
+  sf_edz <- approxfun(df$wavelength, df$edz)
+  sf_luz <- approxfun(df$wavelength, df$luz)
   
   res <- data_frame(
     wavelength,
@@ -57,18 +57,18 @@ res %>%
 
 # res$profile_filename[1]
 
-# dat1 <- res %>%
-#   filter(profile_filename == "GE2016.ICMP_ICEP_160504_CAST_002") %>% 
-#   unnest(pred)
+dat1 <- res %>%
+  filter(profile_filename == "GE2016.ICMP_ICEP_160713_CAST_006") %>%
+  unnest(pred)
+
+dat2 <- res %>%
+  filter(profile_filename == "GE2016.ICMP_ICEP_160713_CAST_006") %>%
+  unnest(data)
+
+p <- dat2 %>%
+  ggplot(aes(x = wavelength, y = edz)) +
+  geom_line() +
+  facet_wrap(~depth, scales = "free") +
+  geom_line(data = dat1, color = "red")
 # 
-# dat2 <- res %>%
-#   filter(profile_filename == "GE2016.ICMP_ICEP_160504_CAST_002") %>% 
-#   unnest(data)
-# 
-# p <- dat2 %>% 
-#   ggplot(aes(x = wavelength, y = edz)) +
-#   geom_line() +
-#   facet_wrap(~depth, scales = "free") +
-#   geom_line(data = dat1, color = "red")
-# 
-# ggsave("graphs/cops/interpolation_wavelengths.pdf", height = 20, width = 40, device = cairo_pdf)
+ggsave("graphs/cops/interpolation_wavelengths.pdf", height = 20, width = 40, device = cairo_pdf)

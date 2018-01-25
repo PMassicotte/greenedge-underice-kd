@@ -14,6 +14,8 @@ library(feather)
 library(minpack.lm)
 library(ggpmisc)
 library(data.table)
+library(parallel)
+library(pbapply)
 
 rm(list = ls())
 graphics.off()
