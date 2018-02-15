@@ -23,6 +23,92 @@ theme_set(theme_bw(base_size = 12, base_family = "Open Sans"))
 
 ```
 
+## Green Edge Marine Optics
+
+<center>AOP & IOP update</center>
+
+<br>
+
+<center>Green Edge 2018</center>
+
+<center>February 6 - 8, Paris, France, Canada</center>
+
+<br>
+
+<font size="6">
+<span style="color:white">
+Guislain Bécu, Philippe Massicotte
+</span>
+</font> 
+
+<p float="center">
+  <img src="/media/work/ulaval/logos/greenedge-fichiers-logo/fichiers jpg/couleur/greenedge-rgb.jpg" height="75" /> 
+  <img src="/media/work/ulaval/logos/logo-takuvik/logo-takuvik/logo-jpg et png/takuvik-rgb.jpg" height="75" /> 
+  <img src="https://www.ulaval.ca/fileadmin/ulaval_ca/Images/logos-ul/logo-universite-laval-couleur-transparent.png" height="75" />
+  <img src="/media/work/ulaval/logos/KIT_LOGOS_2016/LOGO_cmjn_FILAIRE.png" height="75" />
+</p>
+
+## AOP: Data update
+
+Since last meeting (= first release of AOP data):
+
+- No major changes calling a v.02 of the release. But:
+- Correction of few bugs and missing details,
+- Addition of averaged profiles.
+
+## AOP: Minor bugs correction
+
+- GE2015.ICMP cruise: **“Hole Type”** from **“NA”** to **“High”** for the first (34) profiles - high snow site was actually sampled from the beginning of the sampling efforts,
+
+- GE2016-AMOW cruise: Three (somehow forgotten) profiles have been processed
+    - GE2016.AMOW_COPS_160630_CAST_003
+	  - GE2016.AMOW_COPS_160701_CAST_003
+	  - GE2016.AMOW_COPS_160706_CAST_002
+
+## AOP: Minor bugs correction
+
+- Ge2016-ICMP cruise: Three (also forgotten!) profiles have been processed:
+    - GE2016.ICMP_ICEP_160606_CAST_001
+	  - GE2016.ICMP_ICEP_160606_CAST_002
+	  - GE2016.ICMP_ICEP_160606_CAST_003
+<br>
+
+- Correction of few errors in the GE2016.AMIS-GE2016.AMOW log files (bad dates and station ID mainly).
+
+## AOP: Addition of averaged profiles
+
+- In addition of originally provided individual profiles, averaged profiles per station have been computed. For the 2015 ice camp data, "high snow" and "low snow" profiles have not been merged during the averaging.
+
+## IOP: data release
+
+- IOP data have just been released. The parameters include all the following, on a 0.25 m depth grid:
+  - "a" (abs. coef.) and "c" (beam att. coef.) interpolated every 5 nm, from approx. 400 to 740 nm,
+  - "bbp" (particle back scattering coef.) at 412, 440, 488, 510, 532, 595, 650, 676, 700, 715, 720, 770 and 870 nm,
+  - temperature and salinity,
+  - CDOM and Chl-a concentration.
+  
+* a LISST-Deep sensor was also used during GE, but corresponding data have not been processed yet...
+* IOP data include ice camp data only. Amundsen based IOP data are processed by UQAR. 
+
+## IOP: data release
+
+- Idem AOP: details on data processing are given in a html doc., called "GE.Optics.IOP.report.html", which can be found on the GE DB. Basically, 2 main things to remember:
+- Data have been cleaned,
+- Data have been averaged.
+
+## IOP: Data cleaning
+
+<center>
+<img src="images/cdom.cleaning.png" height="600" /> 
+</center>
+
+## IOP: Data averaging
+
+<center>
+<img src="images/2016_iop_c.png" height="600" /> 
+</center>
+
+
 ## Toward a new method for estimating underwater light regime under spatially heterogeneous surface environments in the Arctic
 
 <br>
@@ -373,7 +459,7 @@ cowplot::plot_grid(p1, p2, ncol = 2, align = "hv", labels = "AUTO")
 
 ## Preliminary results
 
-Decoupling at higher wavelengths (red region).
+The relationship at higher wavelengths is likely to be affected by the inelastic scattering of water.
 
 <center><img src="../../graphs/compare_ked_klu_d.svg" alt="what image shows" height="500"></center>
 
@@ -385,15 +471,9 @@ Tighter relation in the blue/green regions.
 
 ## Preliminary results
 
-- The relationship in the red is likely to be affected by the fluorescence of Chlorophyll a and the inelastic scattering of water.
+$E_d$ is not influenced by surface heterogeneity.
 
-<br>
-
-- Not a problem because, $E_d$ is rarely influenced by surface heterogeneity due to the rapid absorption.
-
-## Preliminary results
-
-```{r, echo=FALSE, warning=FALSE, fig.align='center', fig.width=10, fig.height=7, dev='svg'}
+```{r, echo=FALSE, warning=FALSE, fig.align='center', fig.width=10, fig.height=6, dev='svg'}
 
 df <- read_feather("../../data/clean/cops.feather") %>% 
   filter(profile_filename == "GE2016.ICMP_ICEP_160620_CAST_006") %>% 
@@ -455,18 +535,6 @@ df %>%
   labs(title = "Downwelling irradiance at 443 nm")
 
 ```
-
-## What is next?
-
-Derived $K_{Ed}$ estimated from $Lu$ profiles are compared with those estimated from inherent optical properties (**IOPs**), not influenced by the surface heterogeneity.
-
-$$
-K_{Ed} \approx \frac{a + b_b}{\mu_d}
-$$
-
-> - $a$ = absorption
-> - $b_b$ = back scattering
-> - $\mu_d$ = the average cosines of downward plane irradiances
 
 ## What is next?
 
