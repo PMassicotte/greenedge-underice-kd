@@ -27,6 +27,8 @@ mud <-
 
 mud
 
+write_feather(mud, "data/clean/mud_camlum.feather")
+
 # Plot --------------------------------------------------------------------
 
 color <- lapply(unique(mud$wavelength), wavelength_to_rgb) %>% unlist()
