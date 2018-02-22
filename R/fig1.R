@@ -48,3 +48,4 @@ p <- df %>%
   scale_color_manual(values = color)
 
 ggsave("graphs/fig1.pdf", device = cairo_pdf, height = 3, width = 6)  
+
