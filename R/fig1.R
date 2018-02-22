@@ -26,19 +26,17 @@ mylabel <- c(
   luz = "Upwelling radiance (Lu)"
 )
 
-p <- df %>% 
+p1 <- df %>% 
   drop_na() %>% 
+  filter(type == "edz") %>% 
   ggplot(aes(light, depth, color = factor(wavelength))) +
   geom_path() +
   scale_y_reverse() +
   facet_wrap(~type, scales = "free", labeller = labeller(type = mylabel)) +
   ylab("Depth (m)") +
-  xlab(bquote(Light~(mu*W%*%cm^{-2}%*%nm^{-1}))) +
+  xlab(bquote(Ed~(mu*W%*%cm^{-2}%*%nm^{-1}))) +
   labs(color = "Wavelengths (nm)") +
-  theme(legend.position = c(0.99, 0.01),
-        legend.justification = c(1, 0)) +
-  theme(legend.title = element_text(size = 10),
-        legend.text = element_text(size = 8)) +
+  theme(legend.position = "none") +
   guides(color = guide_legend(
     keywidth = 0.15,
     keyheight = 0.15,
@@ -47,5 +45,33 @@ p <- df %>%
   )) +
   scale_color_manual(values = color)
 
-ggsave("graphs/fig1.pdf", device = cairo_pdf, height = 3, width = 6)  
+p2 <- df %>% 
+  drop_na() %>% 
+  filter(type == "luz") %>% 
+  ggplot(aes(light, depth, color = factor(wavelength))) +
+  geom_path() +
+  scale_y_reverse() +
+  facet_wrap(~type, scales = "free", labeller = labeller(type = mylabel)) +
+  ylab("Depth (m)") +
+  xlab(bquote(Lu~(mu*W%*%cm^{-2}%*%nm^{-1}%*%sr^{-1}))) +
+  labs(color = "Wavelengths (nm)") +
+  theme(
+  legend.position = c(0.99, 0.01),
+  legend.justification = c(1, 0)
+) +
+  theme(
+    legend.title = element_text(size = 10),
+    legend.text = element_text(size = 8)
+  ) +
+  guides(color = guide_legend(
+    keywidth = 0.15,
+    keyheight = 0.15,
+    default.unit = "inch",
+    ncol = 2
+  )) +
+  scale_color_manual(values = color)
+
+p <- cowplot::plot_grid(p1, p2, ncol = 2, labels = "AUTO", align = "hv")
+
+ggsave("graphs/fig1.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)  
 
