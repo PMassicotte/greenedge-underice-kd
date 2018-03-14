@@ -4,7 +4,7 @@ This document explains how to use *SimulO* on Linux in parallel.
 
 ## Procedure
 
-- Copy all files using Globus
+- Copy all files using Globus: <https://globus.computecanada.ca/globus-app/transfer>
 - Make SimulOC executable:
 
 ```bash
@@ -27,6 +27,13 @@ Job are run using a bash script that setup SLURM parameters. The following examp
 
 ```bash
 #!/bin/bash
+
+# mail alert at start, end and abortion of execution
+#SBATCH --mail-type=ALL
+
+# send mail to this address
+#SBATCH --mail-user=youremail@email.com
+
 #SBATCH --time=00:02:00
 #SBATCH --account=def-babin
 #SBATCH --ntasks=1
@@ -34,6 +41,18 @@ Job are run using a bash script that setup SLURM parameters. The following examp
 #SBATCH --array=1-8
 
 ./SimulOC Script_SimulOC.seq $SLURM_ARRAY_TASK_ID
+```
+
+The job can be launched using:
+
+```bash
+sbatch job.sh
+```
+
+The queue can be viewed using:
+
+```bash
+squeue -u username
 ```
 
 One can do a simple run to have an idea on how much time should be allocated to each task:
