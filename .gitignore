@@ -5,6 +5,8 @@
 
 data/
 graphs/
+simulo/
+
 *.pdf
 *.png
 *.mp4
