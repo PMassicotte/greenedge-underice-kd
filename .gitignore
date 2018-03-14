@@ -6,6 +6,7 @@
 data/
 graphs/
 simulo/
+doc/*.html
 
 *.pdf
 *.png

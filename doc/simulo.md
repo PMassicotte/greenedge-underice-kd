@@ -23,7 +23,7 @@ ssh username@cedar.computecanada.ca
 
 ### Examples
 
-The following example will launch 8 simulations in parallel. Each task will use 100 MB of memory and up to 2 minutes CPU time.
+Job are run using a bash script that setup SLURM parameters. The following example will launch 8 simulations in parallel. Each task will use 100 MB of memory and up to 2 minutes CPU time.
 
 ```bash
 #!/bin/bash
