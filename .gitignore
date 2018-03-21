@@ -3,7 +3,9 @@
 .RData
 .Ruserdata
 
-data/
+data/clean
+data/shapefiles
+
 graphs/
 simulo/
 doc/*.html
