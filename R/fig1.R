@@ -10,13 +10,13 @@ rm(list = ls())
 
 source("https://gist.githubusercontent.com/friendly/67a7df339aa999e2bcfcfec88311abfc/raw/761a7688fba3668a84b2dfe42a655a1b246ca193/wavelength_to_rgb.R")
 
-cops <- read_feather("data/clean/cops.feather")
+cops <- read_feather("data/clean/cops_wavelength_interpolated.feather")
 
 df <- cops %>% 
   filter(profile_filename == "GE2016.ICMP_ICEP_160620_CAST_006") %>% 
   dplyr::select(depth, wavelength, edz, luz) %>% 
   gather(type, light, -depth, -wavelength) %>% 
-  filter(between(wavelength, 400, 700))
+  filter(wavelength %in% seq(400, 700, by = 20))
 
 color <- lapply(unique(df$wavelength), wavelength_to_rgb) %>% unlist()
 color <- setNames(color, unique(df$wavelength))
@@ -67,7 +67,7 @@ p2 <- df %>%
     keywidth = 0.15,
     keyheight = 0.15,
     default.unit = "inch",
-    ncol = 2
+    ncol = 3
   )) +
   scale_color_manual(values = color)
 

@@ -38,6 +38,15 @@ res2 <- res2 %>%
   group_by(wavelength) %>%
   summarise_if(is.numeric, .funs = funs(mean, sd))
 
+
+# Descriptive stats -------------------------------------------------------
+
+range(res2$r_squared_mean)
+range(res2$luz_mean)
+range(res2$x_intercept_mean)
+
+# Plots -------------------------------------------------------------------
+
 p1 <- res2 %>%
   ggplot(aes(x = wavelength, y = r_squared_mean)) +
   geom_line() +
