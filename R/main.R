@@ -25,7 +25,7 @@ graphics.off()
 ## Set default ggplot2 font size and font familly
 
 loadfonts(quiet = TRUE)
-theme_set(theme_bw(base_size = 12, base_family = "IBM Plex Sans"))
+theme_set(theme_bw(base_size = 12, base_family = "IBM Plex Sans Light"))
 
 # Process AOPs ------------------------------------------------------------
 

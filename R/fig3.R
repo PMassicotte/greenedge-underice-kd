@@ -53,7 +53,7 @@ p1 <- res2 %>%
   geom_point() +
   geom_ribbon(aes(ymin = r_squared_mean - r_squared_sd, ymax = r_squared_mean + r_squared_sd), alpha = 0.25) +
   xlab("Wavelength (nm)") +
-  ylab(bquote(atop("Determination", "coefficient" ~ (R ^ 2)))) +
+  ylab(bquote(atop("Determination", "coefficient" ~ "("*R ^ 2*")"))) +
   scale_x_continuous(breaks = seq(400, 700, by = 50))
 
 p2 <- res2 %>%
@@ -62,7 +62,7 @@ p2 <- res2 %>%
   geom_point() +
   geom_ribbon(aes(ymin = luz_mean - luz_sd, ymax = luz_mean + luz_sd), alpha = 0.25) +
   xlab("Wavelength (nm)") +
-  ylab(bquote(atop(Slope, (mu*W%*%cm^{-2}%*%nm^{-1})))) +
+  ylab(bquote(atop(Slope, "("*mu*W%*%cm^{-2}%*%nm^{-1}*")"))) +
   scale_x_continuous(breaks = seq(400, 700, by = 50))
 
 p3 <- res2 %>%
@@ -71,7 +71,7 @@ p3 <- res2 %>%
   geom_point() +
   geom_ribbon(aes(ymin = x_intercept_mean - x_intercept_sd, ymax = x_intercept_mean + x_intercept_sd), alpha = 0.25) +
   xlab("Wavelength (nm)") +
-  ylab(bquote(atop(Intercept, (mu*W%*%cm^{-2}%*%nm^{-1})))) +
+  ylab(bquote(atop(Intercept, "("*mu*W%*%cm^{-2}%*%nm^{-1}*")"))) +
   scale_x_continuous(breaks = seq(400, 700, by = 50))
 
 p <- cowplot::plot_grid(p1, p2, p3, ncol = 1, labels = "AUTO", align = "hv")

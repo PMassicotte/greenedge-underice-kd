@@ -34,7 +34,7 @@ p1 <- df %>%
   scale_y_reverse() +
   facet_wrap(~type, scales = "free", labeller = labeller(type = mylabel)) +
   ylab("Depth (m)") +
-  xlab(bquote(Ed~(mu*W%*%cm^{-2}%*%nm^{-1}))) +
+  xlab(bquote(Ed~"("*mu*W%*%cm^{-2}%*%nm^{-1}*")")) +
   labs(color = "Wavelengths (nm)") +
   theme(legend.position = "none") +
   guides(color = guide_legend(
@@ -53,7 +53,7 @@ p2 <- df %>%
   scale_y_reverse() +
   facet_wrap(~type, scales = "free", labeller = labeller(type = mylabel)) +
   ylab("Depth (m)") +
-  xlab(bquote(Lu~(mu*W%*%cm^{-2}%*%nm^{-1}%*%sr^{-1}))) +
+  xlab(bquote(Lu~"("*mu*W%*%cm^{-2}%*%nm^{-1}%*%sr^{-1}*")")) +
   labs(color = "Wavelengths (nm)") +
   theme(
   legend.position = c(0.99, 0.01),
