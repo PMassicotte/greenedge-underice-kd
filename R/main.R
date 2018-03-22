@@ -8,6 +8,7 @@
 
 # Setup -------------------------------------------------------------------
 
+library(raster)
 library(extrafont)
 library(tidyverse)
 library(feather)
@@ -18,6 +19,7 @@ library(parallel)
 library(pbapply)
 library(sf)
 library(rnaturalearth)
+library(ggsn)
 
 rm(list = ls())
 graphics.off()

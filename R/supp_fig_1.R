@@ -1,76 +1,44 @@
-# <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>  
-# AUTHOR:       Philippe Massicotte
-#
-# DESCRIPTION:  
-#
-# Supplementary Fig. 1 (Study area).
-# <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
-
 rm(list = ls())
-
-# stere <- "+proj=stere +lat_0=-90 +lat_ts=-71 +lon_0=0 +datum=WGS84 +units=m"
 
 stere <- "+proj=stere +lat_0=90 +lat_ts=70 +lon_0=-45 +k=1 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs"
 
 baffin <- st_read("../green-edge/green-edge/data/shapefiles/baffin/baffin.shp")
-land <- st_read("data/shapefiles/ne_10m_land/ne_10m_land.shp") 
-ocean <- st_read("data/shapefiles/ne_10m_ocean/ne_10m_ocean.shp") 
-
-# test <- rnaturalearth::ne_coastline(scale = "large", returnclass = "sf") %>% 
-#   st_intersection(baffin) %>% 
-#   st_transform(crs = stere)
-# 
-# test %>% 
-#   ggplot() +
-#   geom_sf()
-
-land <- st_transform(land, stere)
-ocean <- st_transform(ocean, stere)
 baffin <- st_transform(baffin, stere)
 
 label <- data_frame(
-  longitude = c(-63.78953, -64.033),
-  latitude = c(67.47973, 67.550),
-  label = c("Ice camp", "Qikiqtarjuaq"),
-  color = c("red", "blue")
-) %>% 
-  st_as_sf(coords = c("longitude", "latitude")) %>% 
-  st_set_crs("+proj=longlat +datum=WGS84 +no_defs") %>% 
-  st_transform(stere) %>% 
-  as.data.frame()
+  longitude = c(-63.78953),
+  latitude = c(67.47973),
+  label = c("Qikiqtarjuaq ice camp")
+) %>%
+  st_as_sf(coords = c("longitude", "latitude")) %>%
+  st_set_crs("+proj=longlat +datum=WGS84 +no_defs") %>%
+  st_transform(stere)
 
-label <- data_frame(
-  longitude = c(-795630.7),
-  latitude = c(-2338551),
-  label = c("Ice camp")
-)
+# data_frame(
+#   longitude = c(-63),
+#   latitude = c(72)
+# ) %>%
+#   st_as_sf(coords = c("longitude", "latitude")) %>%
+#   st_set_crs("+proj=longlat +datum=WGS84 +no_defs") %>%
+#   st_transform(stere)
 
-p <- ggplot() +
-  geom_sf(data = ocean, fill = "#98afd6") +
-  geom_sf(
-    data = land,
-    fill = "gray95",
-    size = 0.05,
-    color = "black"
+p <- ggplot(baffin) +
+  geom_sf(size = 0.1) +
+  theme(panel.grid.major = element_line(size = 0.05, color = "gray90")) +
+  geom_sf(data = label, color = "red") +
+  coord_sf(
+    ylim = c(-3.6e06, -1e06),
+    xlim = c(-2600000, -100000)
   ) +
-  coord_sf(ylim = c(-3.6e06,-1e06),
-           xlim = c(-2600000,-100000)) +
-  geom_text(
-    data = label,
-    aes(
-      x = latitude,
-      y = longitude,
-      label = label
-    )
-  ) +
-  geom_point(
-    data = label,
-    aes(x = longitude, y = latitude),
-    inherit.aes = FALSE,
-    size = 3, 
-    color = "red"
-  ) +
-  theme(axis.title = element_blank())
+  scale_x_continuous(breaks = seq(-90, -30, by = 10)) +
+  scale_y_continuous(breaks = seq(50, 80, by = 3)) +
+  annotate("text", x = -795630.7, y = -2338551, label = "Qikiqtarjuaq ice camp", size = 2.5, vjust = -1, hjust = -0.1, family = "IBM Plex Sans") +
+  annotate("text", x = -2174308, y = -2533284, label = "Hudson Bay", family = "IBM Plex Sans") +
+  annotate("text", x = -76357.57, y = -2184929, label = "Greenland", angle = 90, family = "IBM Plex Sans") +
+  annotate("text", x = -1720983, y = -3435623, label = "Québec", family = "IBM Plex Sans") +
+  annotate("text", x = -607354.6, y = -1915067, label = "Baffin Bay", family = "IBM Plex Sans") +
+  theme(axis.title = element_blank()) +
+  scalebar(x.min = -1720983, x.max = -70357.57, y.min = -3535623, y.max = -1584929, dd2km = FALSE, dist = 100, st.size = 2)
 
 ggsave("graphs/supp_fig_1.pdf")
 embed_fonts("graphs/supp_fig_1.pdf")
