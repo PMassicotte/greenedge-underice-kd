@@ -14,7 +14,7 @@ read_hydrolight <- function(file, variable) {
   df <- readxl::read_excel(file, sheet = variable, skip = 3) %>%
     gather(depth, !!variable, -wavelen) %>%
     mutate_all(as.numeric) %>%
-    janitor::clean_names()
+    janitor::clean_names(case = "old_janitor")
 
   return(df)
 }
@@ -36,14 +36,14 @@ p1a <- df %>%
   facet_wrap(~ depth) +
   geom_abline(color = "red", lty = 2) +
   scale_color_manual(values = color) +
-  labs(title = "Without fluorescence")
+  labs(title = "Without Raman")
 
 p1b <- df %>%
   ggplot(aes(x = kd, y = klu, color = depth)) +
   geom_point() +
   facet_wrap(~ wavelen, scales = "free") +
   geom_abline(color = "red", lty = 2) +
-  labs(title = "Without fluorescence")
+  labs(title = "Without Raman")
 
 # With fluo ---------------------------------------------------------------
 
@@ -63,14 +63,14 @@ p2a <- df %>%
   facet_wrap(~ depth) +
   geom_abline(color = "red", lty = 2) +
   scale_color_manual(values = color) +
-  labs(title = "With fluorescence")
+  labs(title = "With Raman")
 
 p2b <- df %>%
   ggplot(aes(x = kd, y = klu, color = depth)) +
   geom_point() +
   facet_wrap(~ wavelen, scales = "free") +
   geom_abline(color = "red", lty = 2) +
-  labs(title = "With fluorescence")
+  labs(title = "With Raman")
 
 # Save plots --------------------------------------------------------------
 

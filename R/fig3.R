@@ -34,7 +34,7 @@ res2 <- res %>%
 res2 <- res2 %>%
   dplyr::select(profile_filename:r.squared, term, estimate) %>%
   spread(term, estimate) %>%
-  janitor::clean_names() %>%
+  janitor::clean_names(case = "old_janitor") %>%
   group_by(wavelength) %>%
   summarise_if(is.numeric, .funs = funs(mean, sd))
 

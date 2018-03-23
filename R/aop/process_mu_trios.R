@@ -21,7 +21,7 @@ read_trios <- function(file) {
     slice(6:nrow(.))
   
   df <- bind_rows(df_planar, df_scalar) %>% 
-    janitor::clean_names() %>% 
+    janitor::clean_names(case = "old_janitor") %>% 
     mutate(date_time = lubridate::make_datetime(year, month, day, hour, minute, second, tz = "UTC")) %>% 
     mutate(file_name = basename(file)) %>% 
     select(-(year:second)) %>% 

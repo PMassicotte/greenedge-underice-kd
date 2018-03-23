@@ -11,7 +11,7 @@ rm(list = ls())
 source("https://gist.githubusercontent.com/friendly/67a7df339aa999e2bcfcfec88311abfc/raw/761a7688fba3668a84b2dfe42a655a1b246ca193/wavelength_to_rgb.R")
 
 iop <- read_feather("data/raw/iop/IOP.2016.AVG.MEAN.N.d.u.feather") %>% 
-  janitor::clean_names() %>% 
+  janitor::clean_names(case = "old_janitor") %>% 
   filter(up_down == "d") %>% 
   mutate(date = as.Date(lubridate::parse_date_time(date, order = "%Y%j")))
 

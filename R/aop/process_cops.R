@@ -12,10 +12,10 @@ library(parallel)
 
 read_cops <- function(file) {
   
-  # file <- "/media/work/projects/greenedge-icecamp-physic/data/raw/cops/2016/RES.EXCEL/GE2016.ICMP_ICEP_160504_CAST_002/d.fit.v.01.txt"
+  # file <- "/media/work/projects/greenedge-icecamp-physic/data/raw/cops/2016/RES.EXCEL/GE2016.ICMP_ICEP_160504_CAST_002/u.fit.v.01.txt"
   
   df <- data.table::fread(file, na.strings = "-999") %>%
-    janitor::clean_names() %>% 
+    janitor::clean_names(case = "old_janitor") %>% 
     select(depth = contains("depth"), everything()) %>% 
     mutate(posixct_date_utc = lubridate::parse_date_time(posixct_date_utc, orders = "Ymd HMS", tz = "UTC")) %>% 
     select(-(year_utc:second_utc), -contains("ed0"), -contains("par")) %>%  

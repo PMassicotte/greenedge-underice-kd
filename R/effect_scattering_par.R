@@ -19,7 +19,7 @@ read_hydrolight <- function(file, variable) {
     gather(depth, !!variable, -wavel) %>%
     filter(!grepl("air", depth)) %>%
     mutate_all(as.numeric) %>%
-    janitor::clean_names() %>%
+    janitor::clean_names(case = "old_janitor") %>%
     mutate(file_name = basename(file)) %>%
     rename(wavelength = wavel)
 
