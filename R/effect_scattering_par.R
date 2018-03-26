@@ -66,6 +66,14 @@ p1 <- res %>%
 
 ## Models to predict ked from klu
 
+pp <- res %>%
+  ggplot(aes(y = ked, x = klu)) +
+  geom_point() +
+  geom_abline(lty = 2) +
+  facet_wrap(~wavelength, scales = "free") +
+  geom_smooth(method = "lm")
+
+
 res <- res %>%
   group_by(wavelength) %>%
   nest() %>%
@@ -150,3 +158,28 @@ p4 <- res2 %>%
 p <- cowplot::plot_grid(p1, p2, p3, p4, labels = "AUTO")
 
 ggsave("graphs/effect_scattering_par.pdf", device = cairo_pdf, width = 10)
+
+
+# Absolute difference -----------------------------------------------------
+
+p1 <- res2 %>% 
+  unnest(data) %>% 
+  mutate(ed_difference = e_pred_estimated_ked - e_pred_true_ked) %>%  
+  ggplot(aes(x = wavelength, y = ed_difference)) +
+  geom_line() +
+  facet_wrap(~depth, scales = "free") +
+  labs(title = "Absolute difference between Ed_estimated - Ed_true (variable Y scale)",
+       subtitle = "Each plot corresponds to a specific depth")
+
+p2 <- res2 %>% 
+  unnest(data) %>% 
+  mutate(ed_difference = e_pred_estimated_ked - e_pred_true_ked) %>%  
+  ggplot(aes(x = wavelength, y = ed_difference)) +
+  geom_line() +
+  facet_wrap(~depth) +
+  labs(title = "Absolute difference between Ed_estimated - Ed_true (fixed Y scale)",
+       subtitle = "Each plot corresponds to a specific depth")
+
+p <- cowplot::plot_grid(p1, p2, ncol = 1, align = "hv", labels = "AUTO")
+
+ggsave("graphs/effect_scattering_absolute_difference.pdf", device = cairo_pdf, width = 16, height = 16)
