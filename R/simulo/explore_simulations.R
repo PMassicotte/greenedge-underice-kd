@@ -8,11 +8,27 @@
 
 rm(list = ls())
 
+source("R/simulo/tidy_simulo.R")
+
 simulo <- read_feather("data/clean/simulo/compute-canada/simulo.feather")
 
 simulo <- simulo %>%
   mutate(source = ifelse(source == "radiance", "Lu", "Ed")) %>% 
   filter(pixel_distance_to_center <= 50) ## il ne faut pas représenter les profils au delà de 50m du centre car on est alors soumis aux effets de bord.
+
+# load("data/clean/simulo/edouard/SimulKd_NoMeltP_150m.RData")
+# no_melt_pond <- tidy_simulo(DataS)
+# 
+# no_melt_pond %>%
+#   filter(y == 125) %>%
+#   group_by(source, depth, pixel_distance_to_center) %>% 
+#   summarise(value = mean(value)) %>% 
+#   ggplot(aes(x = pixel_distance_to_center, y = value, color = factor(depth), group = depth)) +
+#   geom_path() +
+#   facet_wrap(~source, scales = "free") +
+#   scale_x_continuous(breaks = seq(0, 125, by = 10))
+
+## With the previous graph, we could go up to 80 meters
 
 # Raster by depth ---------------------------------------------------------
 
@@ -29,7 +45,6 @@ p <- simulo %>%
   labs(subtitle = "For visualization, data have been normalized (mean(value)) / sd(value))")
 
 ggsave("graphs/simulo_simulation.pdf", device = cairo_pdf, width = 7, height = 46)
-
 
 # 2D plot -----------------------------------------------------------------
 
