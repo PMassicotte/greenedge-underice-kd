@@ -47,6 +47,10 @@ source("R/iop/process_iop.R")
 source("R/iop/interpolate_iop.R")
 source("R/iop/iop2ked.R")
 
+# Simulo ------------------------------------------------------------------
+
+# source("R/simulo/process_simulo.R") ## Takes 2-3 hours
+
 # Analysis ----------------------------------------------------------------
 
 # TODO

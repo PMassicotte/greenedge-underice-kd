@@ -8,6 +8,7 @@ data/shapefiles
 
 graphs/
 simulo/
+!R/simulo
 doc/*.html
 
 *.pdf
