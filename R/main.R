@@ -50,6 +50,8 @@ source("R/iop/iop2ked.R")
 # Simulo ------------------------------------------------------------------
 
 # source("R/simulo/process_simulo.R") ## Takes 2-3 hours
+source("R/simulo/explore_simulations.R")
+source("R/simulo/simulo_compare_ed_melt_pond_and_open_water.R")
 
 # Analysis ----------------------------------------------------------------
 
