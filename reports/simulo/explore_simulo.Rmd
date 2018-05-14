@@ -1,0 +1,43 @@
+---
+title: "Exploration of SimulO data"
+output: html_document
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+In the following graphs, I present the simulation data generated with SimulO.
+
+## Spatial overview
+
+```{r, out.width=1024, out.height=800}
+knitr::include_graphics("../../graphs/simulo/simulo_2d_cut.pdf")
+```
+
+```{r, out.width=1024, out.height=800}
+knitr::include_graphics("../../graphs/simulo/simulo_simulation.pdf")
+```
+
+## Light attenuation profiles
+
+```{r, out.width=1024, out.height=800}
+knitr::include_graphics("../../graphs/simulo/001_simulo_averaged_ed_lu.pdf")
+```
+
+Same as previous but with data normalized. 
+
+```{r, out.width=1024, out.height=800}
+knitr::include_graphics("../../graphs/simulo/002_simulo_averaged_normalized_ed_lu_1.pdf")
+```
+
+```{r, out.width=1024, out.height=800}
+knitr::include_graphics("../../graphs/simulo/003_simulo_averaged_normalized_ed_lu_2.pdf")
+```
+
+In this graph, I check how K values change with increasing distance to the centre of the melt pond.
+
+```{r, out.width=1024, out.height=800}
+knitr::include_graphics("../../graphs/simulo/004_simulo_k_ed_lu_distance.pdf")
+```
