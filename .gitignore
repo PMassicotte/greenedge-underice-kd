@@ -9,13 +9,13 @@ data/shapefiles
 graphs/
 simulo/
 !R/simulo
-doc/*.html
 
 *.pdf
 *.png
 *.mp4
 *.jpg
 
+!README_files/*.png
 
 # Created by https://www.gitignore.io/api/latex
 
