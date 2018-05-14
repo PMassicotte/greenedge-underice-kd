@@ -3,4 +3,5 @@ Kd underice project
 
 ## Links
 
-[SimulO report](doc/simulo.html) (right click and save as…)
+[SimulO report](reports/simulo/explore_simulo.html) (right click and
+save as…)
