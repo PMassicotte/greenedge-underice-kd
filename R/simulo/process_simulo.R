@@ -19,5 +19,5 @@ files <- files[file.size(files) > 10000000] ## Found 1 file that seems to be cor
 data <- MergeSimulO(files)
 df <- tidy_simulo(data)
 
-saveRDS(data, file = "data/clean/simulo/compute-canada/simulo.rds")
-write_feather(df, "data/clean/simulo/compute-canada/simulo.feather")
+saveRDS(data, file = "data/clean/simulo/compute-canada/simulo_45degrees.rds")
+write_feather(df, "data/clean/simulo/compute-canada/simulo_45degrees.feather")

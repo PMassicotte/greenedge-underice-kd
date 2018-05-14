@@ -44,7 +44,7 @@ p <- simulo %>%
   labs(title = "SimulO simulations under melt pond (86 billions photons)") +
   labs(subtitle = "For visualization, data have been normalized (mean(value)) / sd(value))")
 
-ggsave("graphs/simulo_simulation.pdf", device = cairo_pdf, width = 7, height = 46)
+ggsave("graphs/simulo/simulo_simulation.pdf", device = cairo_pdf, width = 7, height = 46)
 
 # 2D plot -----------------------------------------------------------------
 
@@ -73,7 +73,7 @@ p <- df %>%
   labs(subtitle = "For each panel, data have been normalized to its maximum (value = value / max(value))")
 # stat_contour(aes(colour = ..level..), breaks = brks, size = 0.1)
 
-ggsave("graphs/simulo_2d_cut.pdf", width = 10, height = 6, device = cairo_pdf)
+ggsave("graphs/simulo/simulo_2d_cut.pdf", width = 10, height = 6, device = cairo_pdf)
 
 # Ed and Lu profiles ------------------------------------------------------
 
@@ -121,4 +121,4 @@ p3 <- avg %>%
 
 p <- cowplot::plot_grid(p1, p2, p3, ncol = 1, labels = "AUTO")
 
-ggsave("graphs/simulo_ed_lu_profiles.pdf", device = cairo_pdf, height = 12)
+ggsave("graphs/simulo/simulo_ed_lu_profiles.pdf", device = cairo_pdf, height = 12)
