@@ -1,7 +1,15 @@
 ---
 title: "Exploration of SimulO data"
-output: html_document
 date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    theme: united
+    highlight: tango
+    df_print: paged
+  
+bibliography: /home/pmassicotte/Documents/library.bib
 ---
 
 ```{r setup, include=FALSE}
@@ -36,8 +44,54 @@ knitr::include_graphics("../../graphs/simulo/002_simulo_averaged_normalized_ed_l
 knitr::include_graphics("../../graphs/simulo/003_simulo_averaged_normalized_ed_lu_2.pdf")
 ```
 
-In this graph, I check how K values change with increasing distance to the centre of the melt pond.
+In this graph, I check how K values change with increasing distance to the center of the melt pond.
 
 ```{r, out.width=1024, out.height=800}
 knitr::include_graphics("../../graphs/simulo/004_simulo_k_ed_lu_distance.pdf")
+```
+
+## Effect of melt pond size on K estimations
+
+In this section, we evaluate the effect of varying melt pond size on predicted light (both Ed and Lu). 
+
+### Average light profiles
+
+First, I calculate averaged light profiles based 5 different classes of distance from the center of the melt pond. The colored lines in the following graph will be used as reference profiles from which the light intensity at 0.5 meters will be propagated in the water column.
+
+```{r, out.width=1024, out.height=800}
+knitr::include_graphics("../../graphs/simulo/simulo_averaged_light_profiles_by_distance_range_01.pdf")
+```
+
+This graph is just another view of the reference profiles.
+
+```{r, out.width=1024, out.height=800}
+knitr::include_graphics("../../graphs/simulo/simulo_averaged_light_profiles_by_distance_range_02.pdf")
+```
+
+### K estimations
+
+To calculate K, I binned SimulO data into 15 bins of 1 meter starting at 5 meters from the center of the melt pond. Then I used these 30 light profiles (15 Ed and 15 Lu) to propagate Ed from the 5 reference profiles.
+
+```{r, out.width=1024, out.height=800}
+knitr::include_graphics("../../graphs/simulo/simulo_averaged_light_profiles_calculated_k_01.pdf")
+```
+
+```{r, out.width=1024, out.height=2048}
+knitr::include_graphics("../../graphs/simulo/simulo_averaged_light_profiles_calculated_k_02.pdf")
+```
+
+### Light propagation
+
+Finally, I propagate reference profiles from light intensity estimated at 0.5 meters using previously calculated KEd and KLu. 
+
+```{r, out.width=1024, out.height=1024}
+knitr::include_graphics("../../graphs/simulo/simulo_propagated_light_profiles.pdf")
+```
+
+### Errors on predictions
+
+Errors of the predictions have been calculating by the relative difference between the integral of the reference and predicted profiles ((reference - predicted) / reference).
+
+```{r, out.width=1024, out.height=600}
+knitr::include_graphics("../../graphs/simulo/simulo_propagated_light_errors.pdf")
 ```
