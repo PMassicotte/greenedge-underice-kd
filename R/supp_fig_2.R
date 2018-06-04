@@ -1,42 +1,79 @@
+# <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+# AUTHOR:       Philippe Massicotte
+#
+# DESCRIPTION:
+#
+# Figure showing the average R2, slope and intercept of the regressions between
+# Edz and Luz.
+# <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+
 rm(list = ls())
 
-# Plot ked vs klu ---------------------------------------------------------
+df <- read_feather("data/clean/cops_wavelength_interpolated.feather") %>%
+  filter(between(wavelength, 400, 700)) %>%
+  filter(depth >= 10) %>%
+  group_by(profile_filename, wavelength) %>%
+  mutate_at(.vars = vars(edz, luz), funs(. / .[depth == 10])) %>%
+  drop_na(depth, edz, luz)
 
-k <- read_feather("data/clean/k_cops.feather")
+res <- df %>%
+  group_by(profile_filename, wavelength) %>%
+  nest() %>%
+  mutate(mod = map(data, ~lm(edz ~ luz, data = .))) %>%
+  mutate(glance = map(mod, broom::glance)) %>%
+  mutate(tidy = map(mod, broom::tidy))
 
-r2_threshold <- 0.99
+# res$data[[1156]] %>%
+#   ggplot(aes(x = edz, y = luz)) +
+#   geom_point()
 
-k2 <- k %>%
-  filter(r2 >= r2_threshold & k > 0) %>% 
-  unite(depth_range, start_depth, end_depth, remove = FALSE, sep = "-") %>% 
-  dplyr::select(profile_filename, depth_range, type, wavelength, k) %>% 
-  spread(type, k) %>% 
-  rename(ked = edz, klu = luz) %>% 
-  drop_na(ked, klu)
+res2 <- res %>%
+  unnest(glance) %>%
+  unnest(tidy)
 
-formula <- y ~ x
+res2 <- res2 %>%
+  dplyr::select(profile_filename:r.squared, term, estimate) %>%
+  spread(term, estimate) %>%
+  janitor::clean_names(case = "old_janitor") %>%
+  group_by(wavelength) %>%
+  summarise_if(is.numeric, .funs = funs(mean, sd))
 
-p <- k2 %>% 
-  ggplot(aes(x = klu, y = ked)) +
-  geom_point(aes(color = depth_range), size = 1) +
-  geom_smooth(method = "lm") +
-  geom_abline(slope = 1, intercept = 0, lty = 2, color = "grey50") +
-  xlab(bquote(K[Lu]~(m^{-1}))) +
-  ylab(bquote(K[Ed]~(m^{-1}))) +
-  labs(color = "Depth (m)") +
-  guides(color = guide_legend(
-    keywidth = 0.2,
-    keyheight = 0.2,
-    default.unit = "inch",
-    ncol = 1
-  )) +
-  stat_poly_eq(
-    aes(label =  paste(..eq.label.., ..rr.label.., sep = "~~~~")),
-    formula = formula,
-    parse = TRUE,
-    label.x.npc = "right",
-    label.y.npc = "bottom",
-    vjust = 0.25
-  )
 
-ggsave("graphs/supp_fig_2.pdf", device = cairo_pdf, width = 6, height = 4)
+# Descriptive stats -------------------------------------------------------
+
+range(res2$r_squared_mean)
+range(res2$luz_mean)
+range(res2$x_intercept_mean)
+
+# Plots -------------------------------------------------------------------
+
+p1 <- res2 %>%
+  ggplot(aes(x = wavelength, y = r_squared_mean)) +
+  geom_line() +
+  geom_point() +
+  geom_ribbon(aes(ymin = r_squared_mean - r_squared_sd, ymax = r_squared_mean + r_squared_sd), alpha = 0.25) +
+  xlab("Wavelength (nm)") +
+  ylab(bquote(atop("Determination", "coefficient" ~ "("*R ^ 2*")"))) +
+  scale_x_continuous(breaks = seq(400, 700, by = 50))
+
+p2 <- res2 %>%
+  ggplot(aes(x = wavelength, y = luz_mean)) +
+  geom_line() +
+  geom_point() +
+  geom_ribbon(aes(ymin = luz_mean - luz_sd, ymax = luz_mean + luz_sd), alpha = 0.25) +
+  xlab("Wavelength (nm)") +
+  ylab(bquote(atop(Slope, "("*mu*W%*%cm^{-2}%*%nm^{-1}*")"))) +
+  scale_x_continuous(breaks = seq(400, 700, by = 50))
+
+p3 <- res2 %>%
+  ggplot(aes(x = wavelength, y = x_intercept_mean)) +
+  geom_line() +
+  geom_point() +
+  geom_ribbon(aes(ymin = x_intercept_mean - x_intercept_sd, ymax = x_intercept_mean + x_intercept_sd), alpha = 0.25) +
+  xlab("Wavelength (nm)") +
+  ylab(bquote(atop(Intercept, "("*mu*W%*%cm^{-2}%*%nm^{-1}*")"))) +
+  scale_x_continuous(breaks = seq(400, 700, by = 50))
+
+# p <- cowplot::plot_grid(p1, p2, p3, ncol = 1, labels = "AUTO", align = "hv")
+ggsave("graphs/supp_fig_2.pdf", p1, width = 3 * 1.61803398875, height = 3, device = cairo_pdf)
+
