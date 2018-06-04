@@ -6,11 +6,12 @@ simulo <-
   filter(pixel_distance_to_center <= 50)
 
 reference_profile <- simulo %>%
-  mutate(class_0_50 = as.character(cut(pixel_distance_to_center, breaks = c(0, 50), include.lowest = TRUE, right = TRUE))) %>%
-  mutate(class_0_40 = as.character(cut(pixel_distance_to_center, breaks = c(0, 40), include.lowest = TRUE, right = TRUE))) %>%
-  mutate(class_0_30 = as.character(cut(pixel_distance_to_center, breaks = c(0, 30), include.lowest = TRUE, right = TRUE))) %>%
-  mutate(class_0_20 = as.character(cut(pixel_distance_to_center, breaks = c(0, 20), include.lowest = TRUE, right = TRUE))) %>%
-  mutate(class_0_10 = as.character(cut(pixel_distance_to_center, breaks = c(0, 10), include.lowest = TRUE, right = TRUE)))
+  mutate(class_25_percent = as.character(cut(pixel_distance_to_center, breaks = c(0, sqrt(25 / 0.25)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
+  mutate(class_20_percent = as.character(cut(pixel_distance_to_center, breaks = c(0, sqrt(25 / 0.20)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
+  mutate(class_15_percent = as.character(cut(pixel_distance_to_center, breaks = c(0, sqrt(25 / 0.15)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
+  mutate(class_10_percent = as.character(cut(pixel_distance_to_center, breaks = c(0, sqrt(25 / 0.10)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
+  mutate(class_05_percent = as.character(cut(pixel_distance_to_center, breaks = c(0, sqrt(25 / 0.05)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
+  mutate(class_01_percent = as.character(cut(pixel_distance_to_center, breaks = c(0, sqrt(25 / 0.01)), include.lowest = TRUE, right = TRUE, dig.lab = 5)))
 
 # unique(reference_profile$class_0_40)
 
@@ -29,11 +30,12 @@ reference_profile <- reference_profile %>%
 ## Calculate % of cover
 
 cover <- c(
-  "[0,10]" = "0-10 meters (25.00%)",
-  "[0,20]" = "0-20 meters (6.25%)",
-  "[0,30]" = "0-30 meters (2.78%)",
-  "[0,40]" = "0-40 meters (1.56%)",
-  "[0,50]" = "0-50 meters (1.00%)"
+  "[0,10]" = "0-10.00 meters (25%)",
+  "[0,11.18]" = "0-11.18 meters (20%)",
+  "[0,12.91]" = "0-12.91 meters (15%)",
+  "[0,15.811]" = "0-15.811 meters (10%)",
+  "[0,22.361]" = "0-22.361 meters (5%)",
+  "[0,50]" = "0-50.00 meters (1%)"
 )
 
 reference_profile <- reference_profile %>%
@@ -68,15 +70,15 @@ averaged_simulo <- simulo %>%
 
 ## Calculate K only starting at 5 meters (ice ridge)
 averaged_simulo <- averaged_simulo %>%
-  filter(between(mid_distance, 5, 20))
+  filter(between(mid_distance, 5, 50))
 
 p <- averaged_simulo %>%
   ggplot(aes(x = value, y = depth, color = factor(mid_distance))) +
   geom_path() +
   facet_wrap(~ source, scales = "free") +
   scale_y_reverse() +
-  labs(color = str_wrap("Distance from the center of the melt pond (mid distance, meters)", 15)) +
-  guides(col = guide_legend(ncol = 2)) +
+  labs(color = str_wrap("Distance from the center of the melt pond (mid distance, meters)", 25)) +
+  guides(col = guide_legend(ncol = 3)) +
   theme(legend.title = element_text(size = 8), legend.text = element_text(size = 6)) +
   theme(legend.key.size = unit(0.75, "lines")) +
   scale_x_continuous(labels = scales::scientific) +
@@ -139,7 +141,9 @@ p <- reference_profile %>%
   labs(color = str_wrap("Distance from the center of the melt pond (meters)", 15)) +
   scale_x_continuous(labels = scales::scientific) +
   ylab("Depth (m)") +
-  xlab("Number of photons") 
+  xlab("Number of photons") +
+  theme(strip.text.y = element_text(size = 8)) +
+  guides(col = guide_legend(ncol = 2))
 
 ggsave("graphs/fig8.pdf", plot = p, device = cairo_pdf, height = 9, width = 7)
 
@@ -166,7 +170,7 @@ p <- res %>%
   mutate(relative_error = (reference - predicted) / reference) %>%
   ggplot(aes(x = mid_distance, y = relative_error, color = range)) +
   geom_line() +
-  geom_point(show.legend = FALSE) +
+  # geom_point(show.legend = FALSE) +
   facet_wrap(~ source, labeller = labeller(source = labels)) +
   scale_y_continuous(labels = scales::percent, breaks = seq(-1, 1, by = 0.1)) +
   xlab("Distance from ice ridge (meters)") +
