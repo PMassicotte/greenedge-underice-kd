@@ -1,0 +1,55 @@
+\documentclass[12pt,a4paper]{scrartcl}
+    \usepackage[utf8]{inputenc}
+    \usepackage{amsmath}
+    \usepackage{amsfonts}
+    \usepackage{amssymb}
+    \usepackage{graphicx}
+
+    \usepackage[bottom = 1in, left = 0.5in, right = 0.5in, top = 1in]{geometry}
+
+    \usepackage[english]{babel}
+    \usepackage[autostyle]{csquotes}
+    \usepackage{mathptmx}
+
+    \usepackage[labelfont=bf]{caption}
+
+    \usepackage[default, scale=0.95]{opensans}
+
+    \usepackage[T1]{fontenc}
+
+    \usepackage{fixltx2e}
+
+    \addto\captionsenglish{\renewcommand{\figurename}{Supplementary Fig.}}
+    \addto\captionsenglish{\renewcommand{\tablename}{Supplementary Table}}
+
+    \title{Appendix}
+    \date{}
+
+    \begin{document}
+\maketitle
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 0.75]{../../../graphs/supp_fig_1.pdf}
+	\caption{Study site.}
+\end{figure}
+
+\clearpage
+\newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/supp_fig_2.pdf}
+	\caption{Average determination coefficients ($R^2$) and standard deviation (shaded area) of the regressions between normalized Ed and Lu profiles between 400 and 700 nm. At each wavelengths, average values were computed from 86 COPS measurements where the first 10 meters removed. Sharp decrease of $R^2$ occurred at after 575 nm, suggesting a gradual decoupling between Ed and Lu profiles at higher wavelengths.}
+\end{figure}
+	
+\clearpage
+\newpage
+	
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/supp_fig_3.pdf}
+	\caption{Scatter plots showing the relationships between downwelling irradiance (Ed) and upwelling radiance (Lu) between 400 and 700 nm. Blue lines and shaded areas represent respectively the regressions lines and the confidence intervals of the fitted linear models. Dotted lines are the 1:1 lines.}
+\end{figure}
+	
+\end{document}
