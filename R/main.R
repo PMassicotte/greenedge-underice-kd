@@ -64,7 +64,7 @@ rmarkdown::render("reports/simulo/explore_simulo.Rmd")
 source("R/fig1.R")
 source("R/fig2.R")
 source("R/fig3.R")
-source("R/fig4.R")
+source("R/fig5.R")
 
 source("R/supp_fig_1.R")
 source("R/supp_fig_2.R")
