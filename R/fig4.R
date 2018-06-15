@@ -51,3 +51,23 @@ p <- ggplot() +
   ))
 
 ggsave("graphs/fig4.pdf", device = cairo_pdf, width = 5, height = 5)
+
+
+# Panel A showing transmittance -------------------------------------------
+
+r <- c(5, 50)
+
+sampling_circle <- map(r, circle) %>%
+  set_names(c(0.4, 0.75)) %>%
+  bind_rows(.id = "transmittance") %>%
+  mutate(transmittance = parse_number(transmittance))
+
+sampling_circle %>% 
+  ggplot() +
+  geom_raster(aes(x = x, y = y), fill = "red") +
+  coord_equal() +
+  labs(fill = "") +
+  labs(color = "Sampling\ndistance (m)") +
+  xlab("x-distance (m)") +
+  ylab("y-distance (m)") 
+

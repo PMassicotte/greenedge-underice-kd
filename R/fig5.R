@@ -1,14 +1,12 @@
-# <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
+# <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>  
 # AUTHOR:       Philippe Massicotte
 #
-# DESCRIPTION:
+# DESCRIPTION:  
 #
-# Figure showing a 2D cut of light regime.
+# 2D plan of irradiance and radiance.
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
 rm(list = ls())
-
-source("R/simulo/tidy_simulo.R")
 
 simulo <- read_feather("data/clean/simulo/compute-canada/simulo_45degrees.feather")
 
@@ -16,23 +14,35 @@ simulo <- simulo %>%
   mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)")) %>%
   filter(pixel_distance_to_center <= 50) ## il ne faut pas représenter les profils au delà de 50m du centre car on est alors soumis aux effets de bord.
 
-df <- simulo %>%
-  filter(y == 125) %>%
-  group_by(depth, source) %>%
-  mutate(value = value / max(value))
+simulo <- simulo %>%
+  mutate(iso_distance = cut_width(pixel_distance_to_center, width = 0.1)) %>%
+  separate(iso_distance, into = c("start_distance", "end_distance"), sep = ",") %>%
+  mutate_at(vars(start_distance, end_distance), parse_number) %>%
+  mutate(mid_distance = start_distance + (end_distance - start_distance) / 2) %>%
+  group_by(depth, source, mid_distance) %>%
+  summarise(value = mean(value)) %>%
+  ungroup()
 
-df <- df %>%
+df <- simulo %>%
   group_by(source) %>%
   nest() %>%
-  mutate(interpolated = map(data, ~ akima::interp(.$x, .$depth, .$value, nx = 125, ny = 125))) %>%
+  mutate(interpolated = map(data, ~ akima::interp(.$mid_distance, .$depth, .$value, nx = 125, ny = 125))) %>%
   mutate(interpolated = map(interpolated, ~ akima::interp2xyz(., data.frame = TRUE))) %>%
   unnest(interpolated)
 
+df <- df %>%
+  group_by(source) %>%
+  mutate(z = z / max(z))
+
+## Just "mirror" the x-ditances, this makes a better looking plot
+df <- df %>% 
+  bind_rows(mutate(df, x = -x))
+
 p <- df %>%
-  ggplot(aes(x = x - 125, y = y, fill = z, z = z)) +
+  ggplot(aes(x = x, y = y, fill = z, z = z)) +
   geom_raster() +
   scale_y_reverse(expand = c(0, 0), name = "Depth (m)") +
-  scale_fill_viridis_c(limits = c(0.2, 1)) +
+  scale_fill_viridis_c() +
   facet_wrap(~ source) +
   scale_x_continuous(expand = c(0, 0), name = "Horizontal distance (m)") +
   theme(panel.spacing = unit(1, "lines")) +

@@ -30,6 +30,7 @@ p <- df %>%
   geom_path(aes(x = edz, linetype = "Downwelling irradiance (Ed)")) +
   geom_path(aes(x = luz, linetype = "Upwelling radiance (Lu)")) +
   scale_y_reverse(limits = c(NA, 0)) +
+  scale_x_continuous(labels = scales::percent) +
   theme(
     legend.position = c(0.99, -0.05),
     legend.justification = c(1, 0)
@@ -50,7 +51,7 @@ p <- df %>%
   ) +
   scale_color_manual(values = color) +
   facet_wrap(~wavelength, scales = "free", ncol = 3) +
-  xlab("Normalized light (%)") +
+  xlab("Normalized light") +
   ylab("Depth (m)") +
   theme(legend.box = "horizontal")
 

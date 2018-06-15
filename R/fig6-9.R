@@ -1,17 +1,32 @@
 rm(list = ls())
 
-simulo <-
-  read_feather("data/clean/simulo/compute-canada/simulo_45degrees.feather") %>%
+# simulo <-
+#   read_feather("data/clean/simulo/compute-canada/simulo_45degrees.feather") %>%
+#   mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)")) %>%
+#   filter(pixel_distance_to_center <= 50)
+
+simulo <- read_feather("data/clean/simulo/compute-canada/simulo_45degrees.feather")
+
+simulo <- simulo %>%
   mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)")) %>%
-  filter(pixel_distance_to_center <= 50)
+  filter(pixel_distance_to_center <= 50) ## il ne faut pas représenter les profils au delà de 50m du centre car on est alors soumis aux effets de bord.
+
+simulo <- simulo %>%
+  mutate(iso_distance = cut_width(pixel_distance_to_center, width = 0.1)) %>%
+  separate(iso_distance, into = c("start_distance", "end_distance"), sep = ",") %>%
+  mutate_at(vars(start_distance, end_distance), parse_number) %>%
+  mutate(mid_distance = start_distance + (end_distance - start_distance) / 2) %>%
+  group_by(depth, source, mid_distance) %>%
+  summarise(value = mean(value)) %>%
+  ungroup()
 
 reference_profile <- simulo %>%
-  mutate(class_25_percent = as.character(cut(pixel_distance_to_center, breaks = c(0, sqrt(25 / 0.25)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
-  mutate(class_20_percent = as.character(cut(pixel_distance_to_center, breaks = c(0, sqrt(25 / 0.20)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
-  mutate(class_15_percent = as.character(cut(pixel_distance_to_center, breaks = c(0, sqrt(25 / 0.15)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
-  mutate(class_10_percent = as.character(cut(pixel_distance_to_center, breaks = c(0, sqrt(25 / 0.10)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
-  mutate(class_05_percent = as.character(cut(pixel_distance_to_center, breaks = c(0, sqrt(25 / 0.05)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
-  mutate(class_01_percent = as.character(cut(pixel_distance_to_center, breaks = c(0, sqrt(25 / 0.01)), include.lowest = TRUE, right = TRUE, dig.lab = 5)))
+  mutate(class_25_percent = as.character(cut(mid_distance, breaks = c(0, sqrt(25 / 0.25)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
+  mutate(class_20_percent = as.character(cut(mid_distance, breaks = c(0, sqrt(25 / 0.20)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
+  mutate(class_15_percent = as.character(cut(mid_distance, breaks = c(0, sqrt(25 / 0.15)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
+  mutate(class_10_percent = as.character(cut(mid_distance, breaks = c(0, sqrt(25 / 0.10)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
+  mutate(class_05_percent = as.character(cut(mid_distance, breaks = c(0, sqrt(25 / 0.05)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
+  mutate(class_01_percent = as.character(cut(mid_distance, breaks = c(0, sqrt(25 / 0.01)), include.lowest = TRUE, right = TRUE, dig.lab = 5)))
 
 # unique(reference_profile$class_0_40)
 
@@ -43,7 +58,7 @@ reference_profile <- reference_profile %>%
 
 p <- simulo %>%
   ggplot() +
-  geom_path(aes(x = value, y = depth, group = interaction(x, y)), size = 0.1, alpha = 0.1) +
+  geom_path(aes(x = value, y = depth, group = mid_distance), size = 0.1, alpha = 0.5) +
   facet_wrap(~ source, scales = "free") +
   scale_y_reverse() +
   scale_x_continuous(labels = scales::scientific) +
@@ -56,7 +71,17 @@ p <- simulo %>%
 
 ggsave("graphs/fig6.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)
 
+## Some stats for the paper
+
+simulo %>% 
+  group_by(source) %>% 
+  summarise(min(value), max(value))
+
 # Fig 7 -------------------------------------------------------------------
+
+simulo <- read_feather("data/clean/simulo/compute-canada/simulo_45degrees.feather") %>%
+  mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)")) %>%
+  filter(pixel_distance_to_center <= 50)
 
 ## Calculate average light profiles
 averaged_simulo <- simulo %>%
@@ -97,7 +122,25 @@ k <- averaged_simulo_norm %>%
   nest() %>%
   mutate(mod = map(data, ~ minpack.lm::nlsLM(value ~ a0 * exp(-k * depth), data = ., start = list(a0 = 1, k = 0.02)))) %>%
   mutate(k = map_dbl(mod, ~ coef(.)[2])) %>%
-  mutate(pred = map2(data, mod, modelr::add_predictions))
+  mutate(pred = map2(data, mod, modelr::add_predictions)) %>% 
+  mutate(r2 = map2_dbl(mod, data, modelr::rsquare))
+
+## Supplementary figure
+
+k %>% 
+  group_by(source) %>% 
+  summarise_if(is.numeric, funs(min, max))
+
+p <- k %>% 
+  ggplot(aes(x = mid_distance, y = k, color = source)) +
+  geom_point() +
+  geom_line() +
+  xlab("Distance from the ice ridge (meters)") +
+  ylab(bquote("Attenuation coefficient"~(m^{-1}))) +
+  theme(legend.position = c(0.95, 0.05), legend.justification = c(1, 0)) +
+  labs(color = "Source")
+
+ggsave("graphs/supp_fig_4.pdf", width = 3 * 1.61803398875, height = 3, device = cairo_pdf)
 
 ## Propagate light 
 
@@ -134,10 +177,10 @@ labels <- c(
 
 p <- reference_profile %>%
   ggplot(aes(x = value, y = depth)) +
-  geom_path(size = 1) +
   facet_grid(range ~ source, scales = "free", labeller = labeller(source = labels)) +
   scale_y_reverse() +
   geom_path(data = predicted_light, aes(x = predicted_light, color = factor(mid_distance)), size = 0.25) +
+  geom_path(size = 1) +
   labs(color = str_wrap("Distance from the center of the melt pond (meters)", 15)) +
   scale_x_continuous(labels = scales::scientific) +
   ylab("Depth (m)") +
