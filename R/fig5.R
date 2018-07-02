@@ -38,6 +38,11 @@ df <- df %>%
 df <- df %>% 
   bind_rows(mutate(df, x = -x))
 
+iso <- df %>% 
+  crossing(light_proportion = c(0.1, 0.5, 0.9)) %>% 
+  group_by(source, x, light_proportion) %>% 
+  slice(which.min(abs(z - light_proportion)))
+
 p <- df %>%
   ggplot(aes(x = x, y = y, fill = z, z = z)) +
   geom_raster() +
@@ -46,6 +51,11 @@ p <- df %>%
   facet_wrap(~ source) +
   scale_x_continuous(expand = c(0, 0), name = "Horizontal distance (m)") +
   theme(panel.spacing = unit(1, "lines")) +
-  labs(fill = str_wrap("Normalized number of photons", 10))
+  labs(fill = str_wrap("Normalized number of photons", 10)) +
+  geom_path(data = iso, aes(x = x, y = y, group = light_proportion), color = "white", size = 0.05) + 
+  theme(legend.box = "horizontal")
+# +
+#   scale_color_manual(values = c("0.25" = "white", "0.75" = "gray"))
 
 ggsave("graphs/fig5.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)
+

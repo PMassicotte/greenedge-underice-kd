@@ -77,6 +77,11 @@ simulo %>%
   group_by(source) %>% 
   summarise(min(value), max(value))
 
+simulo %>% 
+  filter(depth == 0.5) %>% 
+  group_by(source) %>% 
+  summarise(n = n())
+
 # Fig 7 -------------------------------------------------------------------
 
 simulo <- read_feather("data/clean/simulo/compute-canada/simulo_45degrees.feather") %>%
@@ -211,7 +216,7 @@ res <- left_join(int1, int2, by = c("source", "range")) %>%
 p <- res %>%
   spread(type, integral) %>%
   mutate(relative_error = (reference - predicted) / reference) %>%
-  ggplot(aes(x = mid_distance, y = relative_error, color = range)) +
+  ggplot(aes(x = mid_distance - 5, y = relative_error, color = range)) + # -5 because the radius of the melt pond is 5 meters
   geom_line() +
   # geom_point(show.legend = FALSE) +
   facet_wrap(~ source, labeller = labeller(source = labels)) +
@@ -224,3 +229,19 @@ p <- res %>%
 
 ggsave("graphs/fig9.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)
 
+## Stats for the paper
+
+# res %>%
+#   spread(type, integral) %>% 
+#   mutate(relative_error = (reference - predicted) / reference) %>% 
+#   select(-predicted, -reference) %>% 
+#   spread(source, relative_error) %>% 
+#   janitor::clean_names() %>% 
+#   filter(str_detect(range, "25%|1%")) %>% 
+#   mutate()
+
+res %>% 
+  spread(type, integral) %>%
+  mutate(relative_error = (reference - predicted) / reference) %>% 
+  group_by(source, range) %>% 
+  summarise(mean(relative_error) * 100, sd(relative_error))
