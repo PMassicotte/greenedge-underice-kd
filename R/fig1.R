@@ -1,77 +1,53 @@
-# <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>  
+# <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 # AUTHOR:       Philippe Massicotte
 #
-# DESCRIPTION:  
+# DESCRIPTION:
 #
-# Fig 1 of the article.
+# Geometries of the simulations.
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
 rm(list = ls())
 
-source("https://gist.githubusercontent.com/friendly/67a7df339aa999e2bcfcfec88311abfc/raw/761a7688fba3668a84b2dfe42a655a1b246ca193/wavelength_to_rgb.R")
+circle <- function(radius, angle = seq(0, 2 * pi, length.out = 200)) {
+  tibble(
+    x = radius * cos(angle),
+    y = radius * sin(angle)
+  )
+}
 
-cops <- read_feather("data/clean/cops_wavelength_interpolated.feather")
+r <- c(seq(5.5, 50, by = 5), 50)
 
-df <- cops %>% 
-  filter(profile_filename == "GE2016.ICMP_ICEP_160620_CAST_006") %>% 
-  dplyr::select(depth, wavelength, edz, luz) %>% 
-  gather(type, light, -depth, -wavelength) %>% 
-  filter(wavelength %in% seq(400, 700, by = 20))
+sampling_circle <- map(r, circle) %>%
+  set_names(r) %>%
+  bind_rows(.id = "radius") %>%
+  mutate(radius = parse_number(radius))
 
-color <- lapply(unique(df$wavelength), wavelength_to_rgb) %>% unlist()
-color <- setNames(color, unique(df$wavelength))
+melt_pond <- circle(5)
 
-mylabel <- c(
-  edz = "Downwelling irradiance (Ed)",
-  luz = "Upwelling radiance (Lu)"
-)
+configuration <- map2(sqrt(25 / c(0.25, 0.20, 0.15, 0.10, 0.05, 0.01)), seq(0, pi / 2, length.out = 6), circle) %>%
+  set_names(c(0.25, 0.20, 0.15, 0.10, 0.05, 0.01)) %>%
+  bind_rows(.id = "radius") %>%
+  mutate(radius = parse_number(radius))
 
-p1 <- df %>% 
-  drop_na() %>% 
-  filter(type == "edz") %>% 
-  ggplot(aes(light, depth, color = factor(wavelength))) +
-  geom_path() +
-  scale_y_reverse() +
-  facet_wrap(~type, scales = "free", labeller = labeller(type = mylabel)) +
-  ylab("Depth (m)") +
-  xlab(bquote(Ed~"("*mu*W%*%cm^{-2}%*%nm^{-1}*")")) +
-  labs(color = "Wavelengths (nm)") +
-  theme(legend.position = "none") +
+p <- ggplot() +
+  geom_path(data = sampling_circle, aes(x = x, y = y, color = factor(radius)), size = 0.25) +
+  geom_polygon(data = melt_pond, aes(x = x, y = y, fill = "Melt pond")) +
+  scale_x_continuous(limits = c(-50, 50)) +
+  scale_y_continuous(limits = c(-50, 50)) +
+  scale_fill_manual(values = c("Melt pond" = "#36454F")) +
+  # scale_color_brewer(palette = "BuPu") +
+  coord_equal() +
+  labs(fill = "") +
+  labs(color = "Sampling\ndistance (m)") +
+  xlab("x-distance (m)") +
+  ylab("y-distance (m)") +
+  geom_segment(data = configuration, aes(x = 0, y = 0, xend = x, yend = y, group = radius), size = 0.25) +
+  geom_label(data = configuration, aes(x = x, y = y, label = sprintf("%2.2f%% melt pond cover", radius * 100)), hjust = 0, label.size = 0, nudge_x = 1, size = 2, label.padding = unit(0.05, "lines")) +
   guides(color = guide_legend(
     keywidth = 0.15,
     keyheight = 0.15,
     default.unit = "inch",
-    ncol = 2
-  )) +
-  scale_color_manual(values = color)
+    ncol = 1
+  ))
 
-p2 <- df %>% 
-  drop_na() %>% 
-  filter(type == "luz") %>% 
-  ggplot(aes(light, depth, color = factor(wavelength))) +
-  geom_path() +
-  scale_y_reverse() +
-  facet_wrap(~type, scales = "free", labeller = labeller(type = mylabel)) +
-  ylab("Depth (m)") +
-  xlab(bquote(Lu~"("*mu*W%*%cm^{-2}%*%nm^{-1}%*%sr^{-1}*")")) +
-  labs(color = "Wavelengths (nm)") +
-  theme(
-  legend.position = c(0.99, 0.01),
-  legend.justification = c(1, 0)
-) +
-  theme(
-    legend.title = element_text(size = 10),
-    legend.text = element_text(size = 8)
-  ) +
-  guides(color = guide_legend(
-    keywidth = 0.15,
-    keyheight = 0.15,
-    default.unit = "inch",
-    ncol = 3
-  )) +
-  scale_color_manual(values = color)
-
-p <- cowplot::plot_grid(p1, p2, ncol = 2, labels = "AUTO", align = "hv")
-
-ggsave("graphs/fig1.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)  
-
+ggsave("graphs/fig1.pdf", device = cairo_pdf, width = 5, height = 5)
