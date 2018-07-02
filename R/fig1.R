@@ -39,8 +39,8 @@ p <- ggplot() +
   coord_equal() +
   labs(fill = "") +
   labs(color = "Sampling\ndistance (m)") +
-  xlab("x-distance (m)") +
-  ylab("y-distance (m)") +
+  xlab("x-distance (meters)") +
+  ylab("y-distance (meters)") +
   geom_segment(data = configuration, aes(x = 0, y = 0, xend = x, yend = y, group = radius), size = 0.25) +
   geom_label(data = configuration, aes(x = x, y = y, label = sprintf("%2.2f%% melt pond cover", radius * 100)), hjust = 0, label.size = 0, nudge_x = 1, size = 2, label.padding = unit(0.05, "lines")) +
   guides(color = guide_legend(

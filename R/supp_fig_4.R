@@ -39,4 +39,4 @@ p <- k2 %>%
     vjust = 0.25
   )
 
-ggsave("graphs/supp_fig_3.pdf", device = cairo_pdf, width = 6, height = 4)
+# ggsave("graphs/supp_fig_4.pdf", device = cairo_pdf, width = 6, height = 4)

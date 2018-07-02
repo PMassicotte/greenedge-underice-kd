@@ -125,7 +125,7 @@ p <- k2 %>%
   ))  +
   scale_x_continuous(breaks = equal_breaks(n = 3, s = 0.05))
 
-ggsave("graphs/supp_fig_3.pdf", device = cairo_pdf, height = 8, width = 7)
+# ggsave("graphs/supp_fig_3.pdf", device = cairo_pdf, height = 8, width = 7)
 
 # Table -------------------------------------------------------------------
 

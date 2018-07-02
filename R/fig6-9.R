@@ -137,7 +137,7 @@ k %>%
   summarise_if(is.numeric, funs(min, max))
 
 p <- k %>% 
-  ggplot(aes(x = mid_distance, y = k, color = source)) +
+  ggplot(aes(x = mid_distance - 5, y = k, color = source)) +
   geom_point() +
   geom_line() +
   xlab("Distance from the ice ridge (meters)") +
