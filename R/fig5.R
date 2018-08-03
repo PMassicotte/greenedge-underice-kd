@@ -8,7 +8,7 @@
 
 rm(list = ls())
 
-simulo <- read_feather("data/clean/simulo/compute-canada/simulo_45degrees.feather")
+simulo <- read_feather("data/clean/simulo/compute-canada/simulo.feather")
 
 simulo <- simulo %>%
   mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)")) %>%
@@ -38,11 +38,23 @@ df <- df %>%
 df <- df %>% 
   bind_rows(mutate(df, x = -x))
 
-iso <- df %>% 
-  crossing(light_proportion = c(0.1, 0.5, 0.9)) %>% 
-  group_by(source, x, light_proportion) %>% 
-  slice(which.min(abs(z - light_proportion)))
+iso <- df %>%
+  ungroup() %>%
+  distinct() %>%
+  mutate(light_at_surface = 1) %>%
+  crossing(light_proportion = seq(0, 1, length.out = 10)) %>%
+  group_by(source, x, light_proportion) %>%
+  nest() %>%
+  mutate(iso = map2_dbl(data, light_proportion, function(x, lp) {
+    x %>%
+      ggplot(aes(x = z, y = y)) +
+      geom_path() +
+      scale_y_reverse()
 
+    sf <- with(x, approxfun(z, y))
+    sf(lp)
+  }))
+  
 p <- df %>%
   ggplot(aes(x = x, y = y, fill = z, z = z)) +
   geom_raster() +
@@ -52,10 +64,8 @@ p <- df %>%
   scale_x_continuous(expand = c(0, 0), name = "Horizontal distance (m)") +
   theme(panel.spacing = unit(1, "lines")) +
   labs(fill = str_wrap("Normalized number of photons", 10)) +
-  geom_path(data = iso, aes(x = x, y = y, group = light_proportion), color = "white", size = 0.05) + 
+  geom_line(data = iso, aes(x = x, y = iso, group = light_proportion), color = "white", size = 0.1, inherit.aes = FALSE) + 
   theme(legend.box = "horizontal")
-# +
-#   scale_color_manual(values = c("0.25" = "white", "0.75" = "gray"))
 
 ggsave("graphs/fig5.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)
 
