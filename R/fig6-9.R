@@ -5,7 +5,7 @@ rm(list = ls())
 #   mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)")) %>%
 #   filter(pixel_distance_to_center <= 50)
 
-simulo <- read_feather("data/clean/simulo/compute-canada/simulo_45degrees.feather")
+simulo <- read_feather("data/clean/simulo/compute-canada/simulo_4_lambertian_sources.feather")
 
 simulo <- simulo %>%
   mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)")) %>%
@@ -84,9 +84,14 @@ simulo %>%
 
 # Fig 7 -------------------------------------------------------------------
 
-simulo <- read_feather("data/clean/simulo/compute-canada/simulo_45degrees.feather") %>%
+simulo <- read_feather("data/clean/simulo/compute-canada/simulo_4_lambertian_sources.feather") %>%
   mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)")) %>%
   filter(pixel_distance_to_center <= 50)
+
+# simulo <- readSimulO("~/Desktop/SimulKd_MeltP_C_150m_4_sources_lambertiennes_v3.txt") %>% 
+#   tidy_simulo() %>% 
+#   mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)")) %>%
+#   filter(pixel_distance_to_center <= 50)
 
 ## Calculate average light profiles
 averaged_simulo <- simulo %>%

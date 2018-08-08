@@ -16,30 +16,32 @@ source("https://gist.githubusercontent.com/friendly/67a7df339aa999e2bcfcfec88311
 
 read_hydrolight <- function(file, variable) {
   df <- readxl::read_excel(file, sheet = variable, skip = 3) %>%
-    gather(depth, !!variable, -wavel) %>%
+    set_names(gsub("in air", "-1", names(.))) %>%
+    set_names(gsub("X__1", "wavelength", names(.))) %>%
+    gather(depth, !!variable, -wavelength) %>%
     filter(!grepl("air", depth)) %>%
     mutate_all(as.numeric) %>%
     janitor::clean_names(case = "old_janitor") %>%
-    mutate(file_name = basename(file)) %>%
-    rename(wavelength = wavel)
+    mutate(file_name = basename(file))
 
   return(df)
 }
 
-ed_without_fluo <- read_hydrolight("~/Desktop/HL_simulations_IML4/MIML4_20150810_NoFluo.xlsx", "Ed")
-lu_without_fluo <- read_hydrolight("~/Desktop/HL_simulations_IML4/MIML4_20150810_NoFluo.xlsx", "Lu")
+ed_without_fluo <- read_hydrolight("~/Desktop/phil_sans_raman.xlsx", "Ed")
+lu_without_fluo <- read_hydrolight("~/Desktop/phil_sans_raman.xlsx", "Lu")
 without_fluo <- inner_join(ed_without_fluo, lu_without_fluo)
 
-ed_with_fluo <- read_hydrolight("~/Desktop/HL_simulations_IML4/MIML4_20150810_FCHL_RAMAN_FDOM.xlsx", "Ed")
-lu_with_fluo <- read_hydrolight("~/Desktop/HL_simulations_IML4/MIML4_20150810_FCHL_RAMAN_FDOM.xlsx", "Lu")
+ed_with_fluo <- read_hydrolight("~/Desktop/phil_avec_raman.xlsx", "Ed")
+lu_with_fluo <- read_hydrolight("~/Desktop/phil_avec_raman.xlsx", "Lu")
 with_fluo <- inner_join(ed_with_fluo, lu_with_fluo)
 
 df <- bind_rows(without_fluo, with_fluo) %>%
   filter(between(wavelength, 400, 700)) %>%
-  mutate(simulation_type = ifelse(str_detect(file_name, "NoFluo"), "without_raman", "with_raman"))
+  mutate(simulation_type = ifelse(str_detect(file_name, "sans_raman"), "without_raman", "with_raman"))
 
 df <- df %>%
-  select(file_name, simulation_type, wavelength, depth, ed, lu)
+  select(file_name, simulation_type, wavelength, depth, ed, lu) %>% 
+  filter(depth > 0)
 
 rm(list = ls(pattern = "with"))
 
@@ -84,7 +86,7 @@ res <- res %>%
 ## Now calculat PAR from true Ked and predicted Ked
 
 res <- res %>%
-  group_by(wavelength) %>%
+  group_by(wavelength, simulation_type) %>%
   nest()
 
 ## Take Ed at maximum depth and propagate it to surface using true Ked and
@@ -100,7 +102,7 @@ propagate <- function(df) {
   e_pred_true_ked <- vector(mode = "numeric", length = nrow(df))
   e_pred_estimated_ked <- vector(mode = "numeric", length = nrow(df))
 
-  for (i in 30:1) {
+  for (i in 19:1) {
     e_pred_true_ked[i] <- e_start * exp(-df$ked[i] * (df$depth[i] - df$depth2[i]))
     e_start <- e_pred_true_ked[i]
 
@@ -130,30 +132,33 @@ res2 <- res2 %>%
   })) %>%
   unnest(res)
 
+
+# Plots -------------------------------------------------------------------
+
 p2 <- res2 %>%
   ggplot(aes(y = depth)) +
   geom_line(aes(x = par_true, color = "True PAR")) +
   geom_line(aes(x = par_estimated, color = "Estimated PAR")) +
   scale_y_reverse() +
-  scale_x_log10() +
-  annotation_logticks(sides = "b") +
+  # scale_x_log10() +
+  # annotation_logticks(sides = "b") +
   xlab("PAR")
 
 p3 <- res2 %>%
   ggplot(aes(x = par_true, y = par_estimated)) +
   geom_point() +
-  geom_abline(lty = 2) +
-  scale_x_log10() +
-  scale_y_log10() +
-  annotation_logticks(sides = "lb")
+  geom_abline(lty = 2) 
+  # scale_x_log10() +
+  # scale_y_log10() +
+  # annotation_logticks(sides = "lb")
 
 p4 <- res2 %>%
   select(-data) %>%
   gather(type, par, -depth) %>%
   ggplot(aes(x = type, y = par, fill = type)) +
-  geom_boxplot() +
-  scale_y_log10() +
-  annotation_logticks(sides = "l")
+  geom_boxplot() 
+  # scale_y_log10() +
+  # annotation_logticks(sides = "l")
 
 p <- cowplot::plot_grid(p1, p2, p3, p4, labels = "AUTO")
 
@@ -183,3 +188,12 @@ p2 <- res2 %>%
 p <- cowplot::plot_grid(p1, p2, ncol = 1, align = "hv", labels = "AUTO")
 
 ggsave("graphs/effect_scattering_absolute_difference.pdf", device = cairo_pdf, width = 16, height = 16)
+
+
+# More plots --------------------------------------------------------------
+
+kd <- read_hydrolight("~/Desktop/phil_avec_raman.xlsx", variable = "Kd")
+
+kd %>% 
+  ggplot(aes(x = wavelength, y = kd, color = factor(depth))) +
+  geom_line()

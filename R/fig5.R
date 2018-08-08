@@ -1,14 +1,14 @@
-# <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>  
+# <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 # AUTHOR:       Philippe Massicotte
 #
-# DESCRIPTION:  
+# DESCRIPTION:
 #
 # 2D plan of irradiance and radiance.
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
 rm(list = ls())
 
-simulo <- read_feather("data/clean/simulo/compute-canada/simulo.feather")
+simulo <- read_feather("data/clean/simulo/compute-canada/simulo_4_lambertian_sources.feather")
 
 simulo <- simulo %>%
   mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)")) %>%
@@ -26,8 +26,8 @@ simulo <- simulo %>%
 df <- simulo %>%
   group_by(source) %>%
   nest() %>%
-  mutate(interpolated = map(data, ~ akima::interp(.$mid_distance, .$depth, .$value, nx = 125, ny = 125))) %>%
-  mutate(interpolated = map(interpolated, ~ akima::interp2xyz(., data.frame = TRUE))) %>%
+  mutate(interpolated = map(data, ~akima::interp(.$mid_distance, .$depth, .$value, nx = 125, ny = 125))) %>%
+  mutate(interpolated = map(interpolated, ~akima::interp2xyz(., data.frame = TRUE))) %>%
   unnest(interpolated)
 
 df <- df %>%
@@ -35,14 +35,14 @@ df <- df %>%
   mutate(z = z / max(z))
 
 ## Just "mirror" the x-ditances, this makes a better looking plot
-df <- df %>% 
+df <- df %>%
   bind_rows(mutate(df, x = -x))
 
 iso <- df %>%
   ungroup() %>%
   distinct() %>%
   mutate(light_at_surface = 1) %>%
-  crossing(light_proportion = seq(0, 1, length.out = 10)) %>%
+  crossing(light_proportion = seq(0, 1, length.out = 6)) %>%
   group_by(source, x, light_proportion) %>%
   nest() %>%
   mutate(iso = map2_dbl(data, light_proportion, function(x, lp) {
@@ -53,19 +53,20 @@ iso <- df %>%
 
     sf <- with(x, approxfun(z, y))
     sf(lp)
-  }))
-  
+  })) %>%
+  group_by(source, x, light_proportion) %>%
+  drop_na()
+
 p <- df %>%
   ggplot(aes(x = x, y = y, fill = z, z = z)) +
   geom_raster() +
   scale_y_reverse(expand = c(0, 0), name = "Depth (m)") +
   scale_fill_viridis_c() +
-  facet_wrap(~ source) +
+  facet_wrap(~source) +
   scale_x_continuous(expand = c(0, 0), name = "Horizontal distance (m)") +
   theme(panel.spacing = unit(1, "lines")) +
   labs(fill = str_wrap("Normalized number of photons", 10)) +
-  geom_line(data = iso, aes(x = x, y = iso, group = light_proportion), color = "white", size = 0.1, inherit.aes = FALSE) + 
+  geom_line(data = iso, aes(x = x, y = iso, group = light_proportion), color = "white", size = 0.1, inherit.aes = FALSE) +
   theme(legend.box = "horizontal")
 
 ggsave("graphs/fig5.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)
-

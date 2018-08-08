@@ -5,7 +5,8 @@ k <- read_feather("data/clean/k_cops.feather")
 k <- k %>% 
   mutate(date = str_extract(profile_filename, "\\d{6}")) %>% 
   mutate(date = lubridate::parse_date_time(date, orders = "ymd")) %>% 
-  filter(r2 >= 0.99)
+  filter(r2 >= 0.99) %>% 
+  unite(depth_range, start_depth, end_depth, remove = FALSE, sep = "-") 
 
 k <- k %>% 
   group_by(date, depth_range, type, wavelength) %>% 

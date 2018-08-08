@@ -66,3 +66,33 @@ d2 <- iop %>%
 iop <- inner_join(d1, d2, by = "depth_grid")
 
 write_csv(iop, "data/clean/averaged_a_c_for_hydrolight.csv")
+
+
+# test --------------------------------------------------------------------
+
+write("AAAA", "data/clean/averaged_a_c_for_hydrolight.txt")
+write("AAAA", "data/clean/averaged_a_c_for_hydrolight.txt", append = TRUE)
+write("AAAA", "data/clean/averaged_a_c_for_hydrolight.txt", append = TRUE)
+write("AAAA", "data/clean/averaged_a_c_for_hydrolight.txt", append = TRUE)
+write("AAAA", "data/clean/averaged_a_c_for_hydrolight.txt", append = TRUE)
+write("AAAA", "data/clean/averaged_a_c_for_hydrolight.txt", append = TRUE)
+write("AAAA", "data/clean/averaged_a_c_for_hydrolight.txt", append = TRUE)
+write("AAAA", "data/clean/averaged_a_c_for_hydrolight.txt", append = TRUE)
+write("AAAA", "data/clean/averaged_a_c_for_hydrolight.txt", append = TRUE)
+write("AAAA", "data/clean/averaged_a_c_for_hydrolight.txt", append = TRUE)
+
+v <- (c(" ", length(seq(405, 740, by = 5)), seq(405, 740, by = 5)))
+write(v,  "data/clean/averaged_a_c_for_hydrolight.txt", append = TRUE, sep = "  ", ncolumns = length(v) + 1)
+
+write.table(
+  add_column(iop, test = "", .before = 1),
+  "data/clean/averaged_a_c_for_hydrolight.txt",
+  append = TRUE,
+  col.names = FALSE,
+  row.names = FALSE,
+  sep = "   ",
+  quote = FALSE
+)
+
+v <- c(-1, rep(0, times = (length(v) - 1)))
+write(v, "data/clean/averaged_a_c_for_hydrolight.txt", append = TRUE, ncolumns = length(v), sep = "   ")

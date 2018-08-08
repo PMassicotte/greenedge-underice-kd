@@ -72,11 +72,11 @@ p3 <- averaged_simulo %>%
 
 ggsave("graphs/simulo/simulo_averaged_light_profiles_calculated_k_01.pdf", device = cairo_pdf, height = 5, width = 10)
 
-averaged_simulo <- averaged_simulo %>%
+averaged_simulo_norm <- averaged_simulo %>%
   group_by(source, mid_distance) %>%
   mutate(value = value / max(value)) ## normalize, easier to fit
 
-k <- averaged_simulo %>%
+k <- averaged_simulo_norm %>%
   nest() %>%
   mutate(mod = map(data, ~ minpack.lm::nlsLM(value ~ a0 * exp(-k * depth), data = ., start = list(a0 = 1, k = 0.02)))) %>%
   mutate(k = map_dbl(mod, ~ coef(.)[2])) %>%
@@ -117,17 +117,17 @@ predicted_light <- reference_profile %>%
 ## Only keep Ed profiles. Double the rows of the df and set the new lines as
 ## "radiance". This is jsut to make computation easier.
 reference_profile <- reference_profile %>%
-  filter(source == "intensity") %>% 
+  filter(source == "intensity") %>%
   bind_rows(mutate(., source = ifelse(source == "intensity", "radiance", "source")))
 
 ## Visualize
 
 labels <- c(
-  intensity  = "Propagated with KEd",
-  radiance  = "Propagated with KLu"
+  intensity = "Propagated with KEd",
+  radiance = "Propagated with KLu"
 )
 
-p5 <-  reference_profile %>% 
+p5 <- reference_profile %>%
   ggplot(aes(x = value, y = depth)) +
   geom_path(size = 1) +
   facet_grid(range ~ source, scales = "free", labeller = labeller(source = labels)) +
@@ -144,33 +144,65 @@ ggsave("graphs/simulo/simulo_propagated_light_profiles.pdf", device = cairo_pdf,
 # Calculate errors --------------------------------------------------------
 
 int1 <- reference_profile %>%
-  group_by(source, range) %>% 
-  nest() %>% 
-  mutate(integral = map_dbl(data, ~pracma::trapz(.$depth, .$value))) %>% 
+  group_by(source, range) %>%
+  nest() %>%
+  mutate(integral = map_dbl(data, ~ pracma::trapz(.$depth, .$value))) %>%
   select(-data)
 
-int2 <- predicted_light %>% 
-  group_by(source, range, mid_distance) %>% 
-  nest() %>% 
-  mutate(integral = map_dbl(data, ~pracma::trapz(.$depth, .$predicted_light))) %>% 
-  select(-data) 
+int2 <- predicted_light %>%
+  group_by(source, range, mid_distance) %>%
+  nest() %>%
+  mutate(integral = map_dbl(data, ~ pracma::trapz(.$depth, .$predicted_light))) %>%
+  select(-data)
 
 res <- left_join(int1, int2, by = c("source", "range")) %>%
-  gather(type, integral, starts_with("integral")) %>% 
+  gather(type, integral, starts_with("integral")) %>%
   mutate(type = ifelse(type == "integral.x", "reference", "predicted"))
 
-p6 <- res %>% 
-  spread(type, integral) %>% 
-  mutate(relative_error = (reference - predicted) / reference) %>% 
+p6 <- res %>%
+  spread(type, integral) %>%
+  mutate(relative_error = (reference - predicted) / reference) %>%
   ggplot(aes(x = mid_distance, y = relative_error, color = range)) +
   geom_line() +
   geom_point() +
-  facet_wrap(~source, labeller = labeller(source = labels)) +
+  facet_wrap(~ source, labeller = labeller(source = labels)) +
   scale_x_continuous(breaks = seq(5.5, 20.5)) +
-  scale_y_continuous(labels = scales::percent) +
+  scale_y_continuous(labels = scales::percent, breaks = seq(-1, 1, by = 0.05)) +
   xlab("Distance from ice ridge (meters)") +
   ylab("Relative error ((reference - predicted) / reference)") +
   labs(color = "Distance range\n(meters)") +
   labs(title = "Relative error estimated by integral differences")
 
 ggsave("graphs/simulo/simulo_propagated_light_errors.pdf", device = cairo_pdf, height = 6, width = 16)
+
+
+# Extra -------------------------------------------------------------------
+
+## Graph asked by Edouard to visualize the error with mean profiles used to
+## calculate K
+
+aa <- averaged_simulo %>%
+  filter(source == "intensity") %>%
+  group_by(mid_distance) %>%
+  nest() %>%
+  mutate(integral = map_dbl(data, ~ pracma::trapz(.$depth, .$value))) %>%
+  select(-data)
+
+rr <- res %>%
+  filter(source == "intensity") %>%
+  spread(type, integral) %>%
+  select(-predicted) %>%
+  full_join(aa) %>%
+  mutate(relative_error = (reference - integral) / reference)
+
+rr %>%
+  ggplot(aes(x = mid_distance, y = relative_error, color = range)) +
+  geom_line() +
+  geom_point() +
+  scale_x_continuous(breaks = seq(5.5, 20.5)) +
+  scale_y_continuous(labels = scales::percent) +
+  xlab("Distance from ice ridge (meters)") +
+  ylab("Relative error ((reference - predicted) / reference)") +
+  labs(color = "Distance range\n(meters)") +
+  labs(title = "Relative error estimated by integral differences") +
+  labs(subtitle = "xxx")
