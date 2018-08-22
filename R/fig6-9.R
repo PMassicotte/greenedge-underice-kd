@@ -61,13 +61,14 @@ p <- simulo %>%
   geom_path(aes(x = value, y = depth, group = mid_distance), size = 0.1, alpha = 0.5) +
   facet_wrap(~ source, scales = "free") +
   scale_y_reverse() +
-  scale_x_continuous(labels = scales::scientific) +
+  scale_x_continuous(labels = scientific_format()) +
   geom_path(data = reference_profile, aes(x = value, y = depth, color = range)) +
   labs(color = "Surface radius (meters)\nMelt pond proportion (%)") +
   ylab("Depth (m)") +
   xlab("Number of photons") +
   theme(legend.title = element_text(size = 8), legend.text = element_text(size = 6)) +
-  theme(legend.key.size = unit(0.75, "lines"))
+  theme(legend.key.size = unit(0.75, "lines")) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 ggsave("graphs/fig6.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)
 
@@ -147,10 +148,10 @@ p <- k %>%
   geom_line() +
   xlab("Distance from the ice ridge (meters)") +
   ylab(bquote("Attenuation coefficient"~(m^{-1}))) +
-  theme(legend.position = c(0.95, 0.05), legend.justification = c(1, 0)) +
+  theme(legend.position = c(0.95, 0.95), legend.justification = c(1, 1)) +
   labs(color = "Source")
 
-ggsave("graphs/supp_fig_4.pdf", width = 3 * 1.61803398875, height = 3, device = cairo_pdf)
+ggsave("graphs/supp_fig_4.pdf", width = 5.5, height = 4, device = cairo_pdf)
 
 ## Propagate light 
 
@@ -242,7 +243,7 @@ ggsave("graphs/fig9.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)
 #   select(-predicted, -reference) %>% 
 #   spread(source, relative_error) %>% 
 #   janitor::clean_names() %>% 
-#   filter(str_detect(range, "25%|1%")) %>% 
+  # filter(str_detect(range, "25%|1%")) %>%
 #   mutate()
 
 res %>% 
