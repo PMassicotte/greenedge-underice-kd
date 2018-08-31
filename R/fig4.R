@@ -85,6 +85,52 @@ p <- k2 %>%
 ggsave("graphs/fig4.pdf", device = cairo_pdf, height = 8, width = 7)  
 
 
+
+# Appendix ----------------------------------------------------------------
+
+p <- k2 %>%
+  ggplot(aes(x = klu, y = ked)) +
+  geom_point(aes(color = factor(wavelength)), size = 1) +
+  geom_smooth(method = "lm") +
+  geom_abline(slope = 1, intercept = 0, lty = 2, color = "grey50") +
+  xlab(bquote(K[Lu]~(m^{-1}))) +
+  ylab(bquote(K[Ed]~(m^{-1}))) +
+  labs(color = "Wavelength (nm)") +
+  scale_color_manual(values = color) +
+  facet_wrap(~depth_range, scales = "free", ncol = 3) +
+  theme(legend.position = c(0.99, -0.05),
+        legend.justification = c(1, 0)) +
+  theme(legend.title = element_text(size = 10),
+        legend.text = element_text(size = 8)) +
+  guides(color = guide_legend(
+    keywidth = 0.15,
+    keyheight = 0.15,
+    default.unit = "inch",
+    ncol = 4
+  ))  +
+  scale_x_continuous(breaks = equal_breaks(n = 3, s = 0.05)) +
+  stat_poly_eq(
+    aes(label =  paste("atop(", ..eq.label.., ")", sep = ",")),
+    formula = formula,
+    parse = TRUE,
+    label.x.npc = "right",
+    label.y.npc = "bottom",
+    vjust = -0.3,
+    size = 2
+  ) +
+  stat_poly_eq(
+    aes(label =  paste("atop(", ..rr.label.., ")", sep = ",")),
+    formula = formula,
+    parse = TRUE,
+    label.x.npc = "right",
+    label.y.npc = "bottom",
+    vjust = 0,
+    size = 2
+  )
+
+ggsave("graphs/supp_fig_3.pdf", device = cairo_pdf, height = 8, width = 7)  
+
+
 # Some stats for the paper ------------------------------------------------
 
 mod <- k2 %>% 
