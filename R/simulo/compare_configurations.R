@@ -42,8 +42,8 @@ df <- map(files, extract_simulo) %>%
   
 df %>% 
   ggplot(aes(x = mid_distance, y = value)) +
-  geom_line() +
-  facet_grid(source ~ file_name, scales = "free") +
+  geom_line(size = 0.25) +
+  facet_grid(source ~ file_name) +
   ylab("Normalized number of photon") +
   xlab("Distance from the melt pond") +
   labs(subtitle = "Depth at 0.5 meter except for the simulation without melt pond which is at 1 meter.")

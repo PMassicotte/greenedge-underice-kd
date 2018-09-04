@@ -1,24 +1,30 @@
 rm(list = ls())
 
+source("R/simulo/simulo_utils.R")
+
 # simulo <-
 #   read_feather("data/clean/simulo/compute-canada/simulo_45degrees.feather") %>%
 #   mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)")) %>%
 #   filter(pixel_distance_to_center <= 50)
 
-simulo <- read_feather("data/clean/simulo/compute-canada/simulo_4_lambertian_sources.feather")
+# simulo <- read_feather("data/clean/simulo/compute-canada/simulations-with-15m-melt-pond-4-lambertian-sources.feather")
+simulo <- read_feather("data/clean/simulo/compute-canada/simulo_4_lambertian_sources_smoothed_radiance.feather")
+# simulo <- simulo %>%
+#   simulo_xy_to_polar(min_distance = 10, max_distance = 60) %>% 
+#   smooth_pixels()
 
-simulo <- simulo %>%
-  mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)")) %>%
-  filter(pixel_distance_to_center <= 50) ## il ne faut pas représenter les profils au delà de 50m du centre car on est alors soumis aux effets de bord.
+# simulo <- simulo %>%
+#   mutate(iso_distance = cut_width(pixel_distance_to_center, width = 0.1)) %>%
+#   separate(iso_distance, into = c("start_distance", "end_distance"), sep = ",") %>%
+#   mutate_at(vars(start_distance, end_distance), parse_number) %>%
+#   mutate(mid_distance = start_distance + (end_distance - start_distance) / 2) %>%
+#   group_by(depth, source, mid_distance) %>%
+#   summarise(value = mean(value)) %>%
+#   ungroup()
 
-simulo <- simulo %>%
-  mutate(iso_distance = cut_width(pixel_distance_to_center, width = 0.1)) %>%
-  separate(iso_distance, into = c("start_distance", "end_distance"), sep = ",") %>%
-  mutate_at(vars(start_distance, end_distance), parse_number) %>%
-  mutate(mid_distance = start_distance + (end_distance - start_distance) / 2) %>%
-  group_by(depth, source, mid_distance) %>%
-  summarise(value = mean(value)) %>%
-  ungroup()
+# simulo <- simulo %>% 
+#   select(-value) %>% 
+#   rename(value = smoothed_value)
 
 reference_profile <- simulo %>%
   mutate(class_25_percent = as.character(cut(mid_distance, breaks = c(0, sqrt(25 / 0.25)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
@@ -85,14 +91,13 @@ simulo %>%
 
 # Fig 7 -------------------------------------------------------------------
 
-simulo <- read_feather("data/clean/simulo/compute-canada/simulo_4_lambertian_sources.feather") %>%
-  mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)")) %>%
-  filter(pixel_distance_to_center <= 50)
-
-# simulo <- readSimulO("~/Desktop/SimulKd_MeltP_C_150m_4_sources_lambertiennes_v3.txt") %>% 
-#   tidy_simulo() %>% 
+# simulo <- read_feather("data/clean/simulo/compute-canada/simulations-with-15m-melt-pond-4-lambertian-sources.feather") %>%
 #   mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)")) %>%
-#   filter(pixel_distance_to_center <= 50)
+#   filter(between(pixel_distance_to_center, 10, 60)) %>%
+#   mutate(pixel_distance_to_center = pixel_distance_to_center - 10)
+
+simulo <- read_feather("data/clean/simulo/compute-canada/simulo_4_lambertian_sources.feather") %>%
+  filter(between(pixel_distance_to_center, 0, 50))
 
 ## Calculate average light profiles
 averaged_simulo <- simulo %>%
@@ -103,6 +108,22 @@ averaged_simulo <- simulo %>%
   group_by(depth, source, mid_distance) %>%
   summarise(value = mean(value)) %>%
   ungroup()
+
+averaged_simulo <- averaged_simulo %>% 
+  spread(source, value)
+
+averaged_simulo <- averaged_simulo %>%
+  group_by(depth) %>%
+  nest() %>%
+  mutate(mod_gam = map(data,  ~gam(.$radiance ~ s(.$mid_distance, fx = FALSE, k=10, bs = "cr")) , data = .)) %>% 
+  mutate(pred_gam = map(mod_gam, predict)) %>% 
+  unnest(data, pred_gam) 
+
+averaged_simulo <- averaged_simulo %>% 
+  select(-radiance) %>% 
+  rename(radiance = pred_gam) %>% 
+  gather(source, value, intensity, radiance) %>% 
+  mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)"))
 
 ## Calculate K only starting at 5 meters (ice ridge)
 averaged_simulo <- averaged_simulo %>%
@@ -151,7 +172,7 @@ p <- k %>%
   theme(legend.position = c(0.95, 0.95), legend.justification = c(1, 1)) +
   labs(color = "Source")
 
-ggsave("graphs/supp_fig_4.pdf", width = 5.5, height = 4, device = cairo_pdf)
+ggsave("graphs/supp_fig_6.pdf", width = 5.5, height = 4, device = cairo_pdf)
 
 ## Propagate light 
 
@@ -227,7 +248,7 @@ p <- res %>%
   # geom_point(show.legend = FALSE) +
   facet_wrap(~ source, labeller = labeller(source = labels)) +
   scale_y_continuous(labels = scales::percent, breaks = seq(-1, 1, by = 0.1)) +
-  xlab("Distance from ice ridge (meters)") +
+  xlab("Distance from the ice ridge of the melt pond (meters)") +
   ylab("Relative error") +
   labs(color = "Surface radius (meters)\nMelt pond proportion (%)") +
   theme(legend.title = element_text(size = 8), legend.text = element_text(size = 6)) +

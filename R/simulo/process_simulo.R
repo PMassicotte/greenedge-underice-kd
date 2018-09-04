@@ -11,13 +11,13 @@ rm(list = ls())
 source("R/simulo/SimulO_RTools.R")
 source("R/simulo/tidy_simulo.R")
 
-# data <- load("~/Desktop/SimulKd_MeltP_C_150m.RData")
+simulation <- "simulations-with-15m-melt-pond-4-lambertian-sources"
 
-files <- list.files("/media/data4tb/simulo/simulations-no-melt-pond-simple-geometry/", pattern = "^Simul\\S+.txt$", full.names = TRUE, recursive = TRUE)
+files <- list.files(glue("/media/data4tb/simulo/{simulation}"), pattern = "^simul\\S+.txt$", full.names = TRUE, recursive = TRUE)
 # files <- files[file.size(files) > 10000000] ## Found 1 file that seems to be corrupted
 
 data <- MergeSimulO(files)
 df <- tidy_simulo(data)
 
-saveRDS(data, file = "data/clean/simulo/compute-canada/simulations-no-melt-pond-simple-geometry.rds")
-write_feather(df, "data/clean/simulo/compute-canada/simulations-no-melt-pond-simple-geometry.feather")
+saveRDS(data, file = glue("data/clean/simulo/compute-canada/{simulation}.rds"))
+write_feather(df, glue("data/clean/simulo/compute-canada/{simulation}.feather"))
