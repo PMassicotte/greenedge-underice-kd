@@ -21,6 +21,7 @@ library(sf)
 library(ggsn)
 library(modelr)
 library(glue)
+library(scales)
 
 rm(list = ls())
 graphics.off()

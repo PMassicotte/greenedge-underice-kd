@@ -25,7 +25,45 @@
     \title{Appendix}
     \date{}
 
-    \begin{document}
+	\PassOptionsToPackage{
+		natbib=true,
+		sorting=ynt,
+		style=authoryear-comp,
+		hyperref=true,
+		backend=biber,
+		maxbibnames=999,
+		firstinits=true,
+		uniquename=false,
+		parentracker=true,
+		url=false,
+		doi=false,
+		isbn=false,
+		eprint=false,
+		backref=false,
+		sortcites,
+	}   {biblatex}
+	\usepackage{biblatex}
+	
+	\DeclareLanguageMapping{english}{english-apa}
+	\addbibresource{/home/pmassicotte/Documents/library.bib}
+	
+	
+	\AtEveryBibitem{\clearfield{issn}}
+	\AtEveryCitekey{\clearfield{issn}}
+	\AtEveryBibitem{\clearfield{url}}
+	\AtEveryCitekey{\clearfield{url}}
+	\AtEveryBibitem{\clearfield{doi}}
+	\AtEveryCitekey{\clearfield{doi}}
+
+	\newcommand{\ked}{\ensuremath{K_{Ed}}}
+	\newcommand{\klu}{\ensuremath{K_{Lu}}}
+	\newcommand{\edz}{\ensuremath{{E_d(z)}}}
+	\newcommand{\luz}{\ensuremath{{L_u(z)}}}
+	\newcommand{\edzero}{\ensuremath{{E_d(0^-)}}}
+	\newcommand{\meanedz}{\ensuremath{{\overline{E_d}(z)}}}
+	
+
+\begin{document}
 \maketitle
 
 \begin{figure}[h]
@@ -40,7 +78,7 @@
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale = 1]{../../../graphs/supp_fig_2.pdf}
-	\caption{Average determination coefficients ($R^2$) and standard deviation (shaded area) of the regressions between normalized (at 10 meters) Ed and Lu profiles between 400 and 700 nm. At each wavelengths, average values were computed from 86 COPS measurements. Sharp decrease of $R^2$ occurred at after 575 nm, suggesting a gradual decoupling between Ed and Lu profiles at higher wavelengths, possibly due to the effect of inelastic scattering.}
+	\caption{Average determination coefficients \(R^2\) and standard deviation (shaded area) of the regressions between normalized (at 10 meters) \edz{} and \luz{} profiles between 400 and 700 nm. At each wavelengths, average values were computed from 86 COPS measurements. Sharp decrease of \(R^2\) occurred at after 575 nm, suggesting a gradual decoupling between Ed and Lu profiles at higher wavelengths, possibly due to the effect of inelastic scattering.}
 \end{figure}
 
 \clearpage
@@ -49,7 +87,7 @@
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale = 1]{../../../graphs/supp_fig_3.pdf}
-	\caption{Scatter plots showing the relationships between downwelling irradiance (Ed) and upwelling radiance (Lu) between 400 and 700 nm at different depths (numbers in gray boxes). Blue lines and shaded areas represent respectively the regressions lines and the confidence intervals of the fitted linear models. Dotted lines are the 1:1 lines. Note the high dispersion occurring in the orange and red regions ($\ge$ 600~nm).}
+	\caption{Scatter plots showing the relationships between downwelling irradiance (\edz{}) and upwelling radiance (\luz{}) between 400 and 700 nm at different depths (numbers in gray boxes). Blue lines and shaded areas represent respectively the regressions lines and the confidence intervals of the fitted linear models. Dotted lines are the 1:1 lines. Note the high dispersion occurring in the orange and red regions ($\ge$ 600~nm).}
 \end{figure}
 
 \clearpage
@@ -57,26 +95,39 @@
 
 \begin{figure}[h]
 	\centering
-	% \includegraphics[scale = 1]{../../../graphs/supp_fig_4.pdf}
-	\caption{Comparison of the angular distribution (waiting for Simon's data).}
+	\includegraphics[scale = 1]{../../../graphs/supp_fig_4.pdf}
+	\caption{Comparison of under ice measured downwelling radiance distribution (the average cosine is $\approx$ 0.61, \cite{Girard2018}) and emission source angular distribution used in the paper.}
 \end{figure}
 
 \clearpage
 \newpage
+
+\section*{Smoothing radiance data}
+
+Due to the low scattering coefficients used to reproduce in-situ conditions observed during the sampling campaign, radiance profiles were noisy because only a small number of upward photons could be captured (note the different y-scales). Irradiance data were smoothed out using Gaussian fittings (red lines, see equation~\ref{eq:pdf}).
+
+\begin{equation}
+	\label{eq:pdf}
+	f(x,\varphi,\mu,\sigma, k) = \varphi e^{-\dfrac{(x-\mu)^2}{2 \sigma^2}} + k
+\end{equation}
+
+where $\sigma$ (m) is the standard deviation controlling the width of the curve, $\varphi$ is the height of the curve peak ($\varphi = \frac{1}{\sigma\sqrt{2\pi}}$), $\mu$ (m) is the position of the center of the peak and $k$ an offset.
 
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale = 1]{../../../graphs/supp_fig_5.pdf}
-	\caption{An example showing the number of irradiance and radiance photons measured at 5 meters depth as a function of the distance from the melt pond. Due to the low scattering coefficients used to reproduce in-situ conditions observed during the sampling campaign, radiance profiles were noisy because only a small number of upward photons could be captured (note the different y-scales). Irradiance data were smoothed out using a generalized additive model (GAM, red line).}
+	\caption{Examples showing the number of irradiance (A) and radiance (B) photons measured at different depths (numbers in gray boxes) as a function of the distance from the melt pond.}
 \end{figure}
 
 \clearpage
 \newpage
-	
+
 \begin{figure}[h]
 	\centering
 	\includegraphics[scale = 1]{../../../graphs/supp_fig_6.pdf}
 	\caption{Attenuation coefficients from light profiles sampled between at different distances from the ridge of the melt pond.}
 \end{figure}
 
+\clearpage
+\printbibliography
 \end{document}

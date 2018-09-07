@@ -8,7 +8,6 @@
 
 rm(list = ls())
 
-
 simulo <- read_feather("data/clean/simulo/compute-canada/simulo_4_lambertian_sources.feather") %>% 
   filter(between(pixel_distance_to_center, 0, 50))
 
@@ -21,55 +20,81 @@ simulo <- simulo %>%
   summarise(value = mean(value)) %>%
   ungroup()
 
+# Fit a Guassian curve on raidance data to remove noise -------------------
+
+fit_gaussian <- function(df, depth) {
+  
+  print(depth)
+  
+  mod <- minpack.lm::nlsLM(
+    radiance ~ a1 * exp(-((mid_distance - b1) ^ 2 / (2 * c1 ^ 2))) + k,
+    data = df,
+    start = list(
+      a1 = mean(df$radiance),
+      b1 = 0,
+      c1 = 5,
+      k = mean(df$radiance)
+    ),
+    lower = c(
+      a1 = 0,
+      b1 = 0,
+      c1 = 0,
+      k = 0
+    ),
+    upper = c(
+      a1 = max(df$radiance),
+      b1 = 0,
+      c1 = 100,
+      k = max(df$radiance)
+    )
+  )
+  
+  return(mod)
+}
+
+simulo <- simulo %>% 
+  bind_rows(mutate(simulo, mid_distance = -mid_distance)) %>% 
+  distinct()
+
 simulo <- simulo %>% 
   spread(source, value)
 
-res <- simulo %>%
+simulo <- simulo %>%
   group_by(depth) %>%
   nest() %>%
-  mutate(mod_gam = map(data,  ~gam(.$radiance ~ s(.$mid_distance, fx = FALSE, k=10, bs = "cr")) , data = .)) %>% 
-  mutate(pred_sf = map(data, function(x) {
-    
-    sf <- smooth.spline(x$mid_distance, x$radiance, spar = 0.75)
-    tibble(pred_sf = sf$y)
-    
-  })) %>% 
-  mutate(pred_gam = map(mod_gam, predict)) %>% 
-  unnest(data, pred_gam, pred_sf) 
+  mutate(mod = map2(data, depth, fit_gaussian)) %>% 
+  mutate(pred = map2(data, mod, add_predictions)) %>% 
+  unnest(pred)
 
-p1 <- res %>%
-  filter(depth == 5) %>% 
+p1 <- simulo %>% 
+  filter(depth %in% c(0.5, 5, 10, 15, 20, 25)) %>% 
   ggplot(aes(x = mid_distance, y = intensity)) +
-  geom_point() +
-  ylab("Number of irradiance photon") +
+  geom_line() +
+  facet_wrap(~depth, scales = "free") +
   xlab("Distance from the center of the melt pond (m)") +
-  theme(text = element_text(size = 10))
+  ylab("Number of irradiance photons") +
+  theme(legend.position = "none")
 
-p2 <- res %>%
-  filter(depth == 5) %>% 
+p2 <- simulo %>% 
+  filter(depth %in% c(0.5, 5, 10, 15, 20, 25)) %>% 
   ggplot(aes(x = mid_distance, y = radiance)) +
-  geom_point() +
-  geom_line(aes(y = pred_gam), color = "red") +
-  ylab("Number of radiance photon") +
+  geom_line(size = 0.1) +
+  geom_line(aes(y = pred, color = "red")) +
+  facet_wrap(~depth, scales = "free") +
   xlab("Distance from the center of the melt pond (m)") +
-  theme(text = element_text(size = 10))
+  ylab("Number of radiance photons") +
+  theme(legend.position = "none")
 
-p <- cowplot::plot_grid(p1, p2, labels = "AUTO", align = "hv")  
-ggsave("graphs/supp_fig_5.pdf", width = 7, height = 3, device = cairo_pdf)
+p <- cowplot::plot_grid(p1, p2, labels = "AUTO", align = "hv", ncol = 1)  
+ggsave("graphs/supp_fig_5.pdf", width = 7, height = 6, device = cairo_pdf)
 
-res <- res %>% 
-  select(-pred_sf, -radiance) %>% 
-  rename(radiance = pred_gam) %>% 
-  gather(source, value, intensity, radiance)
 
-# res %>%
-#   ggplot(aes(x = mid_distance, y = value)) +
-#   geom_line() +
-#   # geom_line(data = res, aes(x = mid_distance, y = pred_gam, color = "pred_gam")) +
-#   # geom_line(data = res, aes(x = mid_distance, y = pred_sf, color = "pred_sf")) +
-#   facet_wrap(~depth + source, scales = "free_y")
-
-simulo <- res %>% 
+## Replace radiance data with smoothed value (Gaussian fits)
+simulo <- simulo %>% 
+  select(-radiance) %>% 
+  rename(radiance = pred) %>% 
+  gather(source, value, intensity, radiance) %>% 
+  filter(mid_distance >= 0) %>% 
   mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)"))
 
 ## So we can reuse it later
@@ -84,9 +109,18 @@ df <- simulo %>%
   mutate(interpolated = map(interpolated, ~akima::interp2xyz(., data.frame = TRUE))) %>%
   unnest(interpolated)
 
+# df <- df %>%
+#   group_by(source) %>%
+#   mutate(z = z / max(z))
+
+## Idea of Marcel
 df <- df %>%
   group_by(source) %>%
-  mutate(z = z / max(z))
+  mutate(z = z / z[x == 50 & y == 0.5])
+
+df <- df %>%
+  group_by(source) %>%
+  mutate(z = log(z))
 
 ## Just "mirror" the x-ditances, this makes a better looking plot
 df <- df %>%

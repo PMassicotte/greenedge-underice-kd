@@ -2,29 +2,7 @@ rm(list = ls())
 
 source("R/simulo/simulo_utils.R")
 
-# simulo <-
-#   read_feather("data/clean/simulo/compute-canada/simulo_45degrees.feather") %>%
-#   mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)")) %>%
-#   filter(pixel_distance_to_center <= 50)
-
-# simulo <- read_feather("data/clean/simulo/compute-canada/simulations-with-15m-melt-pond-4-lambertian-sources.feather")
 simulo <- read_feather("data/clean/simulo/compute-canada/simulo_4_lambertian_sources_smoothed_radiance.feather")
-# simulo <- simulo %>%
-#   simulo_xy_to_polar(min_distance = 10, max_distance = 60) %>% 
-#   smooth_pixels()
-
-# simulo <- simulo %>%
-#   mutate(iso_distance = cut_width(pixel_distance_to_center, width = 0.1)) %>%
-#   separate(iso_distance, into = c("start_distance", "end_distance"), sep = ",") %>%
-#   mutate_at(vars(start_distance, end_distance), parse_number) %>%
-#   mutate(mid_distance = start_distance + (end_distance - start_distance) / 2) %>%
-#   group_by(depth, source, mid_distance) %>%
-#   summarise(value = mean(value)) %>%
-#   ungroup()
-
-# simulo <- simulo %>% 
-#   select(-value) %>% 
-#   rename(value = smoothed_value)
 
 reference_profile <- simulo %>%
   mutate(class_25_percent = as.character(cut(mid_distance, breaks = c(0, sqrt(25 / 0.25)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
@@ -33,8 +11,6 @@ reference_profile <- simulo %>%
   mutate(class_10_percent = as.character(cut(mid_distance, breaks = c(0, sqrt(25 / 0.10)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
   mutate(class_05_percent = as.character(cut(mid_distance, breaks = c(0, sqrt(25 / 0.05)), include.lowest = TRUE, right = TRUE, dig.lab = 5))) %>%
   mutate(class_01_percent = as.character(cut(mid_distance, breaks = c(0, sqrt(25 / 0.01)), include.lowest = TRUE, right = TRUE, dig.lab = 5)))
-
-# unique(reference_profile$class_0_40)
 
 reference_profile <- reference_profile %>%
   gather(class_distance, range, starts_with("class")) %>%
@@ -109,20 +85,70 @@ averaged_simulo <- simulo %>%
   summarise(value = mean(value)) %>%
   ungroup()
 
+# Fit a Guassian curve on raidance data to remove noise -------------------
+
+fit_gaussian <- function(df, depth) {
+  
+  print(depth)
+  
+  mod <- minpack.lm::nlsLM(
+    radiance ~ a1 * exp(-((mid_distance - b1) ^ 2 / (2 * c1 ^ 2))) + k,
+    data = df,
+    start = list(
+      a1 = mean(df$radiance),
+      b1 = 0,
+      c1 = 5,
+      k = mean(df$radiance)
+    ),
+    lower = c(
+      a1 = 0,
+      b1 = 0,
+      c1 = 5, # Limit to 5 because some have very high value outliers at 0 m (center of the melt pond)
+      k = 0
+    ),
+    upper = c(
+      a1 = max(df$radiance),
+      b1 = 0,
+      c1 = Inf,
+      k = max(df$radiance)
+    ),
+    control = nls.lm.control(maxiter = 1024)
+  )
+  
+  return(mod)
+}
+
+
+averaged_simulo <- averaged_simulo %>% 
+  bind_rows(mutate(averaged_simulo, mid_distance = -mid_distance)) %>% 
+  distinct()
+
 averaged_simulo <- averaged_simulo %>% 
   spread(source, value)
 
 averaged_simulo <- averaged_simulo %>%
   group_by(depth) %>%
   nest() %>%
-  mutate(mod_gam = map(data,  ~gam(.$radiance ~ s(.$mid_distance, fx = FALSE, k=10, bs = "cr")) , data = .)) %>% 
-  mutate(pred_gam = map(mod_gam, predict)) %>% 
-  unnest(data, pred_gam) 
+  mutate(mod = map2(data, depth, fit_gaussian)) %>% 
+  mutate(pred = map2(data, mod, add_predictions)) %>% 
+  unnest(pred)
 
+averaged_simulo %>% 
+  filter(depth %in% c(0.5, 5, 10, 15, seq(20, 25, by = 0.5))) %>% 
+  ggplot(aes(x = mid_distance, y = radiance)) +
+  geom_line(size = 0.1) +
+  geom_line(aes(y = pred, color = "red")) +
+  facet_wrap(~depth, scales = "free") +
+  xlab("Distance from the center of the melt pond (m)") +
+  ylab("Number of radiance photons") +
+  theme(legend.position = "none")
+
+## Replace radiance data with smoothed value (Gaussian fits)
 averaged_simulo <- averaged_simulo %>% 
   select(-radiance) %>% 
-  rename(radiance = pred_gam) %>% 
+  rename(radiance = pred) %>% 
   gather(source, value, intensity, radiance) %>% 
+  filter(mid_distance >= 0) %>% 
   mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)"))
 
 ## Calculate K only starting at 5 meters (ice ridge)
@@ -258,14 +284,12 @@ ggsave("graphs/fig9.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)
 
 ## Stats for the paper
 
-# res %>%
-#   spread(type, integral) %>% 
-#   mutate(relative_error = (reference - predicted) / reference) %>% 
-#   select(-predicted, -reference) %>% 
-#   spread(source, relative_error) %>% 
-#   janitor::clean_names() %>% 
-  # filter(str_detect(range, "25%|1%")) %>%
-#   mutate()
+res %>%
+  spread(type, integral) %>% 
+  mutate(relative_error = (reference - predicted) / reference) %>% 
+  group_by(source) %>% 
+  summarise(mean(relative_error) * 100)
+
 
 res %>% 
   spread(type, integral) %>%
