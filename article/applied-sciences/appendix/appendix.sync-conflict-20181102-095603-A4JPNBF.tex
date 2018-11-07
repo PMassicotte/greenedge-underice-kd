@@ -1,0 +1,149 @@
+\documentclass[12pt,a4paper]{scrartcl}
+    \usepackage[utf8]{inputenc}
+    \usepackage{amsmath}
+    \usepackage{amsfonts}
+    \usepackage{amssymb}
+    \usepackage{graphicx}
+
+    \usepackage[bottom = 1in, left = 0.5in, right = 0.5in, top = 1in]{geometry}
+
+    \usepackage[english]{babel}
+    \usepackage[autostyle]{csquotes}
+    \usepackage{mathptmx}
+
+    \usepackage[labelfont=bf]{caption}
+
+    \usepackage[default, scale=0.95]{opensans}
+
+    \usepackage[T1]{fontenc}
+
+    \usepackage{fixltx2e}
+    
+    \usepackage{float}
+
+    \addto\captionsenglish{\renewcommand{\figurename}{Supplementary Fig.}}
+    \addto\captionsenglish{\renewcommand{\tablename}{Supplementary Table}}
+
+    \title{Appendix}
+    \date{}
+
+    \PassOptionsToPackage{
+        natbib=true,
+        sorting=ynt,
+        style=authoryear-comp,
+        hyperref=true,
+        backend=biber,
+        maxbibnames=999,
+        firstinits=true,
+        uniquename=false,
+        parentracker=true,
+        url=false,
+        doi=false,
+        isbn=false,
+        eprint=false,
+        backref=false,
+        sortcites,
+    }   {biblatex}
+    \usepackage{biblatex}
+    
+    \DeclareLanguageMapping{english}{english-apa}
+    \addbibresource{/home/pmassicotte/Documents/library.bib}
+    
+    
+    \AtEveryBibitem{\clearfield{issn}}
+    \AtEveryCitekey{\clearfield{issn}}
+    \AtEveryBibitem{\clearfield{url}}
+    \AtEveryCitekey{\clearfield{url}}
+    \AtEveryBibitem{\clearfield{doi}}
+    \AtEveryCitekey{\clearfield{doi}}
+
+    \newcommand{\ked}{\ensuremath{K_{d}}}
+    \newcommand{\klu}{\ensuremath{K_{Lu}}}
+    \newcommand{\edz}{\ensuremath{{E_d(z)}}}
+    \newcommand{\luz}{\ensuremath{{L_u(z)}}}
+    \newcommand{\edzero}{\ensuremath{{E_d(0^-)}}}
+    \newcommand{\meanedz}{\ensuremath{{\overline{E_d}(z)}}}
+    
+
+\begin{document}
+\maketitle
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 0.75]{../../../graphs/supp_fig_1.pdf}
+	\caption{The field campaign was part of the GreenEdge project (www.greenedgeproject.info)  which was conducted on landfast ice southeast of Qikiqtarjuaq Island (67.4797N, -63.7895W) in a fjord near the Inuit community of Qikiqtarjuaq.}
+\end{figure}
+
+\clearpage
+\newpage
+
+\section*{Smoothing radiance data}
+
+Due to the low scattering coefficients used to reproduce in-situ conditions observed during the sampling campaign, radiance profiles were noisy because only a small number of upward photons could be captured (note the different y-scales). Irradiance data were smoothed out using Gaussian fittings (red lines, see equation~\ref{eq:pdf}).
+
+\begin{equation}
+	\label{eq:pdf}
+	f(x,\varphi,\mu,\sigma, k) = \varphi e^{-\dfrac{(x-\mu)^2}{2 \sigma^2}} + k
+\end{equation}
+
+where $\sigma$ (m) is the standard deviation controlling the width of the curve, $\varphi$ is the height of the curve peak ($\varphi = \frac{1}{\sigma\sqrt{2\pi}}$), $\mu$ (m) is the position of the center of the peak and $k$ an offset.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/supp_fig_2.pdf}
+	\caption{Examples showing the number of irradiance (A) and radiance (B) photons measured at different depths (numbers in gray boxes) as a function of the distance from the melt pond.}
+\end{figure}
+
+\clearpage
+\newpage
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.75]{../../../graphs/supp_fig_3.pdf}
+	\caption{Scatter plots showing the relationships between downwelling irradiance (\edz{}) and upwelling radiance (\luz{}) between 400 and 700 nm at different depths (numbers in gray boxes). Red lines represent the regressions lines of the fitted linear models. Dotted lines are the 1:1 line. Note the high dispersion occurring in the orange and red regions ($\ge$ 600~nm).}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/supp_fig_4.pdf}
+	\caption{Average determination coefficients \(R^2\) and standard deviation (shaded area) of the regressions between normalized (at 10 meters) \edz{} and \luz{} profiles between 400 and 700 nm. At each wavelength, average values were computed from 83 COPS measurements. A sharp decrease of \(R^2\) occurred at after 575 nm, suggesting a gradual decoupling between \edz{} and \luz{} profiles at higher wavelengths, possibly due to the effect of inelastic scattering.}
+\end{figure}
+
+\section*{Raman inelastic scattering}
+
+Raman scattering is a process by which photons, interacting with water molecules, lose or gain energy and are scattered at a different wavelength. In Supplementary Fig. 3 and Supplementary Fig. 4 one can observe a decoupling between \ked{} and \klu{} at larger wavelengths, possibly due to inelastic Raman scattering. To validate this hypothesis, we used the HydroLight radiative transfer numerical model to calculate downward irradiance and upward radiance and their associated attenuation coefficients in a water column.
+
+\subsection*{HydroLight simulations}
+
+In order to model downward irradiance and upward radiance with and without Raman scattering, two HydrolLight simulations were carried out. The simulations were parameterized using an IOPs profile (ac9) measured on the first of May 2015 in the Baffin Bay. Simulations were performed with the following characteristics:
+
+\begin{itemize}
+	\item A surface free of ice.
+	\item A surface without waves.
+	\item Sun position at noon for May 1st.
+	\item A cloudless sky.
+	\item No fluorescence.
+	\item Using HydroLight default atmospherical parameters.
+	\item The scattering phase function was described by a Fournier-Forand analytic form with a 3\% backscatter fraction.
+	\item EcoLight option was run.
+\end{itemize}
+
+The HydroLight simulations showed a decoupling between \ked{} and \klu{} starting at around 600 nm when Raman scattering was modelled (Supplementary Fig. 5). Note that these differences are much lower if Raman scattering is not taken into account.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/supp_fig_5.pdf}
+	\caption{Comparison between \ked{} and \klu{} of irradiance and radiance profiles (between 1 and 50 m depth) modeled with and without including Raman scattering.}
+\end{figure}
+
+We further observed no significant differences between photosynthetically active radiation (PAR) calculated using irradiance profiles modelled with or without Raman scattering (Supplementary Fig. 5)
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/supp_fig_6.pdf}
+	\caption{Scatter plot showing the 1:1 relationships between PAR calculated using irradiance profiles modeled with or without Raman scattering. The dashed line show the 1:1 line.}
+\end{figure}
+
+\clearpage
+\printbibliography
+\end{document}

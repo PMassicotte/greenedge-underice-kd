@@ -1,5 +1,9 @@
 rm(list = ls())
 
+scientific_10x <- function(x) {
+  parse(text = gsub("e", "%*%10^", scales::scientific_format()(x)))
+}
+
 source("R/simulo/simulo_utils.R")
 
 simulo <- read_feather("data/clean/simulo/compute-canada/simulo_4_lambertian_sources_smoothed_radiance.feather")
@@ -21,38 +25,62 @@ reference_profile <- reference_profile %>%
   summarise(value = mean(value)) %>%
   ungroup()
 
+reference_profile %>% 
+  group_by(source) %>% 
+  count(range)
 
 # Fig 6 -------------------------------------------------------------------
 
 ## Calculate % of cover
 
 cover <- c(
-  "[0,10]" = "0-10.00 meters (25%)",
-  "[0,11.18]" = "0-11.18 meters (20%)",
-  "[0,12.91]" = "0-12.91 meters (15%)",
-  "[0,15.811]" = "0-15.811 meters (10%)",
-  "[0,22.361]" = "0-22.361 meters (5%)",
-  "[0,50]" = "0-50.00 meters (1%)"
+  "[0,10]" = "0-10.00 m (25%)",
+  "[0,11.18]" = "0-11.18 m (20%)",
+  "[0,12.91]" = "0-12.91 m (15%)",
+  "[0,15.811]" = "0-15.81 m (10%)",
+  "[0,22.361]" = "0-22.36 m (5%)",
+  "[0,50]" = "0-50.00 m (1%)"
 )
 
 reference_profile <- reference_profile %>%
   mutate(range = cover[range])
 
-p <- simulo %>%
+p1 <- simulo %>%
+  filter(source == "Irradiance (Ed)") %>% 
   ggplot() +
-  geom_path(aes(x = value, y = depth, group = mid_distance), size = 0.1, alpha = 0.5) +
-  facet_wrap(~ source, scales = "free") +
+  # geom_path(aes(x = value, y = depth, group = mid_distance), size = 0.1, alpha = 0.5) +
   scale_y_reverse() +
-  scale_x_continuous(labels = scientific_format()) +
-  geom_path(data = reference_profile, aes(x = value, y = depth, color = range)) +
-  labs(color = "Surface radius (meters)\nMelt pond proportion (%)") +
+  scale_x_continuous(labels = scientific_10x) +
+  geom_path(data = reference_profile %>% filter(source == "Irradiance (Ed)"), aes(x = value, y = depth, color = range)) +
+  labs(color = "Surface radius (m)\nMelt pond proportion (%)") +
   ylab("Depth (m)") +
   xlab("Number of photons") +
   theme(legend.title = element_text(size = 8), legend.text = element_text(size = 6)) +
   theme(legend.key.size = unit(0.75, "lines")) +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  # theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(legend.position = "none") +
+  xlab("Downward irradiance (a.u.)")
 
-ggsave("graphs/fig6.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)
+p2 <- simulo %>%
+  filter(source == "Radiance (Lu)") %>% 
+  ggplot() +
+  # geom_path(aes(x = value, y = depth, group = mid_distance), size = 0.1, alpha = 0.5) +
+  scale_y_reverse() +
+  scale_x_continuous(labels = scientific_10x) +
+  geom_path(data = reference_profile %>% filter(source == "Radiance (Lu)"), aes(x = value, y = depth, color = range)) +
+  labs(color = "Surface radius (m)\nMelt pond proportion (%)") +
+  ylab("Depth (m)") +
+  xlab("Number of photons") +
+  theme(legend.title = element_text(size = 8), legend.text = element_text(size = 6)) +
+  theme(legend.key.size = unit(0.75, "lines")) +
+  # theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  xlab("Upward radiance (a.u.)")
+
+p <- p1 +
+  p2 +
+  plot_layout(ncol = 2)
+
+ggsave("graphs/fig7.pdf", plot = p, device = cairo_pdf, height = 2.5, width = 7)
 
 ## Some stats for the paper
 
@@ -151,24 +179,47 @@ averaged_simulo <- averaged_simulo %>%
   filter(mid_distance >= 0) %>% 
   mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)"))
 
-## Calculate K only starting at 5 meters (ice ridge)
+## Calculate K only starting at 0 meters
 averaged_simulo <- averaged_simulo %>%
-  filter(between(mid_distance, 5, 50))
+  filter(between(mid_distance, 0, 50))
 
-p <- averaged_simulo %>%
+p1 <- averaged_simulo %>%
+  filter(source == "Irradiance (Ed)") %>% 
   ggplot(aes(x = value, y = depth, color = factor(mid_distance))) +
   geom_path() +
-  facet_wrap(~ source, scales = "free") +
+  # facet_wrap(~ source, scales = "free") +
   scale_y_reverse() +
-  labs(color = str_wrap("Distance from the center of the melt pond (mid distance, meters)", 25)) +
+  labs(color = str_wrap("Distance from the center of the melt pond (mid distance, m)", 25)) +
   guides(col = guide_legend(ncol = 3)) +
   theme(legend.title = element_text(size = 8), legend.text = element_text(size = 6)) +
-  theme(legend.key.size = unit(0.75, "lines")) +
-  scale_x_continuous(labels = scales::scientific) +
+  theme(legend.key.size = unit(0.5, "lines")) +
+  scale_x_continuous(labels = scientific_10x) +
   ylab("Depth (m)") +
-  xlab("Number of photons") 
+  xlab("Downward irradiance (a.u.)") +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
+  theme(legend.position = "none")
 
-ggsave("graphs/fig7.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)
+p2 <- averaged_simulo %>%
+  filter(source == "Radiance (Lu)") %>% 
+  ggplot(aes(x = value, y = depth, color = factor(mid_distance))) +
+  geom_path() +
+  # facet_wrap(~ source, scales = "free") +
+  scale_y_reverse() +
+  labs(color = str_wrap("Distance from the center of the melt pond (mid distance, m)", 25)) +
+  guides(col = guide_legend(ncol = 3)) +
+  theme(legend.title = element_text(size = 8), legend.text = element_text(size = 6)) +
+  theme(legend.key.size = unit(0.5, "lines")) +
+  scale_x_continuous(labels = scientific_10x) +
+  ylab("Depth (m)") +
+  xlab("Upward radiance (a.u.)") +
+  theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
+  theme(legend.margin = margin(t = 1, unit = 'cm'))
+
+p <- p1 +
+  p2 +
+  plot_layout(ncol = 2)
+
+ggsave("graphs/fig8.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)
 
 # Fig 8 -------------------------------------------------------------------
 
@@ -190,15 +241,20 @@ k %>%
   summarise_if(is.numeric, funs(min, max))
 
 p <- k %>% 
-  ggplot(aes(x = mid_distance - 5, y = k, color = source)) +
+  ggplot(aes(x = mid_distance, y = k, color = source)) +
   geom_point() +
   geom_line() +
-  xlab("Distance from the ice ridge (meters)") +
+  xlab("Distance from the center of the melt pond (m)") +
   ylab(bquote("Attenuation coefficient"~(m^{-1}))) +
   theme(legend.position = c(0.95, 0.95), legend.justification = c(1, 1)) +
-  labs(color = "Source")
+  labs(color = "Radiometric quantity") +
+  scale_color_manual(
+    breaks = c("Irradiance (Ed)", "Radiance (Lu)"),
+    values = RColorBrewer::brewer.pal(3, "Set1"),
+    labels = c(bquote(Downward~irradiance~(E[d])), bquote(Upward~radiance~(L[u])))
+  )
 
-ggsave("graphs/supp_fig_6.pdf", width = 5.5, height = 4, device = cairo_pdf)
+ggsave("graphs/fig9.pdf", width = 5.5, height = 4, device = cairo_pdf)
 
 ## Propagate light 
 
@@ -229,24 +285,29 @@ reference_profile <- reference_profile %>%
 ## Visualize
 
 labels <- c(
-  "Irradiance (Ed)" = "Propagated with KEd",
+  "Irradiance (Ed)" = "Propagated with Kd",
   "Radiance (Lu)" = "Propagated with KLu"
 )
 
-p <- reference_profile %>%
-  ggplot(aes(x = value, y = depth)) +
-  facet_grid(range ~ source, scales = "free", labeller = labeller(source = labels)) +
-  scale_y_reverse() +
-  geom_path(data = predicted_light, aes(x = predicted_light, color = factor(mid_distance)), size = 0.25) +
-  geom_path(size = 1) +
-  labs(color = str_wrap("Distance from the center of the melt pond (meters)", 15)) +
-  scale_x_continuous(labels = scales::scientific) +
-  ylab("Depth (m)") +
-  xlab("Number of photons") +
-  theme(strip.text.y = element_text(size = 8)) +
-  guides(col = guide_legend(ncol = 2))
+predicted_light2 <- predicted_light %>% 
+  mutate(source2 = ifelse(source == "Irradiance (Ed)", "Propagated~with~K[d]", "Propagated~with~K[Lu]"))
 
-ggsave("graphs/fig8.pdf", plot = p, device = cairo_pdf, height = 9, width = 7)
+p <- reference_profile %>%
+  mutate(source2 = ifelse(source == "Irradiance (Ed)", "Propagated~with~K[d]", "Propagated~with~K[Lu]")) %>% 
+  ggplot(aes(x = value, y = depth)) +
+  facet_grid(range ~ source2, scales = "free", labeller = labeller(source2 = label_parsed, range = label_value)) +
+  scale_y_reverse() +
+  geom_path(data = predicted_light2, aes(x = predicted_light, color = factor(mid_distance)), size = 0.25) +
+  geom_path(size = 1) +
+  labs(color = str_wrap("Distance from the center of the melt pond (m)", 20)) +
+  scale_x_continuous(labels = scientific_10x, breaks = c(0, 3, 6)*1e6, limits = c(0, NA), expand = c(0.15, 0)) +
+  ylab("Depth (m)") +
+  xlab("Downward irradiance (a.u.)") +
+  theme(strip.text.y = element_text(size = 8)) +
+  guides(col = guide_legend(ncol = 2)) +
+  theme_bw(base_family = "IBM Plex Sans Light")
+
+ggsave("graphs/fig10.pdf", plot = p, device = cairo_pdf, height = 10, width = 7)
 
 # Fig 9 -------------------------------------------------------------------
 
@@ -269,18 +330,20 @@ res <- left_join(int1, int2, by = c("source", "range")) %>%
 p <- res %>%
   spread(type, integral) %>%
   mutate(relative_error = (reference - predicted) / reference) %>%
-  ggplot(aes(x = mid_distance - 5, y = relative_error, color = range)) + # -5 because the radius of the melt pond is 5 meters
+  mutate(source2 = ifelse(source == "Irradiance (Ed)", "Propagated~with~K[d]", "Propagated~with~K[Lu]")) %>% 
+  ggplot(aes(x = mid_distance, y = relative_error, color = range)) + 
   geom_line() +
   # geom_point(show.legend = FALSE) +
-  facet_wrap(~ source, labeller = labeller(source = labels)) +
+  facet_wrap(~ source2, labeller = labeller(source2 = label_parsed)) +
   scale_y_continuous(labels = scales::percent, breaks = seq(-1, 1, by = 0.1)) +
-  xlab("Distance from the ice ridge of the melt pond (meters)") +
+  xlab("Horizontal distance from the center of the melt pond (m)") +
   ylab("Relative error") +
-  labs(color = "Surface radius (meters)\nMelt pond proportion (%)") +
+  labs(color = "Surface radius (m)\nMelt pond proportion (%)") +
   theme(legend.title = element_text(size = 8), legend.text = element_text(size = 6)) +
-  theme(legend.key.size = unit(0.75, "lines")) 
+  theme(legend.key.size = unit(0.75, "lines"))  +
+  theme_bw(base_family = "IBM Plex Sans Light")
 
-ggsave("graphs/fig9.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)
+ggsave("graphs/fig11.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)
 
 ## Stats for the paper
 
@@ -290,9 +353,22 @@ res %>%
   group_by(source) %>% 
   summarise(mean(relative_error) * 100)
 
-
 res %>% 
   spread(type, integral) %>%
   mutate(relative_error = (reference - predicted) / reference) %>% 
   group_by(source, range) %>% 
   summarise(mean(relative_error) * 100, sd(relative_error))
+
+## Pour Simon Lambert, ratio des erreurs relatives
+res %>%
+  spread(type, integral) %>%
+  mutate(relative_error = (reference - predicted) / reference) %>% 
+  select(source, range, mid_distance, relative_error) %>% 
+  spread(source, relative_error) %>% 
+  janitor::clean_names() %>% 
+  mutate(ratio = irradiance_ed / radiance_lu) %>% 
+  # filter(range == "0-50.00 m (1%)") %>% 
+  ggplot(aes(x = mid_distance, ratio, color = range)) +
+  geom_point() +
+  geom_line() +
+  geom_hline(yintercept = 2)

@@ -22,6 +22,7 @@ library(ggsn)
 library(modelr)
 library(glue)
 library(scales)
+library(patchwork)
 
 rm(list = ls())
 graphics.off()
@@ -57,19 +58,19 @@ source("R/simulo/simulo_compare_ed_melt_pond_and_open_water.R")
 source("R/simulo/simulo_propagate_light_by_distance.R")
 rmarkdown::render("reports/simulo/explore_simulo.Rmd")
 
-# Analysis ----------------------------------------------------------------
-
-# TODO
-
 # Figures -----------------------------------------------------------------
 
 source("R/fig1.R")
 source("R/fig2.R")
 source("R/fig3.R")
+source("R/fig4.R")
 source("R/fig5.R")
+source("R/fig6.R")
+source("R/fig7-10.R")
 
-source("R/supp_fig_1.R")
-source("R/supp_fig_2.R")
+source("R/supp_fig_1.R") # Map
+source("R/supp_fig_4-6.R") # Raman scattering
+
 
 # Frey 2011 ---------------------------------------------------------------
 

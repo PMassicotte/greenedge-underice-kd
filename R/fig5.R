@@ -3,161 +3,228 @@
 #
 # DESCRIPTION:
 #
-# 2D plan of irradiance and radiance.
+# Fig. 5 showing the relation between Ked and Klu. Data are generated in the
+# script "calculate_k.R".
 # <><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><><>
 
 rm(list = ls())
 
-simulo <- read_feather("data/clean/simulo/compute-canada/simulo_4_lambertian_sources.feather") %>% 
-  filter(between(pixel_distance_to_center, 0, 50))
+source("https://gist.githubusercontent.com/friendly/67a7df339aa999e2bcfcfec88311abfc/raw/761a7688fba3668a84b2dfe42a655a1b246ca193/wavelength_to_rgb.R")
 
-simulo <- simulo %>%
-  mutate(iso_distance = cut_width(pixel_distance_to_center, width = 0.1)) %>%
-  separate(iso_distance, into = c("start_distance", "end_distance"), sep = ",") %>%
-  mutate_at(vars(start_distance, end_distance), parse_number) %>%
-  mutate(mid_distance = start_distance + (end_distance - start_distance) / 2) %>%
-  group_by(depth, source, mid_distance) %>%
-  summarise(value = mean(value)) %>%
-  ungroup()
+# Plot ked vs klu ---------------------------------------------------------
 
-# Fit a Guassian curve on raidance data to remove noise -------------------
+k <- read_feather("data/clean/k_cops.feather")
 
-fit_gaussian <- function(df, depth) {
-  
-  print(depth)
-  
-  mod <- minpack.lm::nlsLM(
-    radiance ~ a1 * exp(-((mid_distance - b1) ^ 2 / (2 * c1 ^ 2))) + k,
-    data = df,
-    start = list(
-      a1 = mean(df$radiance),
-      b1 = 0,
-      c1 = 5,
-      k = mean(df$radiance)
-    ),
-    lower = c(
-      a1 = 0,
-      b1 = 0,
-      c1 = 0,
-      k = 0
-    ),
-    upper = c(
-      a1 = max(df$radiance),
-      b1 = 0,
-      c1 = 100,
-      k = max(df$radiance)
-    )
-  )
-  
-  return(mod)
+r2_threshold <- 0.99
+
+k2 <- k %>%
+  filter(r2 >= r2_threshold & k > 0) %>% 
+  unite(depth_range, start_depth, end_depth, remove = FALSE, sep = "-") %>% 
+  dplyr::select(profile_filename, depth_range, type, wavelength, k) %>% 
+  spread(type, k) %>% 
+  rename(ked = edz, klu = luz) %>% 
+  drop_na(ked, klu)
+
+
+color <- lapply(unique(k2$wavelength), wavelength_to_rgb) %>% unlist()
+color <- setNames(color, unique(k2$wavelength))
+
+# https://stackoverflow.com/questions/28436855/change-the-number-of-breaks-using-facet-grid-in-ggplot2
+equal_breaks <- function(n = 4, s = 0.05, ...) {
+  function(x) {
+    # rescaling
+    d <- s * diff(range(x)) / (1 + 2 * s)
+    # seq(min(x) + d, max(x) - d, length = n).
+    round(seq(min(x) + d, max(x) - d, length = n), 2)
+  }
 }
 
-simulo <- simulo %>% 
-  bind_rows(mutate(simulo, mid_distance = -mid_distance)) %>% 
-  distinct()
+formula <- y ~ x
 
-simulo <- simulo %>% 
-  spread(source, value)
+appender <- function(string, suffix = " m") paste0(string, suffix)
 
-simulo <- simulo %>%
-  group_by(depth) %>%
-  nest() %>%
-  mutate(mod = map2(data, depth, fit_gaussian)) %>% 
-  mutate(pred = map2(data, mod, add_predictions)) %>% 
-  unnest(pred)
+p <- k2 %>%
+  filter(wavelength < 589) %>% 
+  ggplot(aes(x = klu, y = ked)) +
+  geom_point(aes(color = factor(wavelength)), size = 1) +
+  geom_smooth(method = "lm", se = FALSE, size = 0.5, color = "red") +
+  geom_abline(slope = 1, intercept = 0, lty = 2, color = "grey50") +
+  xlab(bquote(K[Lu]~(m^{-1}))) +
+  ylab(bquote(K[d]~(m^{-1}))) +
+  labs(color = "Wavelength (nm)") +
+  scale_color_manual(values = color) +
+  facet_wrap(~depth_range, scales = "free", ncol = 3, labeller = as_labeller(appender)) +
+  theme(legend.position = c(0.99, -0.05),
+        legend.justification = c(1, 0)) +
+  theme(legend.title = element_text(size = 10),
+        legend.text = element_text(size = 8)) +
+  guides(color = guide_legend(
+    keywidth = 0.15,
+    keyheight = 0.15,
+    default.unit = "inch",
+    ncol = 3
+  ))  +
+  scale_x_continuous(breaks = equal_breaks(n = 3, s = 0.05)) +
+  stat_poly_eq(
+    aes(label =  paste("atop(", ..eq.label.., ")", sep = ",")),
+    formula = formula,
+    parse = TRUE,
+    label.x.npc = "right",
+    label.y.npc = "bottom",
+    vjust = -0.3,
+    size = 2
+  ) +
+  stat_poly_eq(
+    aes(label =  paste("atop(", ..rr.label.., ")", sep = ",")),
+    formula = formula,
+    parse = TRUE,
+    label.x.npc = "right",
+    label.y.npc = "bottom",
+    vjust = 0,
+    size = 2
+  )
 
-p1 <- simulo %>% 
-  filter(depth %in% c(0.5, 5, 10, 15, 20, 25)) %>% 
-  ggplot(aes(x = mid_distance, y = intensity)) +
-  geom_line() +
-  facet_wrap(~depth, scales = "free") +
-  xlab("Distance from the center of the melt pond (m)") +
-  ylab("Number of irradiance photons") +
-  theme(legend.position = "none")
-
-p2 <- simulo %>% 
-  filter(depth %in% c(0.5, 5, 10, 15, 20, 25)) %>% 
-  ggplot(aes(x = mid_distance, y = radiance)) +
-  geom_line(size = 0.1) +
-  geom_line(aes(y = pred, color = "red")) +
-  facet_wrap(~depth, scales = "free") +
-  xlab("Distance from the center of the melt pond (m)") +
-  ylab("Number of radiance photons") +
-  theme(legend.position = "none")
-
-p <- cowplot::plot_grid(p1, p2, labels = "AUTO", align = "hv", ncol = 1)  
-ggsave("graphs/supp_fig_5.pdf", width = 7, height = 6, device = cairo_pdf)
+ggsave("graphs/fig5.pdf", device = cairo_pdf, height = 8, width = 7)  
 
 
-## Replace radiance data with smoothed value (Gaussian fits)
-simulo <- simulo %>% 
-  select(-radiance) %>% 
-  rename(radiance = pred) %>% 
-  gather(source, value, intensity, radiance) %>% 
-  filter(mid_distance >= 0) %>% 
-  mutate(source = ifelse(source == "radiance", "Radiance (Lu)", "Irradiance (Ed)"))
 
-## So we can reuse it later
-write_feather(simulo, "data/clean/simulo/compute-canada/simulo_4_lambertian_sources_smoothed_radiance.feather")
+# Appendix ----------------------------------------------------------------
 
-# Interpolation -----------------------------------------------------------
+p <- k2 %>%
+  ggplot(aes(x = klu, y = ked)) +
+  geom_point(aes(color = factor(wavelength)), size = 1) +
+  geom_smooth(method = "lm", se = FALSE, size = 0.5, color = "red") +
+  geom_abline(slope = 1, intercept = 0, lty = 2, color = "grey50") +
+  xlab(bquote(K[Lu]~(m^{-1}))) +
+  ylab(bquote(K[d]~(m^{-1}))) +
+  labs(color = "Wavelength (nm)") +
+  scale_color_manual(values = color) +
+  facet_wrap(~depth_range, scales = "free", ncol = 3) +
+  theme(legend.position = c(0.99, -0.05),
+        legend.justification = c(1, 0)) +
+  theme(legend.title = element_text(size = 10),
+        legend.text = element_text(size = 8)) +
+  guides(color = guide_legend(
+    keywidth = 0.15,
+    keyheight = 0.15,
+    default.unit = "inch",
+    ncol = 4
+  ))  +
+  scale_x_continuous(breaks = equal_breaks(n = 3, s = 0.05)) +
+  stat_poly_eq(
+    aes(label =  paste("atop(", ..eq.label.., ")", sep = ",")),
+    formula = formula,
+    parse = TRUE,
+    label.x.npc = "right",
+    label.y.npc = "bottom",
+    vjust = -0.3,
+    size = 2
+  ) +
+  stat_poly_eq(
+    aes(label =  paste("atop(", ..rr.label.., ")", sep = ",")),
+    formula = formula,
+    parse = TRUE,
+    label.x.npc = "right",
+    label.y.npc = "bottom",
+    vjust = 0,
+    size = 2
+  )
 
-df <- simulo %>%
-  group_by(source) %>%
-  nest() %>%
-  mutate(interpolated = map(data, ~akima::interp(.$mid_distance, .$depth, .$value, nx = 125, ny = 125))) %>%
-  mutate(interpolated = map(interpolated, ~akima::interp2xyz(., data.frame = TRUE))) %>%
-  unnest(interpolated)
+ggsave("graphs/supp_fig_3.pdf", device = cairo_pdf, height = 8, width = 7)  
 
-# df <- df %>%
-#   group_by(source) %>%
-#   mutate(z = z / max(z))
 
-## Idea of Marcel
-df <- df %>%
-  group_by(source) %>%
-  mutate(z = z / z[x == 50 & y == 0.5])
+# Some stats for the paper ------------------------------------------------
 
-df <- df %>%
-  group_by(source) %>%
-  mutate(z = log(z))
+mod <- k2 %>% 
+  filter(wavelength < 589) %>% 
+  group_by(depth_range) %>% 
+  nest() %>% 
+  mutate(mod = map(data, ~lm(ked ~ klu, data = .))) %>% 
+  mutate(r2 = map(mod, broom::glance)) %>% 
+  unnest(r2)
 
-## Just "mirror" the x-ditances, this makes a better looking plot
-df <- df %>%
-  bind_rows(mutate(df, x = -x))
+mod
 
-iso <- df %>%
-  ungroup() %>%
-  distinct() %>%
-  mutate(light_at_surface = 1) %>%
-  crossing(light_proportion = seq(0, 1, length.out = 6)) %>%
-  group_by(source, x, light_proportion) %>%
-  nest() %>%
-  mutate(iso = map2_dbl(data, light_proportion, function(x, lp) {
-    x %>%
-      ggplot(aes(x = z, y = y)) +
-      geom_path() +
-      scale_y_reverse()
+range(mod$r.squared)
 
-    sf <- with(x, approxfun(z, y))
-    sf(lp)
-  })) %>%
-  group_by(source, x, light_proportion) %>%
-  drop_na()
+# Supplementary figure ----------------------------------------------------
 
-p <- df %>%
-  ggplot(aes(x = x, y = y, fill = z, z = z)) +
-  geom_raster() +
-  scale_y_reverse(expand = c(0, 0), name = "Depth (m)") +
-  scale_fill_viridis_c() +
-  facet_wrap(~source) +
-  scale_x_continuous(expand = c(0, 0), name = "Horizontal distance (m)") +
-  theme(panel.spacing = unit(1, "lines")) +
-  labs(fill = str_wrap("Normalized number of photons", 10)) +
-  # geom_line(data = iso, aes(x = x, y = iso, group = light_proportion), color = "white", size = 0.1, inherit.aes = FALSE) +
-  theme(legend.box = "horizontal")
+## Show the global relation 
 
-p
+p <- k2 %>%
+  ggplot(aes(x = klu, y = ked)) +
+  geom_point(aes(color = factor(wavelength)), size = 1) +
+  geom_smooth(method = "lm") +
+  geom_abline(slope = 1, intercept = 0, lty = 2, color = "grey50") +
+  xlab(bquote(K[Lu]~(m^{-1}))) +
+  ylab(bquote(K[Ed]~(m^{-1}))) +
+  labs(color = "Wavelength (nm)") +
+  scale_color_manual(values = color) +
+  facet_wrap(~depth_range, scales = "free", ncol = 3) +
+  theme(legend.position = c(0.99, -0.05),
+        legend.justification = c(1, 0)) +
+  theme(legend.title = element_text(size = 10),
+        legend.text = element_text(size = 8)) +
+  guides(color = guide_legend(
+    keywidth = 0.15,
+    keyheight = 0.15,
+    default.unit = "inch",
+    ncol = 4
+  ))  +
+  scale_x_continuous(breaks = equal_breaks(n = 3, s = 0.05))
 
-ggsave("graphs/fig5.pdf", plot = p, device = cairo_pdf, height = 3, width = 7)
+# ggsave("graphs/supp_fig_3.pdf", device = cairo_pdf, height = 8, width = 7)
 
+# Table -------------------------------------------------------------------
+
+mod <- k2 %>%
+  filter(wavelength < 589) %>% 
+  group_by(depth_range) %>%
+  nest() %>% 
+  mutate(mod = map(data, ~lm(ked ~ klu, data = .)))
+
+mod <- mod %>%
+  mutate(mysummary = map(mod, summary)) %>% 
+  mutate(r2 = map_dbl(mysummary, "r.squared")) %>% 
+  mutate(coef = map(mod, function(x) {
+    
+    df <- data_frame(intercept = coef(x)[1], slope = coef(x)[2])
+    return(df)
+  })) %>% 
+  mutate(n = map_dbl(data, nrow)) %>% 
+  unnest(coef) 
+
+table <- mod %>% 
+  dplyr::select(depth_range, intercept, slope, r2, n)
+
+# https://haozhu233.github.io/kableExtra/awesome_table_in_pdf.pdf
+
+knitr::kable(
+  table,
+  format = "latex",
+  booktabs = TRUE,
+  caption = "Regression coefficients used to convert KLu into Ked."
+) %>%
+  kableExtra::kable_styling(latex_options = c("hold_position")) %>% 
+  writeLines("article/applied-sciences//tables/table1.tex")
+
+# p5 <- k2 %>% 
+#   filter(wavelength < 589) %>% 
+#   ggplot(aes(x = klu, y = ked)) +
+#   geom_point(aes(color = factor(wavelength)), size = 1) +
+#   geom_smooth(method = "lm") +
+#   geom_abline(slope = 1, intercept = 0, lty = 2, color = "grey50") +
+#   xlab(bquote(K[Lu]~(m^{-1}))) +
+#   ylab(bquote(K[Ed]~(m^{-1}))) +
+#   labs(color = "Depth (m)") +
+#   scale_color_manual(values = color) +
+#   facet_wrap(~depth_range2, scales = "free", ncol = 3) +
+#   labs(title = "Ked vs Klu",
+#        subtitle =  str_wrap(sprintf("Includes %d observations (divided by depth ranges).", nrow(k2))))
+
+## Save the graphs
+# ggsave("graphs/compare_ked_klu_a.pdf", p1, device = cairo_pdf, height = 6, width = 8)
+# ggsave("graphs/compare_ked_klu_b.pdf", p2, device = cairo_pdf, height = 6, width = 8)
+# ggsave("graphs/compare_ked_klu_c.pdf", p3, device = cairo_pdf, width = 20, height = 20)
+# ggsave("graphs/compare_ked_klu_d.pdf", p4, device = cairo_pdf, height = 8, width = 9)
+# ggsave("graphs/compare_ked_klu_e.pdf", p5, device = cairo_pdf, height = 8, width = 9)

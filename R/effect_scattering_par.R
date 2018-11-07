@@ -27,12 +27,12 @@ read_hydrolight <- function(file, variable) {
   return(df)
 }
 
-ed_without_fluo <- read_hydrolight("~/Desktop/phil_sans_raman.xlsx", "Ed")
-lu_without_fluo <- read_hydrolight("~/Desktop/phil_sans_raman.xlsx", "Lu")
+ed_without_fluo <- read_hydrolight("data/raw/hydrolight/phil_sans_raman.xlsx", "Ed")
+lu_without_fluo <- read_hydrolight("data/raw/hydrolight/phil_sans_raman.xlsx", "Lu")
 without_fluo <- inner_join(ed_without_fluo, lu_without_fluo)
 
-ed_with_fluo <- read_hydrolight("~/Desktop/phil_avec_raman.xlsx", "Ed")
-lu_with_fluo <- read_hydrolight("~/Desktop/phil_avec_raman.xlsx", "Lu")
+ed_with_fluo <- read_hydrolight("data/raw/hydrolight/phil_avec_raman.xlsx", "Ed")
+lu_with_fluo <- read_hydrolight("data/raw/hydrolight/phil_avec_raman.xlsx", "Lu")
 with_fluo <- inner_join(ed_with_fluo, lu_with_fluo)
 
 df <- bind_rows(without_fluo, with_fluo) %>%
