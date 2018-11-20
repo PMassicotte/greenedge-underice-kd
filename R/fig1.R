@@ -44,8 +44,8 @@ p1 <- ggplot() +
   # scale_color_brewer(palette = "BuPu") +
   labs(fill = "") +
   labs(color = "Sampling\ndistance (m)") +
-  xlab("x-distance (m)") +
-  ylab("y-distance (m)") +
+  xlab(bquote(italic(x)*"-distance (m)")) +
+  ylab(bquote(italic(y)*"-distance (m)")) +
   geom_segment(data = configuration, aes(x = 0, y = 0, xend = x, yend = y, group = radius), size = 0.25) +
   geom_label(data = configuration, aes(x = x, y = y, label = sprintf("%2.0f%% melt pond cover", radius * 100)), hjust = 0, label.size = 0, nudge_x = 1, size = 2, label.padding = unit(0.05, "lines")) +
   guides(color = guide_legend(
@@ -97,7 +97,7 @@ p2 <- ggplot() +
   annotate("segment", x = -75, xend = -65, y = 0, yend = -10, lty = 1, size = 0.25, arrow = arrow(length = unit(1.5, "mm")), color = "orange") +
   
   annotate("text", x = -110, y = -100, label = "Homogeneous water column:", size = 3.5, hjust = 0, fontface = 2, family = "IBM Plex Sans Light") +
-  annotate("text", x = -110, y = -110, label = expression("a = b = 0.05"*m^{-1}), size = 3, hjust = 0, family = "IBM Plex Sans Light") +
+  annotate("text", x = -110, y = -110, label = expression(italic(a)*"="*italic(b)*"="*0.05*m^{-1}), size = 3, hjust = 0, family = "IBM Plex Sans Light", parse = TRUE) +
   annotate("text", x = -110, y = -120, label = "VSF: Fourrier-Forand 3%", size = 3, hjust = 0, family = "IBM Plex Sans Light") +
   
   theme(panel.grid = element_blank()) +

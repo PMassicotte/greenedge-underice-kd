@@ -28,7 +28,7 @@ p1 <- df %>%
   geom_path() +
   scale_y_reverse() +
   ylab("Depth (m)") +
-  xlab(bquote(E[d]~"("*mu*W~cm^{-2}*")")) +
+  xlab(bquote(italic(E[d])~"("*mu*W~cm^{-2}*")")) +
   labs(color = "Wavelengths (nm)") +
   theme(legend.position = "none") +
   guides(color = guide_legend(
@@ -46,7 +46,7 @@ p2 <- df %>%
   geom_path() +
   scale_y_reverse() +
   ylab("Depth (m)") +
-  xlab(bquote(L[u]~"("*mu*W~cm^{-2}~sr^{-1}*")")) +
+  xlab(bquote(italic(L[u])~"("*mu*W~cm^{-2}~sr^{-1}*")")) +
   labs(color = "Wavelengths (nm)") +
   theme(
   legend.position = c(0.99, 0.01),

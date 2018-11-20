@@ -53,7 +53,7 @@ p1 <- res2 %>%
   geom_point() +
   geom_ribbon(aes(ymin = r_squared_mean - r_squared_sd, ymax = r_squared_mean + r_squared_sd), alpha = 0.25) +
   xlab("Wavelength (nm)") +
-  ylab(bquote(atop("Determination", "coefficient" ~ "("*R ^ 2*")"))) +
+  ylab(bquote(atop("Determination", "coefficient" ~ "("*italic(R^2)*")"))) +
   scale_x_continuous(breaks = seq(400, 700, by = 50))
 
 p2 <- res2 %>%
@@ -124,8 +124,8 @@ p <- df %>%
   geom_point(size = 0.25, alpha = 0.5) +
   facet_wrap(~simulation_type) +
   scale_color_manual(values = color) +
-  ylab(bquote(K[d]~(m^{-1}))) +
-  xlab(bquote(K[Lu]~(m^{-1}))) +
+  ylab(bquote(italic(K[d])~(m^{-1}))) +
+  xlab(bquote(italic(K[Lu])~(m^{-1}))) +
   labs(color = "Wavelength (nm)") +
   geom_abline(lty = 2, size = 0.25) +
   guides(color = guide_legend(

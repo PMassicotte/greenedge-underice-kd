@@ -51,8 +51,8 @@ p <- df %>%
     breaks = c("edz", "luz"),
     values = c(1, 2),
     labels = c(
-      bquote(Downwelling~irradiance~(E[d])),
-      bquote(Upwelling~radiance~(L[u]))
+      bquote(Downward~irradiance~(italic(E[d]))),
+      bquote(Upward~radiance~(italic(L[u])))
     )
   ) +
   guides(colour = FALSE)

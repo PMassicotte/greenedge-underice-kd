@@ -151,7 +151,7 @@ iso <- df %>%
   drop_na()
 
 p <- df %>%
-  mutate(source2 = ifelse(source == "Irradiance (Ed)", "Downward~irradiance~(E[d])", "Upward~radiance~(L[u])")) %>% 
+  mutate(source2 = ifelse(source == "Irradiance (Ed)", "Downward~irradiance~(italic(E[d]))", "Upward~radiance~(italic(L[u]))")) %>% 
   ggplot(aes(x = x, y = y, fill = z, z = z)) +
   geom_raster() +
   scale_y_reverse(expand = c(0, 0), name = "Depth (m)") +

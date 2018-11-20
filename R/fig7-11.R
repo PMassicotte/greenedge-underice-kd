@@ -59,7 +59,7 @@ p1 <- simulo %>%
   theme(legend.key.size = unit(0.75, "lines")) +
   # theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   theme(legend.position = "none") +
-  xlab("Downward irradiance (a.u.)")
+  xlab("Downward irradiance")
 
 p2 <- simulo %>%
   filter(source == "Radiance (Lu)") %>% 
@@ -74,7 +74,7 @@ p2 <- simulo %>%
   theme(legend.title = element_text(size = 8), legend.text = element_text(size = 6)) +
   theme(legend.key.size = unit(0.75, "lines")) +
   # theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  xlab("Upward radiance (a.u.)")
+  xlab("Upward radiance")
 
 p <- p1 +
   p2 +
@@ -195,7 +195,7 @@ p1 <- averaged_simulo %>%
   theme(legend.key.size = unit(0.5, "lines")) +
   scale_x_continuous(labels = scientific_10x) +
   ylab("Depth (m)") +
-  xlab("Downward irradiance (a.u.)") +
+  xlab("Downward irradiance") +
   theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
   theme(legend.position = "none")
 
@@ -211,7 +211,7 @@ p2 <- averaged_simulo %>%
   theme(legend.key.size = unit(0.5, "lines")) +
   scale_x_continuous(labels = scientific_10x) +
   ylab("Depth (m)") +
-  xlab("Upward radiance (a.u.)") +
+  xlab("Upward radiance") +
   theme(axis.text.x = element_text(angle = 35, hjust = 1)) +
   theme(legend.margin = margin(t = 1, unit = 'cm'))
 
@@ -247,12 +247,12 @@ p <- k %>%
   xlab("Distance from the center of the melt pond (m)") +
   ylab(bquote("Attenuation coefficient"~(m^{-1}))) +
   theme(legend.position = c(0.95, 0.95), legend.justification = c(1, 1)) +
-  labs(color = "Radiometric quantity") +
   scale_color_manual(
     breaks = c("Irradiance (Ed)", "Radiance (Lu)"),
     values = RColorBrewer::brewer.pal(3, "Set1"),
-    labels = c(bquote(Downward~irradiance~(E[d])), bquote(Upward~radiance~(L[u])))
-  )
+    labels = c(bquote(italic(K[d])), bquote(italic(K[Lu])))
+  ) +
+  theme(legend.title = element_blank())
 
 ggsave("graphs/fig9.pdf", width = 5.5, height = 4, device = cairo_pdf)
 
@@ -290,10 +290,10 @@ labels <- c(
 )
 
 predicted_light2 <- predicted_light %>% 
-  mutate(source2 = ifelse(source == "Irradiance (Ed)", "Propagated~with~K[d]", "Propagated~with~K[Lu]"))
+  mutate(source2 = ifelse(source == "Irradiance (Ed)", "Propagated~with~italic(K[d])", "Propagated~with~italic(K[Lu])"))
 
 p <- reference_profile %>%
-  mutate(source2 = ifelse(source == "Irradiance (Ed)", "Propagated~with~K[d]", "Propagated~with~K[Lu]")) %>% 
+  mutate(source2 = ifelse(source == "Irradiance (Ed)", "Propagated~with~italic(K[d])", "Propagated~with~italic(K[Lu])")) %>% 
   ggplot(aes(x = value, y = depth)) +
   facet_grid(range ~ source2, scales = "free", labeller = labeller(source2 = label_parsed, range = label_value)) +
   scale_y_reverse() +
@@ -302,7 +302,7 @@ p <- reference_profile %>%
   labs(color = str_wrap("Distance from the center of the melt pond (m)", 20)) +
   scale_x_continuous(labels = scientific_10x, breaks = c(0, 3, 6)*1e6, limits = c(0, NA), expand = c(0.15, 0)) +
   ylab("Depth (m)") +
-  xlab("Downward irradiance (a.u.)") +
+  xlab("Downward irradiance") +
   theme(strip.text.y = element_text(size = 8)) +
   guides(col = guide_legend(ncol = 2)) +
   theme_bw(base_family = "IBM Plex Sans Light")
@@ -330,7 +330,7 @@ res <- left_join(int1, int2, by = c("source", "range")) %>%
 p <- res %>%
   spread(type, integral) %>%
   mutate(relative_error = (reference - predicted) / reference) %>%
-  mutate(source2 = ifelse(source == "Irradiance (Ed)", "Propagated~with~K[d]", "Propagated~with~K[Lu]")) %>% 
+  mutate(source2 = ifelse(source == "Irradiance (Ed)", "Propagated~with~italic(K[d])", "Propagated~with~italic(K[Lu])")) %>% 
   ggplot(aes(x = mid_distance, y = relative_error, color = range)) + 
   geom_line() +
   # geom_point(show.legend = FALSE) +

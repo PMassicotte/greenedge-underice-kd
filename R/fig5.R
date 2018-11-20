@@ -49,8 +49,8 @@ p <- k2 %>%
   geom_point(aes(color = factor(wavelength)), size = 1) +
   geom_smooth(method = "lm", se = FALSE, size = 0.5, color = "red") +
   geom_abline(slope = 1, intercept = 0, lty = 2, color = "grey50") +
-  xlab(bquote(K[Lu]~(m^{-1}))) +
-  ylab(bquote(K[d]~(m^{-1}))) +
+  xlab(bquote(italic(K[Lu])~(m^{-1}))) +
+  ylab(bquote(italic(K[d])~(m^{-1}))) +
   labs(color = "Wavelength (nm)") +
   scale_color_manual(values = color) +
   facet_wrap(~depth_range, scales = "free", ncol = 3, labeller = as_labeller(appender)) +
@@ -95,8 +95,8 @@ p <- k2 %>%
   geom_point(aes(color = factor(wavelength)), size = 1) +
   geom_smooth(method = "lm", se = FALSE, size = 0.5, color = "red") +
   geom_abline(slope = 1, intercept = 0, lty = 2, color = "grey50") +
-  xlab(bquote(K[Lu]~(m^{-1}))) +
-  ylab(bquote(K[d]~(m^{-1}))) +
+  xlab(bquote(italic(K[Lu])~(m^{-1}))) +
+  ylab(bquote(italic(K[d])~(m^{-1}))) +
   labs(color = "Wavelength (nm)") +
   scale_color_manual(values = color) +
   facet_wrap(~depth_range, scales = "free", ncol = 3) +
