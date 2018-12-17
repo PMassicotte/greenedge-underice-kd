@@ -1,0 +1,609 @@
+%  LaTeX support: latex@mdpi.com 
+%  In case you need support, please attach all files that are necessary for compiling as well as the log file, and specify the details of your LaTeX setup (which operating system and LaTeX version / tools you are using).
+
+% You need to save the "mdpi.cls" and "mdpi.bst" files into the same folder as this template file.
+
+%=================================================================
+\documentclass[applsci,article,accept,moreauthors,pdftex,10pt,a4paper]{Definitions/mdpi} 
+
+% If you would like to post an early version of this manuscript as a preprint, you may use preprint as the journal and change 'submit' to 'accept'. The document class line would be, e.g. \documentclass[preprints,article,accept,moreauthors,pdftex,10pt,a4paper]{mdpi}. This is especially recommended for submission to arXiv, where line numbers should be removed before posting. For preprints.org, the editorial staff will make this change immediately prior to posting.
+\setitemize{parsep=6pt,itemsep=0pt,leftmargin=*,labelsep=5.5mm}
+\setenumerate{parsep=6pt,itemsep=0pt,leftmargin=*,labelsep=5.5mm}
+\setlist[description]{itemsep=0mm}   
+
+%
+%--------------------
+% Class Options:
+%--------------------
+% journal
+%----------
+% Choose between the following MDPI journals:
+% acoustics, actuators, addictions, admsci, aerospace, agriculture, agronomy, algorithms, animals, antibiotics, antibodies, antioxidants, applsci, arts, asi, atmosphere, atoms, axioms, batteries, bdcc, behavsci, beverages, bioengineering, biology, biomedicines, biomimetics, biomolecules, biosensors, brainsci, buildings, carbon, cancers, catalysts, cells, ceramics, challenges, chemengineering, chemosensors, children, cleantechnol, climate, clockssleep, cmd, coatings, colloids, computation, computers, condensedmatter, cosmetics, cryptography, crystals, cybersecurity, data, dentistry, designs, diagnostics, dairy, diseases, diversity, drones, econometrics, economies, education, electrochem, electrochemistry, electronics, energies, entropy, environments, epigenomes, est, fermentation, fibers, fire, fishes, fluids, foods, forecasting, forests, fractalfract, futureinternet, galaxies, games, gastrointestdisord, gels, genealogy, genes, geohazards, geosciences, geriatrics, hazardousmatters, healthcare, heritage, highthroughput, horticulturae, humanities, hydrology, informatics, information, infrastructures, inorganics, insects, instruments, ijerph, ijfs, ijms, ijgi, ijtpp, inventions, j, jcdd, jcm, jcs, jdb, jfb, jfmk, jimaging, jof, jintelligence, jlpea, jmmp, jmse, jpm, jrfm, jsan, land, languages, laws, life, literature, logistics, lubricants, machines, magnetochemistry, make, marinedrugs, materials, mathematics, mca, medsci, medicina, medicines, membranes, metabolites, metals, microarrays, micromachines, microorganisms, minerals, modelling, molbank, molecules, mps, mti, nanomaterials, ncrna, neonatalscreening, neuroglia, nitrogen, nutrients, ohbm, particles, pathogens, pharmaceuticals, pharmaceutics, pharmacy, philosophies, photonics, plants, plasma, polymers, polysaccharides, proceedings, processes, proteomes, publications, quaternary, qubs, reactions, recycling, religions, remotesensing, reports, resources, risks, robotics, safety, sci, scipharm, sensors, separations, sexes, sinusitis, smartcities, socsci, societies, soilsystems, sports, standards, stats, surfaces, surgeries, sustainability, symmetry, systems, technologies, toxics, toxins, tropicalmed, universe, urbansci, vaccines, vehicles, vetsci, vibration, viruses, vision, water, wem, wevj
+%---------
+% article
+%---------
+% The default type of manuscript is article, but can be replaced by: 
+% abstract, addendum, article, benchmark, book, bookreview, briefreport, casereport, changes, comment, commentary, communication, conceptpaper, correction, conferenceproceedings, conferencereport, expressionofconcern, meetingreport, creative, datadescriptor, discussion, editorial, essay, erratum, hypothesis, interestingimages, letter, meetingreport, newbookreceived, opinion, obituary, projectreport, reply, reprint, retraction, review, perspective, protocol, shortnote, supfile, technicalnote, viewpoint
+% supfile = supplementary materials
+% protocol: If you are preparing a "Protocol" paper, please refer to http://www.mdpi.com/journal/mps/instructions for details on its expected structure and content.
+%----------
+% submit
+%----------
+% The class option "submit" will be changed to "accept" by the Editorial Office when the paper is accepted. This will only make changes to the frontpage (e.g. the logo of the journal will get visible), the headings, and the copyright information. Also, line numbering will be removed. Journal info and pagination for accepted papers will also be assigned by the Editorial Office.
+%------------------
+% moreauthors
+%------------------
+% If there is only one author the class option oneauthor should be used. Otherwise use the class option moreauthors.
+%---------
+% pdftex
+%---------
+% The option pdftex is for use with pdfLaTeX. If eps figures are used, remove the option pdftex and use LaTeX and dvi2pdf.
+\usepackage{soul}
+\usepackage{booktabs} 
+\usepackage{multirow}
+\usepackage{microtype}
+%=================================================================
+\firstpage{1} 
+\makeatletter 
+\setcounter{page}{\@firstpage} 
+\makeatother
+\pubvolume{xx}
+\issuenum{1}
+\articlenumber{5}
+\pubyear{2018}
+\copyrightyear{2018}
+%\externaleditor{Academic Editor: name}
+\history{Received: 8 September 2018; Accepted: 23 November 2018; Published: date}
+%\updates{yes} % If there is an update available, un-comment this line
+
+%% MDPI internal command: uncomment if new journal that already uses continuous page numbers 
+%\continuouspages{yes}
+
+%------------------------------------------------------------------
+% The following line should be uncommented if the LaTeX file is uploaded to arXiv.org
+%\pdfoutput=1
+
+%=================================================================
+% Add packages and commands here. The following packages are loaded in our class file: fontenc, calc, indentfirst, fancyhdr, graphicx, lastpage, ifthen, lineno, float, amsmath, setspace, enumitem, mathpazo, booktabs, titlesec, etoolbox, amsthm, hyphenat, natbib, hyperref, footmisc, geometry, caption, url, mdframed, tabto, soul, multirow, microtype, tikz
+
+%=================================================================
+%% Please use the following mathematics environments: Theorem, Lemma, Corollary, Proposition, Characterization, Property, Problem, Example, ExamplesandDefinitions, Hypothesis, Remark, Definition
+%% For proofs, please use the proof environment (the amsthm package is loaded by the MDPI class).
+
+%=================================================================
+% Full title of the paper (Capitalized)
+\Title{Estimating Underwater Light Regime under Spatially Heterogeneous Sea Ice in the Arctic}
+
+% Author Orchid ID: enter ID or remove command
+\newcommand{\orcidauthorA}{0000-0002-5919-4116} % Add \orcidA{} behind the author's name
+\newcommand{\orcidauthorB}{0000-0002-2526-0808} % Add \orcidB{} behind the author's name
+\newcommand{\orcidauthorC}{0000-0001-9705-407X} % Add \orcidB{} behind the author's name
+
+% Authors, for the paper (add full first names)
+\Author{\hl{Philippe Massicotte} $^{1,}$*\orcidA{}, Guislain Bécu $^{1}$\orcidB{}, 
+\hl{Simon Lambert-Girard} $^{1}$, %%%Rrminder: this author name is different with redmine, please confirm.
+Edouard Leymarie $^{2}$\orcidC{} and Marcel Babin $^{1}$}
+%%%%%Please carefully check the accuracy of names and affiliations. 
+%Changes will not be possible after proofreading. 
+
+
+% Authors, for metadata in PDF
+\AuthorNames{Philippe Massicotte, Guislain Bécu, Simon Lambert-Girard, Edouard Leymarie and Marcel Babin}
+
+% Affiliations / Addresses (Add [1] after \address if there is only one affiliation.)
+\address{%
+$^{1}$ \quad Takuvik Joint International Laboratory (UMI 3376) Université Laval (Canada) Centre National de la {Recherche Scientifique (France)}, \hl{Post code City, Country}; guislain.becu@takuvik.ulaval.ca (G.B.); Simon.Lambert-Girard@takuvik.ulaval.ca (\hl{S.L.-G.}); marcel.babin@takuvik.ulaval.ca (M.B.)\\
+%%%%%please add city, post code and country.
+$^{2}$ \quad Laboratoire d'Océanographie de Villefranche, Sorbonne Université, CNRS, LOV, F-06230~Villefranche-sur-Mer, France; leymarie@obs-vlfr.fr}
+
+% Contact information of the corresponding author
+\corres{Correspondence: philippe.massicotte@takuvik.ulaval.ca or pmassicotte@hotmail.com}
+
+\usepackage[final]{pdfpages}
+
+\newcommand{\ked}{\ensuremath{K_{d}}}
+\newcommand{\klu}{\ensuremath{K_{Lu}}}
+\newcommand{\edz}{\ensuremath{{E_d(z)}}}
+\newcommand{\luz}{\ensuremath{{L_u(z)}}}
+\newcommand{\ed}{\ensuremath{{E_d}}}
+\newcommand{\lu}{\ensuremath{{L_u}}}
+\newcommand{\edzero}{\ensuremath{{E_d(0^-)}}}
+\newcommand{\meanedz}{\ensuremath{{\overline{E_d}(z)}}}
+\newcommand{\meanluz}{\ensuremath{{\overline{L_u}(z)}}}
+\newcommand{\meanked}{\ensuremath{{\overline{K_{d}}}}}
+
+%  Units
+\newcommand{\mminus}{m\textsuperscript{-1}}
+\newcommand{\wmsquare}{W~m\textsuperscript{-2}}
+\newcommand{\wmsquaresr}{W~m\textsuperscript{-2}~sr\textsuperscript{-1}}
+
+\newcommand{\rsquared}{\ensuremath{R^2}}
+
+
+% Current address and/or shared authorship
+%\firstnote{Current address: Affiliation 3} 
+%\secondnote{These authors contributed equally to this work.}
+% The commands \thirdnote{} till \eighthnote{} are available for further notes
+
+%\simplesumm{} % Simple summary
+
+%\conference{} % An extended version of a conference paper
+
+% Abstract (Do not insert blank lines, i.e. \\) 
+\abstract{The vertical diffuse attenuation coefficient for downward plane irradiance (\ked{}) is an apparent optical property commonly used in primary production models to propagate incident solar radiation in the water column. In open water, estimating \ked{} is relatively straightforward when a vertical profile of measurements of downward irradiance, \ed{}, is available. In the Arctic, the ice pack is characterized by a complex mosaic composed of sea ice with snow, ridges, melt~ponds, and~leads. Due to the resulting spatially heterogeneous light field in the top meters of the water column, it is difficult to measure at single-point locations meaningful \ked{} values that allow predicting average irradiance at any depth. The main objective of this work is to propose a new method to estimate average irradiance over large spatially heterogeneous area as it would be seen by drifting phytoplankton. Using both in situ data and 3D Monte Carlo numerical simulations of radiative transfer, we show that (1) the large-area average vertical profile of downward irradiance, \meanedz{}, under~heterogeneous sea ice cover can be represented by a single-term exponential function and (2)~the vertical attenuation coefficient for upward radiance (\klu{}), which is up to two times less influenced by a heterogeneous incident light field than \ked{} in the vicinity of a melt pond, can be used as a proxy to estimate \meanedz{} in the water column.}
+
+% Keywords
+\keyword{apparent optical properties; 3D Monte Carlo numerical simulations; downward irradiance; upward radiance; sea ice heterogeneity; vertical attenuation coefficient; melt ponds}
+
+%\setcounter{secnumdepth}{4}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{document}
+\section{Introduction}
+
+The vertical distribution of underwater light is an important driver of many aquatic processes such as primary production by phytoplankton, and photochemical reactions such as the photodegradation of organic matter. Hence, an adequate description of the underwater light regime is mandatory to understand energy fluxes in aquatic ecosystems. In open water, when assuming an optically homogeneous water column, downward irradiance at any given wavelength follows, as a first approximation, quite well a monotonically exponential decrease with depth, which can be modelled as follows \citep{Kirk1994} (Equation (\ref{eq:edz})):
+\begin{equation}
+    \edz{} = \edzero{}~e^{-\ked(z)~z}
+    \label{eq:edz}
+\end{equation}
+where \edz{} is the downward plane irradiance (W m$^{-2}$) at depth $z$ (m), \edzero{} is the downward plane irradiance (W m$^{-2}$) just below the surface and $K_d(z)$ is the diffuse vertical attenuation coefficient \mbox{(m$^{-1}$)} describing the rate at which downward irradiance decreases with increasing depth. \ked{} is one of the most commonly used apparent optical properties (AOP) of seawater, and a good estimation of this parameter is important for measuring or modelling primary production. \ked{} may vary with depth because of changes in seawater inherent optical properties, the angular structure of the light field, and the effects of inelastic radiative processes such as Raman scattering by water molecules and fluorescence by phytoplankton pigments or dissolved organic matter. As \citet{Kirk1994} pointed out, for~practical considerations in oceanography and limnology, the \ked{} value, even when averaged within the euphotic zone, provides a useful proxy to represent the downward irradiance attenuation in the upper water column. For example, to determine primary production based on simulated on-deck incubations or photosynthetic parameters derived from photosynthesis--irradiance curves (P~vs.~E~curves) requires measured or estimated values of \ked{} (e.g., \citet{Morel1996}). Nowadays, \ked{} is relatively easy to estimate using commercially available radiometers.
+
+The ice-infested regions of the Arctic ocean are characterized by a complex mosaic made of sea ice with snow, melt ponds, ridges, and leads \citep{Nicolaus2013, Katlein2015, Katlein2016}. Phytoplankton are exposed to a highly variable light regime while drifting under these heterogeneous features (e.g., Lange et al. \cite{Lange2017}). Estimating primary production of phytoplankton under sea ice requires an approach that is adequate to capture this large-area variability in the light field. In situ incubations at single locations of seawater samples inoculated with $^{14}$C or $^{13}$C are not appropriate because they reflect primary production under local light conditions, which is not representative of the range of irradiance experienced by drifting phytoplankton over a large area. One classical approach that is more adequate consists in conducting on-deck simulated 24-h incubations of seawater samples inoculated with $^{14}$C or $^{13}$C and applying the light attenuation at the depths of sample collections, using natural illumination and neutral filters. An~alternative approach consists in calculating primary production using modelled or measured daily time series of incident irradiance, sea ice transmittance and in-water vertical attenuation coefficients, combined with photosynthetic parameters determined from P--E curves measured with short (under~two hours) incubations of seawater samples inoculated with $^{14}$C. The latter two methods require that the vertical profile of the irradiance experienced by drifting phytoplankton be appropriately determined, which is challenging due to surface heterogeneity. Traditionally, one~or very few \edz{} profiles are measured at discrete locations under sea ice (e.g., Mundy et al. \cite{Mundy2009}). Such~measurements, however, do not capture the variability induced by sea ice features. In recent studies, to better document the spatial variability of \edz{}, radiometers were attached to either remotely operated vehicles (ROV) \citep{Katlein2015} or a surface and under-ice trawl (SUIT), a net developed for deployment in ice-covered waters, typically behind an icebreaker \citep{Lange2017}. Both a ROV and a SUIT allow a better description of the light field right under sea ice, which is more appropriate for determining average irradiance experienced by drifting phytoplankton. Such under-ice measurements can then be combined with averaged \ked{} values to propagate light at depth.
+
+Estimating irradiance at depth for primary production measurement or calculation using \ked{} values derived from only a few discrete vertical profiles of \edz{} under heterogeneous sea ice is problematic whatever the platform for radiometer deployment. Let us consider that phytoplankton, by continuously drifting horizontally relative to sea ice, are exposed to fluctuations in irradiance due to surface heterogeneity, and that the relevant light metrics for primary production in such conditions is irradiance at any depth averaged over some horizontal area. When measuring an irradiance profile at one given location under sea ice, as the depth of the upward-looking detector increases, light~from a larger area on the underside of the ice enters the detector field of view. In other words, the~detector ``sees'' different things at different depths. One consequence is that \edz{} measured that way may not follow the usual monotonically exponential decrease with increasing depth (Equation (\ref{eq:edz}). For~example, irradiance profiles measured beneath low-transmission sea ice (e.g., white ice) relative to surrounding areas showing melt ponds, show subsurface light maxima. The literature reports subsurface maxima varying between 5 m and 15 m in depth \citep{Frey2011, Katlein2016, Laney2017}. Conversely, it is also important to note that \ked{} estimations are biased when profiles are measured beneath an area of high transmission (e.g.,~a~melt pond) relative to surrounding areas \citep{Katlein2016}. Indeed, with depth, light decreases more quickly than what would be expected from the inherent optical properties (IOPs) of the water column. In~the field, this situation is more difficult to identify compared to profiles showing subsurface maxima because the former measurements may appear to follow a single exponential decrease but would not produce a diffuse attenuation coefficient that adequately describes the water mass. So, two vertical light profiles measured a few meters apart under sea ice are often very different. More importantly, local~measurements of light under heterogeneous sea ice do not provide an adequate description of the average light field as it would be seen by drifting phytoplankton cells at different depths. This~makes estimations of primary production and the interpretation of biogeochemical data challenging in the presence of sea ice.
+
+To fit vertical profiles of \edz{} under bare ice that do not follow an exponential decay under sea ice covered with melt ponds, Frey et al. \cite{Frey2011} proposes a simple geometric model (Equation (\ref{eq:frey2011})). 
+
+\begin{equation}
+    \edz{} = \pi \edzero{} (1 + P(N-1)\cos^2\phi)e^{-\ked(z)~z}
+    \label{eq:frey2011}
+\end{equation}
+
+\noindent where \edzero{} is the irradiance directly below the ice/snow, $P$ the areal fraction of the ice cover, $N$~the ratio between ice and melt ponds transmittance and $\phi$ a fitting parameter defined as $\arctan(R/z)$ with $R$ the radius of the ice patch and $z$ the depth. A major drawback of this method is that additional field observations of $N$ and $P$ are required to adequately parametrise the model, which makes its use more difficult. To address this concern (among others), Laney et al. \cite{Laney2017} proposed a semi-empirical parametrisation that includes a second exponential coefficient in Equation (\ref{eq:edz}) to model light decrease at the interface between the ice and ocean water at the bottom of the ice layer (Equation (\ref{equ3})):
+
+\begin{equation}
+    \edz{} = \edzero{}e^{-\ked(z)~z} - (\edzero{} - E_d(\text{NS}))~e^{-K_{NS}(z)~z}
+    \label{equ3}
+\end{equation}
+
+\noindent where \edzero{} is the irradiance that would be observed under homogeneous snow or ice cover, $E_d(\text{NS})$ is the irradiance under ice, and $K_{NS}(z)$ describes the decrease of \edzero{} just under the ice layer. Both~the methods by Frey et al. \cite{Frey2011} and Laney et al. \cite{Laney2017} make it possible to propagate local \edz{} vertically under low transmission ice. However, these methods cannot identify and correct for inflated \ked{} when profiles are measured beneath an area of high transmission relative to surrounding areas. Additionally, when trying to determine primary production by phytoplankton that drift under sea ice and therefore are not static under sea ice features, what matters is the average shape of the vertical \edz{} profile, which may possibly be predictable using a large-area \meanked{} as under a wavy open ocean surface \citep{Zaneveld2001}. 
+
+In this study, using both in situ data and 3D Monte Carlo numerical simulations of radiative transfer, we show that the vertical propagation of average \edz{}, \meanedz{}, is reasonably well approximated by a single exponential decay with a so-called large area \ked{}, \meanked{}, under sea ice covered in melt ponds. We further demonstrate that \meanked{} can be estimated from the vertical attenuation coefficient for upward radiance (\klu{}) because the latter is apparently less affected by local surface features of the ice cover. We implicitly assume that primary production can be adequately modelled using \meanedz{}, and~we conclude that \klu{} is an appropriate AOP for predicting the vertical variations in \meanedz{} under sea ice.
+%\input{introduction}
+
+\section{Material and Methods}
+\unskip
+\subsection{Study Site and Field Campaign}
+
+The field campaign was part of the GreenEdge project (\url{www.greenedgeproject.info}) which was conducted on landfast ice southeast of the Qikiqtarjuaq Island in the Baffin Bay (67.4797N, 63.7895W). The field operations took place at an ice camp where the water depth was 360 m, from 20 April  to 27~July  2016 ( Figure  \ref{figA1} included in  Appendix \ref{app}). During the sampling period, the~study site experienced changes in the snow cover and landfast ice thickness of 0--49 cm and 106--149~cm, respectively.
+
+\subsection{In Situ Underwater Light Measurements}
+
+During the campaign, a total of 83 vertical light profiles were acquired using a factory-calibrated ICE-Pro (an ice floe version of the C-OPS, or Compact-Optical Profiling System, from Biospherical Instruments Inc.) equipped with both downward plane irradiance \edz{} (W m$^{-2}$) and upward radiance \luz{} (W m$^{-2}$ sr$^{-1}$) radiometers. The ICE-Pro system is a negatively buoyant instrument with a cylindrical shape 10 inches in diameter and is not designed for free-fall casts (as opposed to its open-water version). To perform the profiles, the frame was manually lowered into an auger hole that had been cleaned of ice chunks. Once it was underneath the ice layer, fresh clean snow was shovelled back in the hole to prevent the creation of a bright spot right on top of the sensors. Great~care was taken not to pollute the hole surroundings (footsteps, water and slush spillage from the auger drilling, etc.). The operator then stepped back 50 m, while keeping the sensors right under the ice, to~avoid any human shadow on top of the profile. The frame was then lowered manually at a constant descent rate of approximately 0.3 m s\textsuperscript{$-$1}. The above-surface atmospheric reference sensor was fixed on a steady tripod standing on the floe approximately 2 m above the surface and above all neighbouring ice camp features. Data processing and validation were performed using a protocol inspired by the one proposed by \citet{Smith1984}. Measurements were made at 19 wavelengths: 380, 395, 412, 443, 465, 490, 510, 532, 555, 560, 589, 625, 665, 683, 694, 710, 765, 780 and 875 nm. For this study, \ed{} and \lu{} spectra were interpolated linearly between 400 and 700 nm every 10 nm. In situ diffuse attenuation coefficients ($K$) for both \ed{} (\ked{}) and \lu{} (\klu{}) were calculated on a 5 m sliding window (10--15 m, 15--20~m, $\ldots$, 70--75 m, 75--80 m) starting at 10 m depth to reduce the effects of surface heterogeneity. A~total of 72,044 non-linear models were calculated to estimate both $K$ coefficients from  Equation (\ref{eq:edz}) (83~profiles $\times$ 14 depths $\times$ 31 wavelengths $\times$ 2 radiometric quantities (\ed{}, \lu{})). A conservative \rsquared{} of 0.99 was used essentially to filter out noisy profiles. 42,407 models were kept for subsequent analysis.
+
+\subsection{3D Monte Carlo Numerical Simulations of Radiative Transfer}
+\unskip
+\subsubsection{Theory and Geometry}
+
+3D numerical Monte Carlo simulation is a convenient approach for modelling the light field under spatially heterogeneous sea surfaces \citep{Mobley_ocean_optics_book, Petrich2012, Katlein2014, Katlein2016}. They are simple to understand and versatile, and~incident light, IOPs and geometry can be easily changed. In this study, we used SimulO, a 3D Monte Carlo software program that simulates the propagation of light in optical instruments or in ocean waters \citep{Leymarie2010}. Our objective was to simulate the propagation of sunlight underneath heterogeneous ice-covered ocean waters. Simulations were performed in an idealized ocean described by a cylinder of 120 m radius and 150 m depth (Figure \ref{fig1}). The water IOPs were selected to reflect pre-bloom conditions in the green--blue spectral region ($a = b = 0.05$ m$^{-1}$). These typical averaged values were measured during the GreenEdge 2016 campaign using an in situ spectrophotometer (ac-s from Sea-Bird Scientific) and represent the contribution of both pure water and the water constituents. The~scattering phase function was described by a Fournier-Forand analytic form with a 3\% backscatter fraction \citep{Fournier1994, Mobley2002}. The~inclusion of a 3D sea ice layer at the upper boundary of the ocean would require extensive computing power because of the high scattering properties of sea ice. Instead, sea ice was incorporated at the upper boundary of the ocean using a 2D light-emitting surface with a radius of 100 m. The angular distribution and magnitude of the light field emitted by the surface was chosen to mimic observed field data \citep{Girard2018}. SimulO does not allow the use of arbitrary angular distribution for photon-emitting surfaces. To overcome this problem, two sources of photons were summed up in order to reproduce an observed under-ice light field (Figure \ref{fig2}). The first source was a regular Lambertian emitting surface while the second was a Lambertian emitting surface but restricted to an emission within 60 degrees of the zenith angle. A 5-m radius melt pond was set up at the center of the emitting surface (Figure \ref{fig1}). The melt pond had the same emitting angular distribution as the surrounding ice. Its intensity was four times higher than the surrounding ice, which corresponds to typical conditions found in the Arctic during summer \citep{Perovich2016}.
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 1]{fig1.pdf}
+	\caption{Spatial configuration used for the 3D Monte Carlo numerical simulations. (\textbf{A}) Surface view showing the percentage of the total area covered by the melt pond over the areas described by the black lines. For each of these areas, light profiles were averaged (see \highlight{Figure \ref{fig7}}). 
+	%%%figures should be cited in numerical order, please modify it.
+	For visualization purpose, lines of the horizontal sampling distances from the centre of the melt pond have been plotted only at 5~m intervals. (\textbf{B}) 2D side view showing the 3D volume for which simulated data were extracted and how photon detectors were placed in the water column. Orange arrows indicate incident light sources.}
+	\label{fig1}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.8]{fig2.pdf}
+	\caption{Comparison of the under-ice measured downward radiance distribution (the average cosine is $\approx$0.61, \cite{Girard2018}) and the angular distribution of light-emitting source used in the paper.}
+	\label{fig2}
+\end{figure}
+
+
+
+
+Given our interest in surface light profiles, 2D horizontal software detectors were placed vertically every 0.5 m, from 0.5 m up to a depth of 25 m. Detectors include 1 m\textsuperscript{2} pixels measuring downward irradiance and upward radiance (5-degree half angle of acceptance). In order to avoid the effect of the boundary (i.e., absorption by the side of the cylinder used to simulate the water column), data outside a radius of 50 m were not used (see the green box in Figure \ref{fig1}). A total number of $7.14 \times 10^{10}$ photons were simulated to obtain a sufficient number of upwelling photons. The simulation took approximately 6000 h distributed over 2000 CPU cores. Because the geometry was symmetrical azimuthally, irradiance and radiance were averaged over the azimuth in order to increase the signal-to-noise ratio. Because of the low scattering coefficients used to reproduce in situ conditions observed during the sampling campaign, radiance profiles were noisy because a small number of upward photons could be captured. To address this issue, radiance profiles were smoothed using a Gaussian fit (Figure  \ref{figA2}). 
+
+\subsubsection{Estimation of Reference and Local Light Profiles}
+
+To explore how the melt pond influences the averaged underwater irradiance and radiance profiles (Figure \ref{fig1}), data from the Monte Carlo simulation were averaged according to six different radii, corresponding to varying melt pond spatial proportions. The simulated light profiles were averaged within the following surface areas: (1) 10 m radius (25\% melt pond cover), (2) 11.18 m radius (20\% melt pond cover), (3) 12.91 m radius (15\% melt pond cover), (4) 15.81 m radius (10\% melt pond cover), (5) 22.36 m radius (5\% melt pond cover) and (6) 50 m radius (1\% melt pond cover). For~each of these six configurations, the corresponding averaged light profile, \meanedz{}, was subsequently viewed as an adequate description of the average underwater light field. For the remainder of the text, these~averaged profiles are referred to as reference light profiles. Furthermore, 50 light profiles, evenly spaced by 1 m from the melt pond centre, were extracted to mimic local measurements of light and to calculate associated diffuse attenuation coefficients.
+
+\subsection{Statistical Analysis}
+
+All statistical analyses and graphics were carried out with R 3.5.1 \citep{RCoreTeam2018}. 
+%\input{methods}
+\section{Results}
+\unskip
+\subsection{Comparing In Situ Downward Irradiance (\ed{}) and Upward Radiance (\lu{}) Measurements}
+
+An example showing in situ downward irradiance (\ed{}) profiles and upward radiance (\lu{}) profiles at 16 visible wavelengths measured under ice is presented in Figure \ref{fig3}. For the \ed{} profiles, subsurface light maxima at a depth of around 10 m are clearly visible between 400 and 560 nm. These peaks are not visible in the yellow/red region (580--700 nm). For the \lu{} profiles, no subsurface light maxima were found at any wavelength. To have a closer look at the shape of both \ed{} and \lu{} profiles, data~below the 10 m depth were normalized to the value at 10 m (Figure \ref{fig4}). Below 10 m and between 400 and 580~nm, both \ed{} and \lu{} profiles presented the same shape (i.e., yield the same rate of attenuation with increasing depth). At longer wavelengths ($\ge$600 nm), differences between the shapes of \ed{} and \lu{} profiles increased. Irradiance and radiance diffuse attenuation coefficients (\ked{} and \klu{}) calculated for the layers of a 5 m thickness are compared in Figure \ref{fig5} for all 83 profiles. In the blue/green/yellow regions (400--580 nm), the determination coefficients between \klu{} and \ked{} varied between 0.98 at the surface (10--15 m) and 0.64 at depth (75--80 m). For most of the surface layers, regression lines lined up with the 1:1 lines. Slight deviations from the 1:1 lines started to appear below 60 m where \ked{} was on average higher than \klu{}. The relationships including orange and red wavelengths are presented in Supplementary Figure  \ref{figA3}. A linear regression analysis between all in situ normalized \ed{} and \lu{} profiles showed that determination coefficients (\rsquared{}) range between 0.75 and 1 (Figure  \ref{figA4}). A sharp decrease and a high variability of calculated \rsquared{} occurred beyond 575 nm. This suggests a gradual decoupling between \ed{} and \lu{} profiles at longer wavelengths, likely due to the effect of inelastic scattering (mostly Raman scattering). 
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.7]{fig3.pdf}
+	\caption{{Examples of in situ downward irradiance} (\edz{}) and upward radiance (\luz{}) profiles measured under-ice on 20 June 2016. Note the presence of subsurface maxima in the downward irradiance profiles and the absence of subsurface maxima in the \hl{upward radiance profiles.}}\label{fig3}
+	%%there is no explanation for (A) and (B).
+\end{figure}
+
+\subsection{3D Monte Carlo Numerical Simulations}
+
+\textls[-5]{Figure~\ref{fig6} shows cross-sections of the simulated downward irradiance and upward radiance. A key difference for the upcoming discussion is that the simulated upward radiance was more homogeneous compared to the simulated downward irradiance. Figure~\ref{fig7} shows the reference irradiance, \edz{}, and~reference radiance, \luz{}, profiles. The highest irradiance and radiance occurred when the melt pond occupied 25\% of the sampling area, allowing for more light to propagate in the water column. None of the \edz{} and \luz{} reference profiles showed subsurface light maxima. Figure~\ref{fig8} shows the 50 simulated local downward irradiance and upward radiance profiles evenly spaced by 1 m in the horizontal distance from the melt pond centrer. Local downward irradiance profiles under the melt pond (0--5 m) showed a rapid decrease with increasing depth described by a monotonically exponential or quasi-exponential decrease. Local simulated downward irradiance profiles just outside the melt pond (5--10 m from the melt pond centre) were characterized with subsurface light maxima occurring at a depth of between approximately 5 and 10 m. Further away from the melt pond centre, downward irradiance profiles followed a monotonically exponential or quasi-exponential decrease. None of the simulated upward radiance profiles presented subsurface light maxima (Figure~\ref{fig8}). From~local simulated irradiance and radiance profiles (Figure~\ref{fig8}), \ked{} and \klu{} were calculated by fitting Equation~(\ref{eq:edz}) between the depths of 0 m and 25 m. Results are presented in Fig. 9. \ked{} varied between 0.065 and 0.157 m$^{-1}$ and \klu{} between 0.079 and 0.116 m$^{-1}$. These \ked{} and \klu{} were used to propagate light downward from surface reference values \edzero{}. Figure~\ref{fig10} shows the profiles resulting from this calculation. A~greater dispersion around the reference profiles (thick black lines in Figure~\ref{fig10}) occurred when using \ked{} compared to the profiles generated with similarly derived \klu{} values. The relative differences between the depth-integrated values of each local profile (coloured lines in Figure~\ref{fig10}) and the depth-integrated values of the reference profiles (thick black lines in Figure~\ref{fig10}) were used to quantify the error of using either \ked{} or \klu{} as a proxy to predict downward irradiance in the water column (Figure~\ref{fig11}). Below the melt pond, \ked{} overestimated the total downward irradiance by up to 40\% when the melt pond occupied 1\% of the surface area. In this region, the local $K$ coefficients are inflated. In the transition region, at a horizontal distance of 5 and 10 m from the centre of the melt pond, where subsurface maxima are observed, \ked{} underestimated the downward irradiance by up to 35\% when the melt pond occupied 25\% of the surface area.. Further away from the edge of the melt pond, the errors saturated to maximum of $-$25\%. The same behaviour is observed for \klu{} but with about two times less amplitude. The mean relative errors were lower by approximately a factor of two when using \klu{} ($-$7\%) compared to \ked{} ($-$12\%). Also, the prediction errors stabilized at a shorter horizontal distance from the centre of the melt pond when using \klu{} ($\approx$ 10 m) compared with using \ked{} ($\approx$20 m). }
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.77]{fig4.pdf}
+	\caption{\textls[-20]{Comparison of downward irradiance (\edz{}) and upward radiance (\luz{}) for one example light profile measured under-ice. Profiles were normalized to the measured radiometric value at 10 m depth (under the subsurface light maximum) in order to emphasize the similar shape between \edz{} and \luz{}.}}\label{fig4}
+\end{figure}
+
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.75]{fig5.pdf}
+	\caption{Scatter plots showing the relationships between the measured \ked{} and \klu{} in the spectral range between 400 and 580 nm at different depths (numbers in gray boxes). Red lines represent the regression lines of the fitted linear models. Regression equations and determination coefficients ($R^2$) are also provided in each plot. Dashed lines are the 1:1 lines.}\label{fig5}
+\end{figure}
+
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.6]{fig6.pdf}
+	\caption{Cross-sections of simulated downward irradiance and upward radiance fields under a melt pond with a 5 m radius. The logarithm of the normalized number of photons has been used to create the scale for visualization. The normalization has been done using the values modelled at a 0.5 m depth and at a horizontal distance of 50 m from the centre of the melt pond.}\label{fig6}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.85]{fig7.pdf}
+	\caption{Simulated reference downward irradiance and upward radiance profiles (\meanedz{}, \meanluz{} in relative units) for six different areas with varying proportions of the surface occupied by the melt pond (see Figure \ref{fig1}). Note that none of the averaged irradiance profiles show the same subsurface light maxima as observed with in situ data (see Figure \ref{fig3}).}\label{fig7}
+\end{figure}
+
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.85]{fig8.pdf}
+	\caption{Simulated local downward irradiance and upward radiance profiles (expressed in relative units) at different horizontal distances from the centre of the melt pond (see Figure \ref{fig1}) used to compute \ked{} and \klu{}. These attenuation coefficients were used to propagate surface reference downward irradiance (\edzero{}, the surface values of the lines in Figure \ref{fig7}) through the water column.}\label{fig8}
+\end{figure}
+
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.6]{fig9.pdf}
+	\caption{\hl{Diffuse attenuation} %%this figure has not been referred to within the text of the manuscript.
+	coefficients calculated from local downward irradiance and upward radiance profiles simulated at different distances from the centre of the melt pond (see Figure \ref{fig8}).}\label{fig9}
+\end{figure}
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.83]{fig10.pdf}
+	\caption{Reference downward irradiance profiles (thick black lines, in relative units) and propagated irradiance through the water column (coloured lines, in relative units) using local values of \ked{} and \klu{} (see Figure \ref{fig8}). Light was propagated using the surface reference downward irradiance.}\label{fig10}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.85]{fig11.pdf}
+	\caption{Relative errors of the predictions calculated as the relative differences between the depth integral of the reference and predicted irradiance profiles.}\label{fig11}
+\end{figure}
+
+
+
+\subsection{Inelastic Scattering}
+
+Based on in situ data, our results have pointed out that \klu{} is not a good proxy for \ked{} at longer wavelengths (Figures \ref{figA3} and \ref{figA4}) because of the effect of Raman scattering. To validate this hypothesis, we used the HydroLight (Sequoia Scientific, Inc., \hl{Bellevue, WA, USA}) 
+%%%Newly added information, please confirm.
+radiative transfer numerical model to calculate theoretical downward irradiance and upward radiance and their associated vertical attenuation coefficients in an open water column in the presence of Raman scattering. The simulation was parametrised using IOPs measured during the field campaign (detailed information can be found in the supplementary section entitled Raman inelastic scattering included in Appendix \ref{app}). The simulation was able to reproduce the observed decoupling between \ked{} and \klu{} observed at wavelengths $\ge$600 nm (Figure  \ref{figA5}). These results are generally consistent with previous findings from radiative transfer simulations, which demonstrated the depth and spectral dependencies of diffuse attenuation coefficients as affected by Raman scattering \citep{Li2016, Berwald1998}.
+
+%\input{results}
+\section{Discussion}
+
+In the Arctic, melt pond coverage, lead coverage, and ice and snow thickness can vary greatly in both time and space \citep{Landy2014,Eicken2004}. Due to this sea ice heterogeneity, local under-ice measurements of downward irradiance are sometimes characterized by subsurface light maxima (Figure~\ref{fig3}). To model such profiles, Laney et al. \cite{Laney2017} proposed a semi-empirical parametrisation using two exponential terms (see Equation (\ref{equ3})). Whereas their method might provide adequate estimations of instantaneous downward diffuse attenuation coefficients at specific locations, fitting a double exponential might not be ideal because data are modelled locally and do not provide an adequate description of the average light field (\meanedz{}) as it would be seen, for example, by drifting phytoplankton cells. In such conditions, this paper argues that under-ice irradiance measurements should be analysed in the context of ice and surface properties within a radius of several meters over the horizontal distance because local measurements cannot be used as a proxy of the average light field.
+
+Using in situ light measurements, it was found that \ed{} and \lu{} (and therefore \ked{} and \klu{}) were highly correlated below 10 m depth (Figures \ref{fig4} and \ref{fig5}), even when subsurface light maxima were present (Figure~\ref{fig3}). Furthermore, no subsurface light maxima were observed in the in situ upward radiance profiles. The reason is that the \lu{} radiometer measures upwelling photons coming from deeper depth, which have likely undergone more scattering.  These photons thus originate from a larger surface area. This reinforces the idea that \lu{} is less influenced by sea ice surface heterogeneity. 
+
+Based on Monte Carlo simulations of radiative transfer, our results showed that the average downward irradiance profile, \meanedz{}, under heterogeneous sea ice cover follows a single-term exponential function, even when melt ponds occupy a large fraction of the study area (Figure~\ref{fig7}). This~is similar to what is observed under a wavy ice-free surface \citep{Zaneveld2001}. However, estimating \meanedz{} for a given area is not straightforward, as it requires a large number of local depth profiles under the sea ice. An intuitive alternative to deriving the attenuation coefficient is to use upward radiance, which is less influenced by sea surface heterogeneity compared to downward irradiance (Figure~\ref{fig3}--\ref{fig5}). Monte~Carlo simulations showed that a local estimation of \klu{} was a good proxy for \meanked{} and that using \klu{} rather than \ked{} provided better estimations of the average downward profile by reducing the average error by approximately a factor of two (Figure~\ref{fig11}). 
+
+There are at least two main factors influencing the quality of in situ downward irradiance measurements under heterogeneous sea ice. The first factor is the horizontal distance from the centre of the melt pond. Although the relative error of propagating \edzero{} using both \ked{} and \klu{} showed the same pattern, the largest error occurred when using local estimations of \ked{} directly below the melt pond and up to 10 m from the melt pond edge (Figure~\ref{fig11}). In contrast, the relative error associated with the use of \klu{} was much lower and stabilized just after approximately 10 m from the centre of the melt pond. The second factor driving the relative error of local measurements is the proportion occupied by melt ponds over the area of interest (Figure~\ref{fig11}). Indeed, higher proportions of melt pond allow for more light to penetrate in the water column. Hence, local measurements made under surrounding ice are more likely to show subsurface light maxima (see Frey et al. \cite{Frey2011}). Accordingly, when melt ponds accounted for 1\% of the total area, averaged error in \edz{} using \klu{} was 1.33\% but increased to 18\% when the melt pond occupied 25\% of the total area (Figure~\ref{fig11}).
+
+
+
+
+
+
+
+
+%\input{discussion}
+\section{Conclusions}
+
+Our results show that under spatially heterogeneous sea ice at the surface (and for a homogeneous water column), the average irradiance profile, \meanedz{}, is well reproduced by a single exponential function. We also showed that propagating \edzero{} using \klu{} is a better choice compared to \ked{} under heterogeneous sea ice. Nowadays, radiance measurements are becoming more routinely performed during field campaigns, so we argue that one should use \klu{} when available to propagate \edzero{} through the water column under sea ice. The main difficulty remains in finding good estimates of averaged \edzero{}. In recent years, this has become easier with the development of remotely operated vehicles \citep{Katlein2015, Arndt2017, Nicolaus2013}, remote sensing techniques, and drone imagery. In this study, we used a Monte Carlo approach to model an idealized surface with a single melt pond (Figures \ref{fig1} and \ref{fig6}). Figure~\ref{fig11} shows that the effect of a melt pond with diameter 5 m is minimized at a horizontal distance of approximately 20~m or more. Therefore, when many melt ponds are characterizing an area, if one has to perform a single profile, measuring an upward radiance profile under bare ice as far away as possible from any melt pond would minimize the error in estimating the area-averaged downward irradiance profile using \klu{}. Although not representative of a complex Arctic sea ice surface, our simple surface geometry allowed to study the transition from a high to a low transmission sea ice. Further 3D Monte Carlo work could include a more complex geometry of heterogeneous surfaces.
+%\input{conclusions}
+
+\vspace{6pt}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\authorcontributions{Conceptualization, P.M., G.B., S.-G.L., E.L. and M.B.; methodology, P.M., G.B., S.-G.L., E.L. and M.B.; field work, G.B., S.G.L., and M.B.; writing---original draft preparation, P.M.; writing---review and editing, P.M., G.B., S.-G.L., E.L. and M.B.; supervision, M.B.; funding acquisition, M.B.}
+\funding{\hl{text.}}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\acknowledgments{The GreenEdge project is funded by the following French and Canadian programs and agencies: ANR (contract \#111112), CNES (project \#131425), IPEV (project \#1164), CSA, Fondation Total, ArcticNet, LEFE and the French Arctic Initiative (GreenEdge project). This project would not have been possible without the support of the Hamlet of Qikiqtarjuaq and the members of the community as well as the Inuksuit School and its principal, Jacqueline Arsenault. The project is conducted under the scientific coordination of the Canada Excellence Research Chair on Remote Sensing of Canada’s New Arctic Frontier and the CNRS and Université Laval Takuvik Joint International laboratory (UMI3376). The field campaign was successful thanks to the contributions of J. Ferland, G. Bécu, C. Marec, J. Lagunas-Morales, F. Bruyant, J. Larivière, E. Rehm, S. Lambert-Girard, C.~Aubry, C. Lalande, A. LeBaron, C. Marty, J. Sansoulet, D. Christiansen-Stowe, A. Wells, M. Benoît-Gagné, E.~Devred and M.-H. Forget from the Takuvik laboratory, C.J. Mundy and V. Galindo from University of Manitoba, and~F. Pinczon du Sel and E. Brossier from Vagabond. We also thank Michel Gosselin, Québec-Océan, the CCGS Amundsen and the Polar Continental Shelf Program for their in-kind contribution in polar logistics and scientific equipment. Authors would like to give a special thank Julien Laliberté, Griet Neukermans, Laurent Oziel for operating the COPS on 2015--2016 GreenEdge ice camps. This research was enabled in part by support provided by Calcul Québec (\url{www.calculquebec.ca}) and Compute Canada (\url{www.computecanada.ca}). S. L. Girard was supported by a postdoctoral fellowship from the Natural Sciences and Engineering Research Council of Canada (NSERC). We~also acknowledge the Canada First Research Excellence Fund and the Sentinel North Strategy for their financial support. We thank Dariusz Stramski and one anonymous reviewer for their valuable comments which helped to greatly improve the manuscript.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\conflictsofinterest{The authors declare no conflict of interest.}
+\appendixtitles{yes} %Leave argument "no" if all appendix headings stay EMPTY (then no dot is printed after "Appendix A"). If the appendix sections contain a heading then change the argument to "yes".
+\appendixsections{multiple} %Leave argument "multiple" if there are multiple sections. Then a counter is printed ("Appendix A"). If there is only one appendix section then change the argument to "one" and no counter is printed ("Appendix").
+\appendix
+\section{}\label{app}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 1]{figA1.pdf}
+	\caption{The field campaign was part of the GreenEdge project (\url{www.greenedgeproject.info}) which was conducted on landfast ice southeast of the Qikiqtarjuaq Island in the Baffin Bay (67.4797N, 63.7895W).}\label{figA1}
+\end{figure}
+
+
+
+\section{Smoothing Radiance Data}
+
+\hl{Due to the low} %%Appendix B   has not been referred to within the text of the manuscript.
+scattering coefficients used to reproduce in situ conditions observed during the sampling campaign, radiance profiles were noisy because only few photons were scattered back in the upward direction (note the different y-scales). To overcome this problem, upward radiance data were smoothed using a Gaussian fit accordingly to Equation~(\ref{eq:pdf}): 
+
+\begin{equation}
+	\label{eq:pdf}
+	f(x,\varphi,\mu,\sigma, k) = \varphi e^{-\dfrac{(x-\mu)^2}{2 \sigma^2}} + k
+\end{equation}
+
+\noindent where $x$ (m) is the horizontal distance from the center of the melt pond, $\sigma$ (m) is the standard deviation controlling the width of the curve, $\varphi$ is the height of the curve peak ($\varphi = \frac{1}{\sigma\sqrt{2\pi}}$), $\mu$ (m) is the position of the center of the peak, and $k$ an offset coefficient.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.9]{figA2.pdf}
+	\caption{Examples showing the number of downward irradiance (\textbf{A}) and upward radiance (\textbf{B})~photons captured by the detectors of the Monte Carlo simulation at different depth ranges (numbers in gray boxes) as a function of the horizontal distance from the melt pond. The red lines represent the fitted Gaussian curves.}\label{figA2}
+\end{figure}
+
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.84]{figA3.pdf}
+	\caption{Scatter plots showing the relationships between downward irradiance (\edz{}) and upward radiance (\luz{}) between 400 and 700 nm at different depths (numbers in gray boxes). Red lines represent the regression lines of the fitted linear models. Dashed lines are the 1:1 lines. Note the large deviations between the data points and the 1:1 line occurring in the orange and red regions ($\ge$600~nm).}\label{figA3}
+\end{figure}
+\unskip
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.64]{figA4.pdf}
+	\caption{Average determination coefficient \(R^2\) and standard deviation (shaded area) of the regressions between normalized (at 10 m depth) \edz{} and \luz{} profiles between 400 and 700 nm. At~each wavelength, average values were computed from the 83 COPS measurements. A sharp decrease of \(R^2\) occurred at wavelength longer than approximately 575 nm, suggesting a gradual decoupling between \edz{} and \luz{} profiles at longer wavelengths, possibly due to the effect of inelastic scattering.}\label{figA4}
+\end{figure}
+
+
+\section{Raman Inelastic Scattering}
+
+\hl{Raman scattering is} %%Appendix c   has not been referred to within the text of the manuscript.
+a process by which photons, interacting with water molecules, lose or gain energy and are scattered at a different wavelength than the one they were originating from. In~Figures~\ref{figA3} and   \ref{figA4}, one can observe a decoupling between \ked{} and \klu{} at longer wavelengths, possibly due to inelastic Raman scattering. To validate this hypothesis, we used the HydroLight radiative transfer numerical model to calculate downward irradiance and upward radiance and their associated attenuation coefficients in a water column.
+
+\subsection*{HydroLight Simulations}
+
+Two HydrolLight simulations were carried out to model downward irradiance and upward radiance with and without taking into account Raman inelastic scattering. The simulations were parameterized using an IOPs profile (ac-s from Sea-Bird Scientific) measured on the first of May 2015 in the Baffin Bay. Simulations were performed with the following characteristics:
+
+\begin{itemize}
+	\item A surface free of ice.
+	\item A surface without waves.
+	\item Sun position at noon for May 1st (solar zenith angle = 45.39 degrees).
+	\item A cloudless sky.
+	\item No fluorescence.
+	\item Using HydroLight default atmospheric parameters.
+	\item The scattering phase function of water was described by a Fournier-Forand analytic form with a 3\% backscatter fraction.
+	\item EcoLight option was run.
+\end{itemize}
+
+The HydroLight simulations showed a decoupling between \ked{} and \klu{} starting at around 600~nm when Raman scattering was modelled (Supplementary Figure~\ref{figA5}). Similar decoupling was also observed with the in situ data (see  Figure~\ref{figA3}).
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = .7]{figA5.pdf}
+	\caption{Scatter plots showing the relationships between \ked{} and \klu{} calculated from the downward irradiance and upward radiance profiles modelled with and without Raman scattering. The dashed lines represent the 1:1 lines.}\label{figA5}
+\end{figure}
+
+\reftitle{References}
+
+\begin{thebibliography}{999}
+%\providecommand{\natexlab}[1]{#1}
+
+\bibitem[Kirk(1994)]{Kirk1994}
+Kirk, J.T.O.
+\newblock {\em {Light and Photosynthesis in Aquatic Ecosystems}}, 2nd ed.;
+  Cambridge University Press: Cambridge, UK; New York, NY, USA, 1994;\hl{ pp. xvi,
+  509p.} %%%Please confirm if it is correct.
+
+\bibitem[Morel(1996)]{Morel1996}
+Morel, A.
+\newblock {An ocean flux study in eutrophic, mesotrophic and oligotrophic
+  situations: The EUMELI program}.
+\newblock {\em Deep Sea Res. Part I Oceanogr. Res. Pap.} {\bf 1996}, {\em
+  43},~1185--1190,
+  doi:10.1016/0967-0637(96)00055-6.
+
+\bibitem[Nicolaus and Katlein(2013)]{Nicolaus2013}
+Nicolaus, M.; Katlein, C.
+\newblock {Mapping radiation transfer through sea ice using a remotely operated
+  vehicle (ROV)}.
+\newblock {\em Cryosphere} {\bf 2013}, {\em 7},~763--777,
+  doi:10.5194/tc-7-763-2013.
+
+\bibitem[Katlein \em{et~al.}(2015)Katlein, Arndt, Nicolaus, Perovich, Jakuba,
+  Suman, Elliott, Whitcomb, McFarland, Gerdes, Boetius, and
+  German]{Katlein2015}
+Katlein, C.; Arndt, S.; Nicolaus, M.; Perovich, D.K.; Jakuba, M.V.; Suman, S.;
+  Elliott, S.; Whitcomb, L.L.; McFarland, C.J.; Gerdes, R.; et al.
+\newblock {Influence of ice thickness and surface properties on light
+  transmission through Arctic sea ice}.
+\newblock {\em J. Geophys. Res. Ocean.} {\bf 2015}, {\em 120},~5932--5944,
+  doi:10.1002/2015JC010914.
+
+\bibitem[Katlein \em{et~al.}(2016)Katlein, Perovich, and Nicolaus]{Katlein2016}
+Katlein, C.; Perovich, D.K.; Nicolaus, M.
+\newblock {Geometric Effects of an Inhomogeneous Sea Ice Cover on the under Ice
+  Light Field}.
+\newblock {\em Front. Earth Sci.} {\bf 2016}, {\em 4},
+  doi:10.3389/feart.2016.00006.
+
+\bibitem[Lange \em{et~al.}(2017)Lange, Flores, Michel, Beckers, Bublitz, Casey,
+  Castellani, Hatam, Reppchen, Rudolph, and Haas]{Lange2017}
+Lange, B.A.; Flores, H.; Michel, C.; Beckers, J.F.; Bublitz, A.; Casey, J.A.;
+  Castellani, G.; Hatam, I.; Reppchen, A.; Rudolph, S.A.; et al.
+\newblock {Pan-Arctic sea ice-algal chl a biomass and suitable habitat are
+  largely underestimated for multiyear ice}.
+\newblock {\em Glob. Chang. Biol.} {\bf 2017}, {\em 23},~4581--4597,
+  doi:10.1111/gcb.13742.
+
+\bibitem[Mundy \em{et~al.}(2009)Mundy, Gosselin, Ehn, Gratton, Rossnagel,
+  Barber, Martin, Tremblay, Palmer, Arrigo, Darnis, Fortier, Else, and
+  Papakyriakou]{Mundy2009}
+\textls[-10]{Mundy, C.J.; Gosselin, M.; Ehn, J.; Gratton, Y.; Rossnagel, A.; Barber, D.G.;
+  Martin, J.; Tremblay, J.{\'{E}}.; Palmer,~M.; Arrigo, K.R.; et al.  {Contribution of under-ice primary production to an ice-edge}
+  upwelling phytoplankton bloom in the Canadian Beaufort Sea}.
+\newblock {\em Geophys. Res. Lett.} {\bf 2009}, {\em 36},~L17601,
+  doi:10.1029/2009GL038837.
+
+\bibitem[Frey \em{et~al.}(2011)Frey, Perovich, and Light]{Frey2011}
+Frey, K.E.; Perovich, D.K.; Light, B.
+\newblock {The spatial distribution of solar radiation under a melting Arctic
+  sea ice cover}.
+\newblock {\em Geophys. Res. Lett.} {\bf 2011}, {\em 38},
+  doi:10.1029/2011GL049421.
+
+\bibitem[Laney \em{et~al.}(2017)Laney, Krishfield, and Toole]{Laney2017}
+Laney, S.R.; Krishfield, R.A.; Toole, J.M.
+\newblock {The euphotic zone under Arctic Ocean sea ice: Vertical extents and
+  seasonal trends}.
+\newblock {\em Limnol. Oceanogr.} {\bf 2017}, {\em 62},~1910--1934, 
+  doi:10.1002/lno.10543.
+
+\bibitem[Zaneveld \em{et~al.}(2001)Zaneveld, Boss, and Barnard]{Zaneveld2001}
+Zaneveld, J.R.V.; Boss, E.; Barnard, A.
+\newblock {Influence of surface waves on measured and modeled irradiance
+  profiles}.
+\newblock {\em Appl. Opt.} {\bf 2001}, {\em 40},~1442,
+  doi:10.1364/AO.40.001442.
+
+\bibitem[Smith and Baker(1986)]{Smith1984}
+Smith, R.C.; Baker, K.S.
+\newblock {Analysis of Ocean Optical Data II}. In Proceedings of the  1986 Technical Symposium Southeast, \hl{Orlando, FL, USA,  7 August 1986};%%%newly added information, please confirm.
+ Volume  489, p. 95,
+  doi:10.1117/12.964220.
+
+\bibitem[Mobley()]{Mobley_ocean_optics_book}
+Mobley, C.D.
+\newblock {Measuring Radiant Energy, Ocean Optics Web Book}. \hl{Available online:}%%%%newly added information, please confirm. 
+ \url{http://www.oceanopticsbook.info/view/light_and_radiometry/measuring_radiant_energy} (\hl{accessed on})%please give day month year
+
+\bibitem[Petrich \em{et~al.}(2012)Petrich, Nicolaus, and
+  Gradinger]{Petrich2012}
+Petrich, C.; Nicolaus, M.; Gradinger, R.
+\newblock {Sensitivity of the light field under sea ice to spatially
+  inhomogeneous optical properties and incident light assessed with
+  three-dimensional Monte Carlo radiative transfer simulations}.
+\newblock {\em Cold Reg. Sci. Technol.} {\bf 2012},
+  doi:10.1016/j.coldregions.2011.12.004.
+
+\bibitem[Katlein \em{et~al.}(2014)Katlein, Nicolaus, and Petrich]{Katlein2014}
+Katlein, C.; Nicolaus, M.; Petrich, C.
+\newblock {The anisotropic scattering coefficient of sea ice}.
+\newblock {\em J. Geophys. Res. Ocean.} {\bf 2014}, {\em 119},~842--855,
+  doi:10.1002/2013JC009502.
+
+\bibitem[Leymarie \em{et~al.}(2010)Leymarie, Doxaran, and Babin]{Leymarie2010}
+Leymarie, E.; Doxaran, D.; Babin, M.
+\newblock {Uncertainties associated to measurements of inherent optical
+  properties in natural waters}.
+\newblock {\em Appl. Opt.} {\bf 2010}, {\em 49},~5415,
+  doi:10.1364/AO.49.005415.
+
+\bibitem[Fournier and Forand(1994)]{Fournier1994}
+Fournier, G.R.; Forand, J.L.
+\newblock {Analytic phase function for ocean water}.
+\newblock  In Proceedings of the  Ocean Optics XII, Bergen, Norway,  26 October 1994; Jaffe, J.S., Ed.,  1994; pp. 194--201,
+  doi:10.1117/12.190063.
+
+\bibitem[Mobley \em{et~al.}(2002)Mobley, Sundman, and Boss]{Mobley2002}
+Mobley, C.D.; Sundman, L.K.; Boss, E.
+\newblock {Phase function effects on oceanic light fields}.
+\newblock {\em Appl. Opt.} {\bf 2002}, {\em 41},~1035,
+  doi:10.1364/AO.41.001035.
+
+\bibitem[Girard \em{et~al.}(2018)Girard, Leymarie, Marty, Matthes, Ehn, and
+  Babin]{Girard2018}
+\textls[-15]{Girard, S.L.; Leymarie, E.; Marty, S.; Matthes, L.; Ehn, J.; Babin, M.
+\newblock {High angular resolution measurements of the radiance distribution
+  beneath Arctic landfast sea ice during the spring transition.}
+\newblock {\em Earth Space Sci.} {\bf 2018}, \emph{5},  30--47.}
+
+\bibitem[Perovich(2016)]{Perovich2016}
+Perovich, D.K., {Sea ice and sunlight}.
+\newblock In {\em Sea Ice}; John Wiley {\&} Sons, Ltd.: Chichester, UK,  2016;
+  Chapter~4, pp.~110--137,
+  doi:10.1002/9781118778371.ch4.
+
+\bibitem[{R Core Team}(2018)]{RCoreTeam2018}
+{R Core Team}.
+\newblock {R: A Language and Environment for Statistical Computing},  2018.
+
+\bibitem[Li \em{et~al.}(2016)Li, Stramski, and Reynolds]{Li2016}
+Li, L.; Stramski, D.; Reynolds, R.A.
+\newblock {Effects of inelastic radiative processes on the determination of
+  water-leaving spectral radiance from extrapolation of underwater near-surface
+  measurements}.
+\newblock {\em Appl. Opt.} {\bf 2016}, {\em 55},~7050,
+  doi:10.1364/AO.55.007050.
+
+\bibitem[Berwald \em{et~al.}(1998)Berwald, Stramski, Mobley, and
+  Kiefer]{Berwald1998}
+Berwald, J.; Stramski, D.; Mobley, C.D.; Kiefer, D.A.
+\newblock {Effect of Raman scattering on the average cosine and diffuse
+  attenuation coefficient of irradiance in the ocean}.
+\newblock {\em Limnol. Oceanogr.} {\bf 1998}, {\em 43},~564--576,
+  doi:10.4319/lo.1998.43.4.0564.
+
+\bibitem[Landy \em{et~al.}(2014)Landy, Ehn, Shields, and Barber]{Landy2014}
+Landy, J.; Ehn, J.; Shields, M.; Barber, D.
+\newblock {Surface and melt pond evolution on landfast first-year sea ice in
+  the Canadian Arctic Archipelago}.
+\newblock {\em J. Geophys. Res. Ocean.} {\bf 2014}, {\em 119},~3054--3075,
+  doi:10.1002/2013JC009617.
+
+\bibitem[Eicken \em{et~al.}(2004)Eicken, Grenfell, Perovich, Richter-Menge, and
+  Frey]{Eicken2004}
+Eicken, H.; Grenfell, T.C.; Perovich, D.K.; Richter-Menge, J.A.; Frey, K.
+\newblock {Hydraulic controls of summer Arctic pack ice albedo}.
+\newblock {\em J. Geophys. Res. Ocean.} {\bf 2004}, {\em 109},~1--12,
+  doi:10.1029/2003JC001989.
+
+\bibitem[Arndt \em{et~al.}(2017)Arndt, Meiners, Ricker, Krumpen, Katlein, and
+  Nicolaus]{Arndt2017}
+Arndt, S.; Meiners, K.M.; Ricker, R.; Krumpen, T.; Katlein, C.; Nicolaus, M.
+\newblock {Influence of snow depth and surface flooding on light transmission
+  through Antarctic pack ice}.
+\newblock {\em J. Geophys. Res. Ocean.} {\bf 2017}, {\em 122},~2108--2119,
+  doi:10.1002/2016JC012325.
+
+\end{thebibliography}
+
+%\externalbibliography{yes}
+%\bibliography{/home/pmassicotte/Documents/library}
+%% \bibliography{C:/Users/pmass/Documents/library}
+%\bibliography{/home/pmassicotte/Documents/library}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%
+%\section*{}
+%\includepdf[pages=-]{../../figures/figures.pdf}
+%
+%\section*{}
+%\includepdf[pages=-]{../../appendix/appendix.pdf}
+
+
+\end{document}
+

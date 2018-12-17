@@ -1,0 +1,167 @@
+\documentclass[12pt,a4paper]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\usepackage[bottom = 0.25in, left = 0.25in, right = 0.25in, top = 0.25in]{geometry}
+
+%\usepackage[english]{babel}
+\usepackage[autostyle]{csquotes}
+\usepackage{mathptmx}
+
+\usepackage[labelfont=bf]{caption}
+
+\usepackage[default, scale = 1]{opensans}
+
+\usepackage[T1]{fontenc}
+
+\usepackage{fixltx2e}
+
+\PassOptionsToPackage{
+	natbib=true,
+	sorting=ynt,
+	style=authoryear-comp,
+	hyperref=true,
+	backend=biber,
+	maxbibnames=999,
+	firstinits=true,
+	uniquename=false,
+	parentracker=true,
+	url=false,
+	doi=false,
+	isbn=false,
+	eprint=false,
+	backref=false,
+	sortcites,
+}   {biblatex}
+\usepackage{biblatex}
+
+%\DeclareLanguageMapping{english}{english-apa}
+\addbibresource{/home/pmassicotte/Documents/library.bib}
+
+
+\AtEveryBibitem{\clearfield{issn}}
+\AtEveryCitekey{\clearfield{issn}}
+\AtEveryBibitem{\clearfield{url}}
+\AtEveryCitekey{\clearfield{url}}
+\AtEveryBibitem{\clearfield{doi}}
+\AtEveryCitekey{\clearfield{doi}}
+
+\newcommand{\ked}{\ensuremath{K_{d}}}
+\newcommand{\klu}{\ensuremath{K_{Lu}}}
+\newcommand{\edz}{\ensuremath{{E_d(z)}}}
+\newcommand{\luz}{\ensuremath{{L_u(z)}}}
+\newcommand{\edzero}{\ensuremath{{E_d(0^-)}}}
+\newcommand{\meanedz}{\ensuremath{{\overline{E_d}(z)}}}
+\newcommand{\meanluz}{\ensuremath{{\overline{L_u}(z)}}}
+\newcommand{\meankd}{\ensuremath{{\overline{K_d}}}}
+\newcommand{\meanklu}{\ensuremath{{\overline{K_{Lu}}}}}
+
+% \addto\captionsenglish{\renewcommand{\figurename}{Fig.}}
+% \addto\captionsenglish{\renewcommand{\tablename}{Supplementary Table}}
+
+\title{Figures}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/fig1.pdf}
+	\caption{Spatial configuration used for the 3D Monte Carlo numerical simulations. (\textbf{A}) Surface view showing the percentage of the total area covered by the melt pond over the areas described by the black lines. For each of these areas, light profiles were averaged (see Fig. 7). For visualization purpose, lines of the horizontal sampling distances from the center of the melt pond have been plotted only at 5 m intervals. (\textbf{B}) 2D side view showing the 3D volume for which simulated data were extracted and how photon detectors were placed in the water column. Orange arrows indicate incident light sources.}
+\end{figure}
+
+\clearpage
+\newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/fig2.pdf}
+	\caption{Comparison of the under-ice measured downward radiance distribution (the average cosine is $\approx$ 0.61, \cite{Girard2018}) and the angular distribution of light-emitting source used in the paper.}
+\end{figure}
+
+\clearpage
+\newpage
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/fig3.pdf}
+	\caption{Examples of in situ downward irradiance (\edz{}) and upward radiance (\luz{}) profiles measured under-ice on 2016-06-20. Note the presence of subsurface maxima in the downward irradiance profiles and the absence of subsurface maxima in the upward radiance profiles.}
+\end{figure}
+
+\clearpage
+\newpage
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/fig4.pdf}
+	\caption{Comparison of downward irradiance (\edz{}) and upward radiance (\luz{}) for one example light profile measured under-ice. Profiles were normalized to the measured radiometric value at 10 m depth (under the subsurface light maximum) in order to emphasize the similar shape between \edz{} and \luz{}.}
+\end{figure}
+
+\clearpage
+\newpage
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/fig5.pdf}
+	\caption{Scatter plots showing the relationships between the measured \ked{} and \klu{} in the spectral range between 400 and 580 nm at different depths (numbers in gray boxes). Red lines represent the regression lines of the fitted linear models. Regression equations and determination coefficients ($R^2$) are also provided in each plot. Dashed lines are the 1:1 lines.}
+\end{figure}
+
+\clearpage
+\newpage
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/fig6.pdf}
+	\caption{Cross-sections of simulated downward irradiance and upward radiance fields under a melt pond with a 5 m radius. The logarithm of the normalized number of photons has been used to create the scale for visualization. The normalization has been done using the values modelled at a 0.5 m depth and at a horizontal distance of 50 m from the center of the melt pond.}
+\end{figure}
+
+\clearpage
+\newpage
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/fig7.pdf}
+	\caption{Simulated reference downward irradiance and upward radiance profiles (\meanedz{}, \meanluz{} in relative units) for six different areas with varying proportions of the surface occupied by the melt pond (see Fig. 1). Note that none of the averaged irradiance profiles show the same subsurface light maxima as observed with in situ data (see Fig. 3).}
+\end{figure}
+
+\clearpage
+\newpage
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/fig8.pdf}
+	\caption{Simulated local downward irradiance and upward radiance profiles (expressed in relative units) at different horizontal distances from the center of the melt pond (see Fig. 1) used to compute \ked{} and \klu{}. These attenuation coefficients were used to propagate surface reference downward irradiance (\edzero{}, the surface values of the lines in Fig. 7) through the water column.}
+\end{figure}
+
+\clearpage
+\newpage
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/fig9.pdf}
+	\caption{Diffuse attenuation coefficients calculated from local downward irradiance and upward radiance profiles simulated at different distances from the center of the melt pond (see Fig. 8).}
+\end{figure}
+
+\clearpage
+\newpage
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/fig10.pdf}
+	\caption{Reference downward irradiance profiles (thick black lines, in relative units) and propagated irradiance through the water column (colored lines, in relative units) using local values of \ked{} and \klu{} (see Fig. 8). Light was propagated using the surface reference downward irradiance.}
+\end{figure}
+
+\clearpage
+\newpage
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/fig11.pdf}
+	\caption{Relative errors of the predictions calculated as the relative differences between the depth integral of the reference and predicted irradiance profiles.}
+\end{figure}
+
+\end{document}

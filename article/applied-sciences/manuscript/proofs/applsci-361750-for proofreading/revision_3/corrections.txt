@@ -1,0 +1,11 @@
+- Fixed poastal codes and adress
+- Approved S.L.-G as initials
+- Confirmed: Sequoia Scientific, Inc., Bellevue, WA, USA
+- Appendix B is now correctly cited.
+- Appendix C is now correctly cited.
+- Verified Kirk 1994 reference.
+- Confirmed citation Smith1984.
+- Added accessed on date for Mobley_ocean_optics_book
+- authorcontributions has been updated to correctly cite S.L.-G.
+- The first sentence of the acknowledgments have been deplaced into the funding section.
+- Two paragraphgs before conclusion, the word "depth" as been removed in "depth profiles".

@@ -12,13 +12,13 @@ df1 <- readxl::read_excel("data/raw/angular_distribution.xlsx", n_max = 2, na = 
   janitor::remove_empty() %>% 
   gather(angle, value) %>% 
   set_names(c("angle", "Measured under-ice\ndownward radiance distribution")) %>% 
-  mutate_all(parse_number)
+  mutate(angle = parse_number(angle))
 
 df2 <- readxl::read_excel("data/raw/angular_distribution.xlsx", skip = 4, n_max = 2) %>% 
   janitor::remove_empty() %>% 
   gather(angle, value) %>% 
   set_names(c("angle", "Emitting source chosen\nfor the simulation")) %>% 
-  mutate_all(parse_number)
+  mutate(angle = parse_number(angle))
 
 df <- bind_rows(df1, df2) %>% 
   gather(source, value, -angle) %>% 
@@ -27,7 +27,7 @@ df <- bind_rows(df1, df2) %>%
 df %>% 
   ggplot(aes(x = angle, y = value, color = source)) +
   geom_path() +
-  xlab(expression("Azimuthal angle"~"("^degree*")")) +
+  xlab(expression("Theta"~"("^degree*")")) +
   ylab("Normalized raidance") +
   theme(legend.title = element_blank()) +
   theme(legend.justification = c(0, 0)) +

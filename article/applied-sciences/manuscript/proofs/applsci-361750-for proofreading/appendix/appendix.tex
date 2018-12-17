@@ -1,0 +1,173 @@
+\documentclass[10pt]{article}
+    \usepackage[utf8]{inputenc}
+    \usepackage{amsmath}
+    \usepackage{amsfonts}
+    \usepackage{amssymb}
+    \usepackage{graphicx}
+
+    \usepackage[bottom = 1in, left = 0.5in, right = 0.5in, top = 1in]{geometry}
+
+    \usepackage[english]{babel}
+    \usepackage[autostyle]{csquotes}
+    \usepackage{mathptmx}
+
+    \usepackage[labelfont=bf]{caption}
+
+    \usepackage[default, scale=0.95]{opensans}
+
+    \usepackage[T1]{fontenc}
+
+    \usepackage{fixltx2e}
+    
+    \usepackage{float}
+
+    % \addto\captionsenglish{\renewcommand{\figurename}{Supplementary Fig. A}}
+
+    \captionsetup[figure]{name=Supplementary Fig.}
+    \renewcommand\thefigure{A\arabic{figure}}
+
+    \def\theequation{A\arabic{equation}}
+ 
+    \title{Appendix} 
+    \date{}
+
+    \PassOptionsToPackage{
+        natbib=true,
+        sorting=ynt,
+        style=authoryear-comp,
+        hyperref=true,
+        backend=biber,
+        maxbibnames=999,
+        firstinits=true,
+        uniquename=false,
+        parentracker=true,
+        url=false,
+        doi=false,
+        isbn=false,
+        eprint=false,
+        backref=false,
+        sortcites,
+    }   {biblatex}
+    \usepackage{biblatex}
+    
+    \DeclareLanguageMapping{english}{english-apa}
+    \addbibresource{/home/pmassicotte/Documents/library.bib}
+    
+    \AtEveryBibitem{\clearfield{issn}}
+    \AtEveryCitekey{\clearfield{issn}}
+    \AtEveryBibitem{\clearfield{url}}
+    \AtEveryCitekey{\clearfield{url}}
+    \AtEveryBibitem{\clearfield{doi}}
+    \AtEveryCitekey{\clearfield{doi}}
+
+    \newcommand{\ked}{\ensuremath{K_{d}}}
+    \newcommand{\klu}{\ensuremath{K_{Lu}}}
+    \newcommand{\edz}{\ensuremath{{E_d(z)}}}
+    \newcommand{\luz}{\ensuremath{{L_u(z)}}}
+    \newcommand{\edzero}{\ensuremath{{E_d(0^-)}}}
+    \newcommand{\meanedz}{\ensuremath{{\overline{E_d}(z)}}}
+    
+    \newcommand{\edzkd}{\ensuremath{{E_d^{K_d}(z)}}}
+    \newcommand{\luzkd}{\ensuremath{{E_d^{K_{Lu}}(z)}}}
+
+    \usepackage[hidelinks]{hyperref}
+    \setcounter{secnumdepth}{0} % sections are level 1
+
+\begin{document}
+\maketitle
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 0.75]{../../../graphs/supp_fig_1.pdf}
+	\caption{The field campaign was part of the GreenEdge project (www.greenedgeproject.info) which was conducted on landfast ice southeast of the Qikiqtarjuaq Island in the Baffin Bay (67.4797N, 63.7895W).}
+\end{figure}
+
+\clearpage
+\newpage
+
+\section{Smoothing radiance data}
+
+Due to the low scattering coefficients used to reproduce in situ conditions observed during the sampling campaign, radiance profiles were noisy because only few photons were scattered back in the upward direction (note the different y-scales). To overcome this problem, upward radiance data were smoothed using a Gaussian fit accordingly to Equation~\ref{eq:pdf}:
+
+\begin{equation}
+	\label{eq:pdf}
+	f(x,\varphi,\mu,\sigma, k) = \varphi e^{-\dfrac{(x-\mu)^2}{2 \sigma^2}} + k
+\end{equation}
+
+\noindent where $x$ (m) is the horizontal distance from the center of the melt pond, $\sigma$ (m) is the standard deviation controlling the width of the curve, $\varphi$ is the height of the curve peak ($\varphi = \frac{1}{\sigma\sqrt{2\pi}}$), $\mu$ (m) is the position of the center of the peak, and $k$ an offset coefficient.
+
+\begin{figure}[h]
+	\centering
+	\includegraphics[scale = 0.9]{../../../graphs/supp_fig_2.pdf}
+	\caption{Examples showing the number of downward irradiance (\textbf{A}) and upward radiance (\textbf{B}) photons captured by the detectors of the Monte Carlo simulation at different depth ranges (numbers in gray boxes) as a function of the horizontal distance from the melt pond. The red lines represent the fitted Gaussian curves.}
+\end{figure}
+
+\clearpage
+\newpage
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 0.75]{../../../graphs/supp_fig_3.pdf}
+	\caption{Scatter plots showing the relationships between downward irradiance (\edz{}) and upward radiance (\luz{}) between 400 and 700 nm at different depths (numbers in gray boxes). Red lines represent the regression lines of the fitted linear models. Dashed lines are the 1:1 lines. Note the large deviations between the data points and the 1:1 line occurring in the orange and red regions ($\ge$ 600~nm).}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/supp_fig_4.pdf}
+	\caption{Average determination coefficient \(R^2\) and standard deviation (shaded area) of the regressions between normalized (at 10 m depth) \edz{} and \luz{} profiles between 400 and 700 nm. At each wavelength, average values were computed from the 83 COPS measurements. A sharp decrease of \(R^2\) occurred at wavelength longer than approximately 575 nm, suggesting a gradual decoupling between \edz{} and \luz{} profiles at longer wavelengths, possibly due to the effect of inelastic scattering.}
+\end{figure}
+
+\clearpage
+\section{Raman inelastic scattering}
+
+Raman scattering is a process by which photons, interacting with water molecules, lose or gain energy and are scattered at a different wavelength than the one they were originating from. In Supplementary Fig. A3 and Supplementary Fig. A4, one can observe a decoupling between \ked{} and \klu{} at longer wavelengths, possibly due to inelastic Raman scattering. To validate this hypothesis, we used the HydroLight radiative transfer numerical model to calculate downward irradiance and upward radiance and their associated attenuation coefficients in a water column.
+
+\subsection{HydroLight simulations}
+
+Two HydrolLight simulations were carried out to model downward irradiance and upward radiance with and without taking into account Raman inelastic scattering. The simulations were parameterized using an IOPs profile (ac-s from Sea-Bird Scientific) measured on the first of May 2015 in the Baffin Bay. Simulations were performed with the following characteristics:
+
+\begin{itemize}
+	\item A surface free of ice.
+	\item A surface without waves.
+	\item Sun position at noon for May 1st (solar zenith angle = 45.39 degrees).
+	\item A cloudless sky.
+	\item No fluorescence.
+	\item Using HydroLight default atmospheric parameters.
+	\item The scattering phase function of water was described by a Fournier-Forand analytic form with a 3\% backscatter fraction.
+	\item EcoLight option was run.
+\end{itemize}
+
+The HydroLight simulations showed a decoupling between \ked{} and \klu{} starting at around 600 nm when Raman scattering was modelled (Supplementary Fig. A5). Similar decoupling was also observed with the in situ data (see Supplementary Fig. A3).
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[scale = 1]{../../../graphs/supp_fig_5.pdf}
+	\caption{Scatter plots showing the relationships between \ked{} and \klu{} calculated from the downward irradiance and upward radiance profiles modelled with and without Raman scattering. The dashed lines represent the 1:1 lines.}
+\end{figure}
+
+
+% \subsection*{Effect of inelastic scattering on PAR}
+
+% Photosynthetically active radiation (PAR), is an important quantity used in ecological studies. But based on in situ data and an HydroLight simulation, we have pointed out that \klu{} is not a good proxy for \ked{} at longer wavelengths. In this section we are documenting the effects of using \klu{} at longer wavelengths to predict \edz{} and the resulting consequences on PAR estimation. To do so, we first spectrally propagated modelled \edzero{} in the water column using both \ked{}, \edzkd{}, and \klu{}, \luzkd{}. Then, at each depth, PAR(z) was calculated as follow:
+
+% \begin{equation}
+%     \text{PAR}_{K_d}(z) = \int_{400}^{700} \frac{\lambda}{hc} E_d^{K_d}(\lambda, z) d\lambda
+% \end{equation}
+
+% \begin{equation}
+%     \text{PAR}_{K_{Lu}}(z) = \int_{400}^{700} \frac{\lambda}{hc} E_d^{K_{Lu}}(\lambda, z) d\lambda
+% \end{equation}
+
+% \noindent where $\text{PAR}_{K_d}(z)$ and $\text{PAR}_{K_{Lu}}(z)$ are respectively PAR calculate from \edzkd{} and \luzkd{}, $h$ is Planck's constant, used to describe the size of quanta ($6.62607004 \times 10^{-34}$), $c$ the constant speed of light (299792458 $ms^{-1}$).
+
+% \begin{figure}[H]
+% 	\centering
+% 	\includegraphics[scale = 1]{../../../graphs/supp_fig_6.pdf}
+% 	\caption{Boxplot showing the distribution of $\text{PAR}_{K_d}$ and $\text{PAR}_{K_{Lu}}$.}
+% \end{figure}
+
+% As one can observe, $\text{PAR}_{K_{Lu}}(z)$ is slightly overestimated by an average of 35 $\mu \text{Ein}~\text{m}^{-2}~\text{s}^{-1}$ compared to $\text{PAR}_{K_d}(z)$ (Supplementary Fig. 6). However, an analysis of variance determined that this difference was not statistically significant ($F(1,98) = 0.524, p = 0.471$). 
+
+\clearpage
+\printbibliography
+\end{document}
