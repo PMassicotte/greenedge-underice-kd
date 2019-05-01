@@ -33,6 +33,8 @@ simulo/
 *.cb
 *.cb2
 
+article/applied-sciences/payment.xls
+
 ## Intermediate documents:
 *.dvi
 *.xdv
