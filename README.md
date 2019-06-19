@@ -1,6 +1,8 @@
 Kd underice project
 ================
 
+[![DOI](https://zenodo.org/badge/110591802.svg)](https://zenodo.org/badge/latestdoi/110591802)
+
 This is the repository for the paper [Estimating Underwater Light Regime
 under Spatially Heterogeneous Sea Ice in the
 Arctic](https://www.mdpi.com/2076-3417/8/12/2693).
